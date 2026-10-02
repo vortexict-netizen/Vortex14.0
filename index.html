@@ -526,7 +526,7 @@
 
     <nav class="navbar">
         <a href="#" class="nav-logo" data-target="home">
-            <img src="image_4b5e19.png" alt="Vortex 14.0">
+            <img src="/photos/page top vortex logo.png" alt="Vortex 14.0">
         </a>
         <ul class="nav-links">
             <li><a class="nav-tab active" data-target="home">Home</a></li>
@@ -813,9 +813,12 @@
                 const cartIconRect = cartIcon.getBoundingClientRect();
 
                 createFlyingParticle(btnRect, cartIconRect, 'var(--primary-cyan)', () => {
-                    addToCartLogic(id, name, cat);
-                    cartSidebar.classList.add('active'); // Auto open cart to show update
-                });
+    addToCartLogic(id, name, cat);
+    
+    // Only auto-open the cart sidebar if the screen is wider than 600px (desktop/tablet)
+    if (window.innerWidth > 600) {
+        cartSidebar.classList.add('active');
+            }});
 
                 btnElement.textContent = 'Adding...';
                 btnElement.classList.add('added');
