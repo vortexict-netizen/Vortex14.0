@@ -520,12 +520,30 @@
             .events-grid { grid-template-columns: 1fr; }
             .cart-sidebar { max-width: 100%; right: -100%; }
         }
+    .nav-logo img {
+        height: 50px;
+        object-fit: contain;
+        transition: filter 0.4s ease;
+    }
+
+    /* Turns black text to white when Dark Mode is active */
+    :root[data-theme="dark"] .nav-logo img {
+        filter: invert(1) brightness(2); 
+        
+        /* NOTE: If your logo has colors (like the red/blue X), use this line instead to preserve them:
+        filter: invert(1) hue-rotate(180deg) brightness(1.2); */
+    }
+</style>
+
+<a href="#" class="nav-logo" data-target="home">
+    <img src="your-transparent-logo.png" alt="Vortex 14.0">
+</a>
     </style>
 </head>
 <body>
     <nav class="navbar">
         <a href="#" class="nav-logo" data-target="home">
-            <img src="https://github.com/vortexict-netizen/Vortex14.0/blob/main/photos/page_top_vortex_logo.png" alt="Vortex 14.0">
+            <img src="photos/page_top_vortex_logo.png" alt="Vortex 14.0">
         </a>
         <ul class="nav-links">
             <li><a class="nav-tab active" data-target="home">Home</a></li>
@@ -813,11 +831,7 @@
 
                 createFlyingParticle(btnRect, cartIconRect, 'var(--primary-cyan)', () => {
     addToCartLogic(id, name, cat);
-    
-    // Only auto-open the cart sidebar if the screen is wider than 600px (desktop/tablet)
-    if (window.innerWidth > 600) {
-        cartSidebar.classList.add('active');
-            }});
+});
 
                 btnElement.textContent = 'Adding...';
                 btnElement.classList.add('added');
