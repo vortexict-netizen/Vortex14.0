@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vortex 14.0 | Asia's Largest Chem-Fest</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Orbitron:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root[data-theme="dark"] {
+            --bg-color: #050507;
+            --nav-bg: rgba(5, 5, 7, 0.85);
+            --primary-cyan: #00f3ff;
+            --primary-purple: #bd00ff;
+            --success-green: #00ff88;
+            --text-main: #ffffff;
+            --text-muted: rgba(255, 255, 255, 0.6);
+            --glass-bg: rgba(20, 20, 25, 0.45);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --btn-wrapper-bg: rgba(255, 255, 255, 0.05);
+            --hover-overlay: rgba(10, 10, 15, 0.85);
+            --orb-opacity: 0.35;
+            --footer-bg: rgba(10, 10, 15, 0.9);
+            --logo-bg: rgba(255, 255, 255, 0.9); /* ensures black text logo is visible */
+        }
+
+        :root[data-theme="light"] {
+            --bg-color: #f4f4f6;
+            --nav-bg: rgba(244, 244, 246, 0.85);
+            --primary-cyan: #008996;
+            --primary-purple: #8b00cc;
+            --success-green: #00aa55;
+            --text-main: #111111;
+            --text-muted: rgba(0, 0, 0, 0.6);
+            --glass-bg: rgba(255, 255, 255, 0.6);
+            --glass-border: rgba(0, 0, 0, 0.1);
+            --btn-wrapper-bg: rgba(0, 0, 0, 0.05);
+            --hover-overlay: rgba(245, 245, 250, 0.9);
+            --orb-opacity: 0.25;
+            --footer-bg: rgba(230, 230, 235, 0.9);
+            --logo-bg: transparent;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+            line-height: 1.6;
+            min-height: 100vh;
+            transition: background-color 0.4s ease, color 0.4s ease;
+        }
+
+        h1, h2, h3, h4, .font-heading {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .gradient-text {
+            background: linear-gradient(90deg, var(--primary-cyan), var(--primary-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            color: transparent;
+            display: inline-block;
+        }
+
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            height: 75px;
+            background: var(--nav-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--glass-border);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 5%;
+            transition: background-color 0.4s ease, border-color 0.4s ease;
+        }
+
+        .nav-logo img {
+            height: 50px;
+            object-fit: contain;
+            background: var(--logo-bg);
+            border-radius: 6px;
+            padding: 4px 8px;
+            transition: background 0.4s ease;
+            display: block; /* Steady image, no rotation */
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: color 0.3s, text-shadow 0.3s;
+            cursor: pointer;
+            position: relative;
+            padding-bottom: 5px;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            color: var(--primary-cyan);
+            text-shadow: 0 0 10px rgba(0, 243, 255, 0.4);
+        }
+
+        .nav-links a.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--primary-cyan);
+            box-shadow: 0 0 10px var(--primary-cyan);
+            border-radius: 2px;
+        }
+
+        .nav-controls {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .icon-btn {
+            background: none;
+            border: none;
+            color: var(--text-main);
+            font-size: 1.3rem;
+            cursor: pointer;
+            position: relative;
+            transition: color 0.3s, transform 0.2s;
+        }
+
+        .icon-btn:hover { 
+            color: var(--primary-cyan); 
+            transform: scale(1.1);
+        }
+
+        .cart-badge {
+            position: absolute;
+            top: -8px;
+            right: -10px;
+            background: var(--primary-purple);
+            color: #fff;
+            font-size: 0.7rem;
+            font-weight: bold;
+            height: 18px;
+            min-width: 18px;
+            border-radius: 9px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 4px;
+            box-shadow: 0 0 8px var(--primary-purple);
+        }
+
+        .ambient-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
+            overflow: hidden;
+            background: var(--bg-color);
+            transition: background-color 0.4s ease;
+        }
+
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(120px);
+            opacity: var(--orb-opacity);
+            will-change: transform;
+        }
+
+        .orb-1 { width: 40vw; height: 40vw; top: -10%; left: -10%; background: radial-gradient(circle, var(--primary-purple) 0%, transparent 70%); animation: drift-1 25s infinite linear alternate; }
+        .orb-2 { width: 50vw; height: 50vw; bottom: -20%; right: -10%; background: radial-gradient(circle, var(--primary-cyan) 0%, transparent 70%); animation: drift-2 30s infinite linear alternate; }
+
+        @keyframes drift-1 { 0% { transform: translate(0, 0) scale(1); } 100% { transform: translate(10vw, 15vh) scale(1.1); } }
+        @keyframes drift-2 { 0% { transform: translate(0, 0) scale(1); } 100% { transform: translate(-15vw, -10vh) scale(1.2); } }
+
+        .main-container {
+            max-width: 1200px;
+            margin: 100px auto 0;
+            padding: 0 2rem;
+            position: relative;
+            z-index: 1;
+            min-height: calc(100vh - 100px); /* Fill space minus header */
+            display: flex;
+            flex-direction: column;
+        }
+
+        .tab-content {
+            display: none; /* Hidden by default */
+            flex: 1;
+            animation: fadeInTab 0.5s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+        }
+
+        .tab-content.active {
+            display: block; /* Visible when active */
+        }
+
+        @keyframes fadeInTab {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .text-section {
+            padding: 4rem 0;
+            text-align: center;
+        }
+        
+        .text-section h1 {
+            font-size: clamp(2.5rem, 6vw, 4.5rem);
+            margin-bottom: 1.5rem;
+        }
+
+        .text-section p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            max-width: 700px;
+            margin: 0 auto 2rem;
+            line-height: 1.8;
+        }
+
+        .faq-grid, .about-content {
+            text-align: left;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .faq-item {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            backdrop-filter: blur(12px);
+        }
+
+        .faq-item h3 { font-size: 1.1rem; color: var(--primary-cyan); margin-bottom: 0.5rem; }
+
+        .series-section { margin-bottom: 4rem; }
+        .series-title {
+            font-size: 1.8rem;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid var(--glass-border);
+            padding-bottom: 0.5rem;
+            display: inline-block;
+        }
+
+        .events-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .event-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 1.5rem;
+            height: 240px; 
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.4s, border-color 0.4s;
+        }
+
+        .event-card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(0, 243, 255, 0.4);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2), 0 0 20px rgba(0, 243, 255, 0.15);
+        }
+
+        .event-info h3 { font-size: 1.3rem; margin-bottom: 0.2rem; color: var(--text-main); }
+        .event-info p { font-size: 0.85rem; color: var(--text-muted); }
+        .event-price { color: var(--primary-cyan); font-weight: 600; margin-top: 0.5rem; font-family: 'Orbitron', sans-serif;}
+
+        .interactive-btn-wrapper {
+            position: relative;
+            width: 120px;
+            height: 45px;
+            background: var(--btn-wrapper-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            transition: width 0.4s cubic-bezier(0.25, 1, 0.5, 1), background 0.4s, border-color 0.4s;
+            align-self: flex-start;
+        }
+
+        .default-label {
+            position: absolute;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            color: var(--text-main);
+            transition: opacity 0.3s ease, transform 0.4s ease;
+            pointer-events: none;
+        }
+
+        .revealed-actions {
+            display: flex;
+            gap: 8px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.3s ease, transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+            white-space: nowrap;
+        }
+
+        .action-btn {
+            background: transparent;
+            border: 1px solid;
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-info { border-color: var(--primary-cyan); color: var(--primary-cyan); }
+        .btn-info:hover { background: var(--primary-cyan); color: #000; box-shadow: 0 0 12px rgba(0, 243, 255, 0.4); }
+
+        .btn-cart { border-color: var(--primary-purple); color: var(--primary-purple); }
+        .btn-cart:hover { background: var(--primary-purple); color: #fff; box-shadow: 0 0 12px rgba(189, 0, 255, 0.4); }
+        .btn-cart.added { background: var(--primary-purple); color: #fff; opacity: 0.7; cursor: not-allowed; }
+
+        .event-card:hover .interactive-btn-wrapper {
+            width: 100%;
+            background: var(--hover-overlay);
+            border-color: var(--glass-border);
+        }
+        .event-card:hover .default-label { opacity: 0; transform: translateY(-20px); }
+        .event-card:hover .revealed-actions { opacity: 1; transform: translateY(0); }
+
+        .cart-sidebar {
+            position: fixed;
+            top: 75px; 
+            right: -320px;
+            width: 100%;
+            max-width: 300px; /* Slimmer as requested */
+            height: calc(100vh - 75px);
+            background: var(--glass-bg);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border-left: 1px solid var(--glass-border);
+            z-index: 999;
+            padding: 1.2rem;
+            display: flex;
+            flex-direction: column;
+            transition: right 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+            box-shadow: -10px 0 30px rgba(0,0,0,0.3);
+        }
+
+        .cart-sidebar.active { right: 0; }
+
+        .cart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.2rem;
+            border-bottom: 1px solid var(--glass-border);
+            padding-bottom: 0.8rem;
+        }
+
+        .close-cart { background: none; border: none; color: var(--text-main); font-size: 1.2rem; cursor: pointer; transition: color 0.3s; }
+        .close-cart:hover { color: var(--primary-cyan); }
+
+        .cart-items { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 0.8rem; padding-right: 5px; }
+        
+        /* Custom Scrollbar for Cart */
+        .cart-items::-webkit-scrollbar { width: 4px; }
+        .cart-items::-webkit-scrollbar-track { background: transparent; }
+        .cart-items::-webkit-scrollbar-thumb { background: var(--glass-border); border-radius: 4px; }
+        
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.8rem;
+            background: var(--btn-wrapper-bg);
+            border-radius: 8px;
+            border: 1px solid var(--glass-border);
+        }
+        .item-details h4 { font-size: 0.85rem; margin-bottom: 0.2rem; }
+        .item-details p { font-size: 0.75rem; color: var(--text-muted); text-transform: capitalize; }
+        .remove-item { color: #ff4757; background: none; border: none; cursor: pointer; font-size: 0.9rem; transition: transform 0.2s, color 0.2s; }
+        .remove-item:hover { transform: scale(1.1); color: #ff6b81; }
+
+        .cart-summary { margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--glass-border); }
+        .summary-row { display: flex; justify-content: space-between; margin-bottom: 0.5rem; font-size: 0.85rem; }
+        .summary-row.discount { color: var(--primary-cyan); font-weight: 500; }
+        .summary-row.total { font-size: 1.1rem; font-weight: bold; font-family: 'Orbitron', sans-serif; margin-top: 0.8rem; color: var(--primary-purple); }
+
+        .checkout-btn {
+            width: 100%;
+            padding: 0.8rem;
+            margin-top: 1rem;
+            background: linear-gradient(90deg, var(--primary-cyan), var(--primary-purple));
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: opacity 0.3s, box-shadow 0.3s;
+        }
+        .checkout-btn:hover { opacity: 0.9; box-shadow: 0 0 15px rgba(0, 243, 255, 0.4); }
+
+        .discount-msg { font-size: 0.75rem; color: var(--primary-cyan); margin-top: 10px; text-align: center; }
+
+        @keyframes discountPop {
+            0% { transform: scale(1); color: var(--primary-cyan); text-shadow: 0 0 0px transparent; }
+            50% { transform: scale(1.15); color: var(--success-green); text-shadow: 0 0 15px var(--success-green); }
+            100% { transform: scale(1); color: var(--primary-cyan); text-shadow: 0 0 5px var(--primary-cyan); }
+        }
+
+        .celebrate-animation {
+            animation: discountPop 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+        }
+
+        .flying-particle {
+            position: fixed;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: var(--primary-cyan);
+            box-shadow: 0 0 15px var(--primary-cyan), 0 0 25px var(--primary-purple);
+            pointer-events: none;
+            z-index: 9999;
+            transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.6s ease;
+            opacity: 1;
+        }
+
+        footer {
+            background: var(--footer-bg);
+            border-top: 1px solid var(--glass-border);
+            padding: 3rem 2rem;
+            margin-top: auto; /* Pushes footer to bottom of container */
+        }
+
+        .footer-grid {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 2fr 1fr 2fr 1fr;
+            gap: 2rem;
+        }
+
+        .footer-col h3 {
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 1.2rem;
+            color: var(--text-main);
+            text-transform: none;
+        }
+        
+        .footer-col.brand h3 { color: #2196f3; font-size: 1.2rem;} 
+
+        .footer-col p, .footer-col a {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin-bottom: 0.8rem;
+            text-decoration: none;
+            display: block;
+            transition: color 0.3s;
+        }
+        .footer-col a:hover { color: var(--primary-cyan); }
+        
+        .contact-details { margin-top: 1.5rem; }
+        .contact-details p { display: flex; align-items: center; gap: 8px; }
+
+        .social-links { display: flex; gap: 1rem; font-size: 1.3rem; }
+        .social-links a { color: var(--text-muted); }
+        .social-links a:hover { color: var(--text-main); }
+
+        @media (max-width: 900px) {
+            .footer-grid { grid-template-columns: 1fr 1fr; }
+            .nav-links { display: none; } /* Simplified for mobile demo */
+        }
+        @media (max-width: 600px) {
+            .footer-grid { grid-template-columns: 1fr; }
+            .events-grid { grid-template-columns: 1fr; }
+            .cart-sidebar { max-width: 100%; right: -100%; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <a href="#" class="nav-logo" data-target="home">
+            <img src="image_4b5e19.png" alt="Vortex 14.0">
+        </a>
+        <ul class="nav-links">
+            <li><a class="nav-tab active" data-target="home">Home</a></li>
+            <li><a class="nav-tab" data-target="events">Events</a></li>
+            <li><a class="nav-tab" data-target="faq">FAQ</a></li>
+            <li><a class="nav-tab" data-target="about">About</a></li>
+        </ul>
+        <div class="nav-controls">
+            <button class="icon-btn" id="themeToggleBtn" aria-label="Toggle Theme">
+                <i class="fa-solid fa-sun" id="themeIcon"></i>
+            </button>
+            <button class="icon-btn" id="cartToggleBtn" aria-label="Open Cart">
+                <i class="fa-solid fa-cart-shopping"></i>
+                <span class="cart-badge" id="cartCount">0</span>
+            </button>
+        </div>
+    </nav>
+
+    <div class="ambient-bg">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+    </div>
+
+    <div class="cart-sidebar" id="cartSidebar">
+        <div class="cart-header">
+            <h3 class="font-heading" style="font-size: 1rem;">Your Cart</h3>
+            <button class="close-cart" id="closeCartBtn"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="cart-items" id="cartItemsList">
+            <p style="color: var(--text-muted); text-align: center; margin-top: 2rem;">Cart is empty.</p>
+        </div>
+        <div class="cart-summary">
+            <div class="summary-row">
+                <span>Subtotal</span>
+                <span id="cartSubtotal">₹0</span>
+            </div>
+            <div class="summary-row discount" id="discountContainer">
+                <span id="discountLabel">Discount (0%)</span>
+                <span id="cartDiscount">-₹0</span>
+            </div>
+            <div class="summary-row total">
+                <span>Total</span>
+                <span id="cartTotal">₹0</span>
+            </div>
+            <p class="discount-msg" id="discountMsg">Add more events to unlock series discounts!</p>
+            <button class="checkout-btn">Proceed to Checkout</button>
+        </div>
+    </div>
+
+    <main class="main-container">
+        
+        <!-- Tab: HOME -->
+        <section id="home" class="tab-content active text-section">
+            <h1 class="font-heading">Welcome to VORTEX <span class="gradient-text">14.0</span></h1>
+            <p>Asia's Largest Chem-Fest organized by the Institute of Chemical Technology (ICT), Mumbai. Where Chemical Engineering, Pharma, and Futuristic Technology converge into a single dimension of innovation.</p>
+            <button class="action-btn btn-info" style="font-size: 1rem; padding: 12px 30px;" onclick="document.querySelector('.nav-tab[data-target=\'events\']').click()">Explore Events</button>
+        </section>
+
+        <!-- Tab: EVENTS -->
+        <section id="events" class="tab-content">
+            <div style="padding-top: 2rem;">
+                <section class="series-section">
+                    <h2 class="series-title"><span style="color: var(--primary-cyan)">01.</span> General Series</h2>
+                    <div class="events-grid" id="grid-general"></div>
+                </section>
+
+                <section class="series-section">
+                    <h2 class="series-title"><span style="color: var(--primary-purple)">02.</span> Prodigy Series</h2>
+                    <div class="events-grid" id="grid-prodigy"></div>
+                </section>
+
+                <section class="series-section">
+                    <h2 class="series-title"><span class="gradient-text">03.</span> Pharma Series</h2>
+                    <div class="events-grid" id="grid-pharma"></div>
+                </section>
+            </div>
+        </section>
+
+        <!-- Tab: FAQ -->
+        <section id="faq" class="tab-content text-section">
+            <h2 class="font-heading" style="margin-bottom: 2rem;">Frequently Asked <span class="gradient-text">Questions</span></h2>
+            <div class="faq-grid">
+                <div class="faq-item">
+                    <h3>Who can participate in Vortex 14.0?</h3>
+                    <p style="color: var(--text-muted); font-size: 0.9rem; margin: 0;">Students from any recognized college or university can participate. Some events may have specific prerequisites outlined in their info sections.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>How do the Series discounts work?</h3>
+                    <p style="color: var(--text-muted); font-size: 0.9rem; margin: 0;">If you add 5+ eligible events, you get 50% off. Completing 1 full series grants 60% off, 2 series grants 62%, and all 3 series gives a massive 70% discount. Note: Sr. IDP is excluded from discounts.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>Where is the fest located?</h3>
+                    <p style="color: var(--text-muted); font-size: 0.9rem; margin: 0;">The fest is hosted at the ICT Mumbai campus, Matunga, Mumbai.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tab: ABOUT -->
+        <section id="about" class="tab-content text-section">
+            <h2 class="font-heading" style="margin-bottom: 2rem;">About <span class="gradient-text">Vortex</span></h2>
+            <div class="about-content">
+                <p>Since its inception, Vortex has grown to become Asia's largest technical festival dedicated specifically to Chemical Engineering, Pharmacy, and allied disciplines. Organized entirely by the students of ICT Mumbai, it serves as a bridge between academia and industry.</p>
+                <p>Vortex 14.0, themed "Aquessence", brings together the brightest minds to solve complex industrial problems, showcase research, and compete in high-stakes technological challenges.</p>
+            </div>
+        </section>
+
+        <footer>
+            <div class="footer-grid">
+                <div class="footer-col brand">
+                    <h3>Vortex Events</h3>
+                    <p>ICT Mumbai's Premier Chemical Engineering Fest</p>
+                    <p style="margin-top: 1rem; font-size: 0.8rem;">🌊 Theme : Aquessence 🐋</p>
+                </div>
+                <div class="footer-col">
+                    <h3>Quick Links</h3>
+                    <a href="#" onclick="document.querySelector('.nav-tab[data-target=\'home\']').click()">Home</a>
+                    <a href="#" onclick="document.querySelector('.nav-tab[data-target=\'events\']').click()">Events</a>
+                    <a href="#">Sponsors</a>
+                    <a href="#" onclick="document.querySelector('.nav-tab[data-target=\'about\']').click()">About Us</a>
+                </div>
+                <div class="footer-col">
+                    <h3>Contact</h3>
+                    <p><i class="fa-regular fa-envelope"></i> vortexsecretary.ta@ug.ictmumbai.edu.in</p>
+                    <div class="contact-details">
+                        <p style="font-weight: 600; color: var(--text-main); margin-bottom: 0.5rem;">Secretary Contact Details:</p>
+                        <p><i class="fa-solid fa-phone"></i> Soham Raut: 9834249270</p>
+                        <p><i class="fa-solid fa-phone"></i> Dimple Rane: 9372122722</p>
+                        <p><i class="fa-solid fa-location-dot"></i> ICT Mumbai, Matunga, Mumbai - 400019</p>
+                    </div>
+                </div>
+                <div class="footer-col">
+                    <h3>Connect</h3>
+                    <div class="social-links">
+                        <a href="#"><i class="fa-brands fa-instagram"></i></a>
+                        <a href="#"><i class="fa-brands fa-whatsapp"></i></a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </main>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            
+            // --- SPA Tab Navigation Logic ---
+            const navTabs = document.querySelectorAll('.nav-tab, .nav-logo');
+            const tabContents = document.querySelectorAll('.tab-content');
+
+            navTabs.forEach(tab => {
+                tab.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const targetId = tab.getAttribute('data-target');
+                    if(!targetId) return;
+
+                    // Update Links
+                    document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+                    if(tab.classList.contains('nav-tab')) tab.classList.add('active');
+                    else document.querySelector(`.nav-tab[data-target="${targetId}"]`).classList.add('active'); // if logo clicked
+
+                    // Switch Content Without Scrolling Down
+                    tabContents.forEach(content => {
+                        content.classList.remove('active');
+                    });
+                    document.getElementById(targetId).classList.add('active');
+                    
+                    // Scroll to top of the page smoothly
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                });
+            });
+
+            // --- Theme Toggle Logic ---
+            const themeBtn = document.getElementById('themeToggleBtn');
+            const themeIcon = document.getElementById('themeIcon');
+            const htmlElement = document.documentElement;
+
+            themeBtn.addEventListener('click', () => {
+                const currentTheme = htmlElement.getAttribute('data-theme');
+                if (currentTheme === 'dark') {
+                    htmlElement.setAttribute('data-theme', 'light');
+                    themeIcon.className = 'fa-solid fa-moon';
+                } else {
+                    htmlElement.setAttribute('data-theme', 'dark');
+                    themeIcon.className = 'fa-solid fa-sun';
+                }
+            });
+
+            // --- Cart Sidebar Toggle ---
+            const cartToggleBtn = document.getElementById('cartToggleBtn');
+            const closeCartBtn = document.getElementById('closeCartBtn');
+            const cartSidebar = document.getElementById('cartSidebar');
+            const cartIcon = document.querySelector('.fa-cart-shopping');
+
+            cartToggleBtn.addEventListener('click', () => cartSidebar.classList.add('active'));
+            closeCartBtn.addEventListener('click', () => cartSidebar.classList.remove('active'));
+
+            // --- Events Data Rendering ---
+            const eventsData = [
+                { id: 'advent', name: 'Advent', cat: 'general', desc: 'Core Flagship Event' },
+                { id: 'sdp', name: 'SDP', cat: 'general', desc: 'Student Development' },
+                { id: 'ud', name: 'UD', cat: 'general', desc: 'Core Event' },
+                { id: 'upbiz', name: 'Upbiz', cat: 'general', desc: 'Business & Strategy' },
+                { id: 'ignite', name: 'Ignite', cat: 'general', desc: 'Innovation' },
+                
+                { id: 'codathon', name: 'Codathon', cat: 'prodigy', desc: 'Tech & Coding' },
+                { id: 'chemflow', name: 'Chemflow', cat: 'prodigy', desc: 'Process Simulation' },
+                { id: 'jridp', name: 'Jr. IDP', cat: 'prodigy', desc: 'Industry Problem (Jr)' },
+                { id: 'papyrus', name: 'Papyrus', cat: 'prodigy', desc: 'Paper Presentation' },
+                { id: 'sridp', name: 'Sr. IDP', cat: 'prodigy', desc: 'Industry Problem (Sr) *Excluded from discounts' },
+                
+                { id: 'mootcourt', name: 'Mootcourt', cat: 'pharma', desc: 'IP & Law' },
+                { id: 'cosmecure', name: 'Cosmecure', cat: 'pharma', desc: 'Cosmetics Formulation' },
+                { id: 'geneauction', name: 'Geneauction', cat: 'pharma', desc: 'Bio-Tech Bidding' },
+                { id: 'blueprint', name: 'Blueprint', cat: 'pharma', desc: 'Pharma Plant Design' },
+                { id: 'pharmquest', name: 'Pharmquest', cat: 'pharma', desc: 'Medical Quiz' }
+            ];
+
+            const renderCategory = (catId, containerId) => {
+                const items = eventsData.filter(e => e.cat === catId);
+                const container = document.getElementById(containerId);
+                let html = '';
+                items.forEach(item => {
+                    html += `
+                        <div class="event-card" id="card-${item.id}">
+                            <div class="event-info">
+                                <h3>${item.name}</h3>
+                                <p>${item.desc}</p>
+                                <div class="event-price">₹500</div>
+                            </div>
+                            <div class="interactive-btn-wrapper">
+                                <span class="default-label">OPTIONS</span>
+                                <div class="revealed-actions">
+                                    <button class="action-btn btn-info">Info</button>
+                                    <button class="action-btn btn-cart" onclick="handleAddToCart('${item.id}', '${item.name}', '${item.cat}')" id="btn-${item.id}">Add to Cart</button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+                container.innerHTML = html;
+            };
+
+            renderCategory('general', 'grid-general');
+            renderCategory('prodigy', 'grid-prodigy');
+            renderCategory('pharma', 'grid-pharma');
+
+            // --- Cart Logic & Animations ---
+            let cart = [];
+            let previousDiscountPercent = 0;
+            const EVENT_PRICE = 500;
+
+            const createFlyingParticle = (startRect, endRect, color, callback) => {
+                const particle = document.createElement('div');
+                particle.className = 'flying-particle';
+                particle.style.background = color;
+                
+                const startX = startRect.left + (startRect.width / 2) - 7;
+                const startY = startRect.top + (startRect.height / 2) - 7;
+                particle.style.left = `0px`;
+                particle.style.top = `0px`;
+                particle.style.transform = `translate(${startX}px, ${startY}px) scale(1)`;
+                
+                document.body.appendChild(particle);
+
+                // Force reflow
+                void particle.offsetWidth;
+
+                const endX = endRect.left + (endRect.width / 2) - 7;
+                const endY = endRect.top + (endRect.height / 2) - 7;
+
+                particle.style.transform = `translate(${endX}px, ${endY}px) scale(0.3)`;
+                particle.style.opacity = '0.3';
+
+                setTimeout(() => {
+                    particle.remove();
+                    if(callback) callback();
+                }, 600);
+            };
+
+            window.handleAddToCart = (id, name, cat) => {
+                if (cart.find(item => item.id === id)) return;
+                
+                const btnElement = document.getElementById(`btn-${id}`);
+                const btnRect = btnElement.getBoundingClientRect();
+                const cartIconRect = cartIcon.getBoundingClientRect();
+
+                createFlyingParticle(btnRect, cartIconRect, 'var(--primary-cyan)', () => {
+                    addToCartLogic(id, name, cat);
+                    cartSidebar.classList.add('active'); // Auto open cart to show update
+                });
+
+                btnElement.textContent = 'Adding...';
+                btnElement.classList.add('added');
+            };
+
+            const addToCartLogic = (id, name, cat) => {
+                cart.push({ id, name, category: cat, price: EVENT_PRICE });
+                const btn = document.getElementById(`btn-${id}`);
+                if(btn) btn.textContent = 'Added';
+                updateCartUI();
+            };
+
+            window.handleRemoveFromCart = (id) => {
+                const cardElement = document.getElementById(`card-${id}`);
+                const cartIconRect = cartIcon.getBoundingClientRect();
+                
+                let targetRect = cardElement ? cardElement.getBoundingClientRect() : { left: window.innerWidth/2, top: window.innerHeight, width: 0, height: 0 };
+
+                createFlyingParticle(cartIconRect, targetRect, '#ff4757', () => {});
+
+                cart = cart.filter(item => item.id !== id);
+                
+                const btn = document.getElementById(`btn-${id}`);
+                if(btn) {
+                    btn.textContent = 'Add to Cart';
+                    btn.classList.remove('added');
+                }
+                updateCartUI();
+            };
+
+            const updateCartUI = () => {
+                document.getElementById('cartCount').textContent = cart.length;
+
+                const listEl = document.getElementById('cartItemsList');
+                if (cart.length === 0) {
+                    listEl.innerHTML = '<p style="color: var(--text-muted); text-align: center; margin-top: 2rem;">Cart is empty.</p>';
+                } else {
+                    listEl.innerHTML = cart.map(item => `
+                        <div class="cart-item">
+                            <div class="item-details">
+                                <h4>${item.name}</h4>
+                                <p>${item.category} Series</p>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 1rem;">
+                                <span style="font-family: 'Orbitron'; font-size: 0.85rem;">₹${item.price}</span>
+                                <button class="remove-item" onclick="handleRemoveFromCart('${item.id}')"><i class="fa-solid fa-trash"></i></button>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+
+                calculateCartTotals();
+            };
+
+            const calculateCartTotals = () => {
+                // Discount Rules
+                const eligibleItems = cart.filter(item => item.id !== 'sridp');
+                const ineligibleItems = cart.filter(item => item.id === 'sridp');
+                
+                const counts = { general: 0, prodigy: 0, pharma: 0 };
+                eligibleItems.forEach(item => { counts[item.category]++; });
+
+                let completedSeries = 0;
+                if (counts.general === 5) completedSeries++;
+                if (counts.prodigy === 4) completedSeries++; // 4 required as Sr. IDP is excluded
+                if (counts.pharma === 5) completedSeries++;
+
+                let newDiscountPercent = 0;
+                let msg = "Add more events to unlock series discounts!";
+
+                if (completedSeries === 3) {
+                    newDiscountPercent = 0.70;
+                    msg = "Incredible! 3 Series complete. 70% OFF applied!";
+                } else if (completedSeries === 2) {
+                    newDiscountPercent = 0.62;
+                    msg = "Awesome! 2 Series complete. 62% OFF applied!";
+                } else if (completedSeries === 1) {
+                    newDiscountPercent = 0.60;
+                    msg = "Great job! 1 Series complete. 60% OFF applied!";
+                } else if (eligibleItems.length >= 5) {
+                    newDiscountPercent = 0.50;
+                    msg = "5+ Events added! 50% OFF applied!";
+                }
+
+                const eligibleTotal = eligibleItems.length * EVENT_PRICE;
+                const ineligibleTotal = ineligibleItems.length * EVENT_PRICE;
+                const subtotal = (cart.length) * EVENT_PRICE;
+                const discountAmount = eligibleTotal * newDiscountPercent;
+                const finalTotal = (eligibleTotal - discountAmount) + ineligibleTotal;
+
+                document.getElementById('cartSubtotal').textContent = `₹${subtotal}`;
+                document.getElementById('discountLabel').textContent = `Discount (${newDiscountPercent * 100}%)`;
+                document.getElementById('cartDiscount').textContent = `-₹${discountAmount}`;
+                document.getElementById('cartTotal').textContent = `₹${finalTotal}`;
+                
+                const discountMsgEl = document.getElementById('discountMsg');
+                discountMsgEl.textContent = newDiscountPercent > 0 ? msg : (eligibleItems.length > 0 ? `Add ${5 - eligibleItems.length} more eligible events for 50% off.` : msg);
+
+                // Trigger Celebration Animation
+                if (newDiscountPercent > previousDiscountPercent) {
+                    const discountContainer = document.getElementById('discountContainer');
+                    discountContainer.classList.remove('celebrate-animation');
+                    void discountContainer.offsetWidth; // trigger reflow
+                    discountContainer.classList.add('celebrate-animation');
+discountMsgEl.style.color = 'var(--success-green)';
+                    setTimeout(() => discountMsgEl.style.color = 'var(--primary-cyan)', 1200);
+                }
+                
+                previousDiscountPercent = newDiscountPercent;
+            };
+        });
+    </script>
+</body>
+</html>
