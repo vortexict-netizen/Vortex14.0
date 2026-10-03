@@ -9,6 +9,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Orbitron:wght@400;500;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Spline 3D Viewer Script -->
+    <script type="module" src="https://unpkg.com/@splinetool/viewer@1.9.28/build/spline-viewer.js"></script>
 
     <style>
         :root[data-theme="dark"] {
@@ -520,24 +523,50 @@
             .events-grid { grid-template-columns: 1fr; }
             .cart-sidebar { max-width: 100%; right: -100%; }
         }
-    .nav-logo img {
-        height: 50px;
-        object-fit: contain;
-        transition: filter 0.4s ease;
-    }
+        .nav-logo img {
+            height: 50px;
+            object-fit: contain;
+            transition: filter 0.4s ease;
+        }
 
-    /* Turns black text to white when Dark Mode is active */
-    :root[data-theme="dark"] .nav-logo img {
-        filter: invert(1) brightness(2); 
+        /* Turns black text to white when Dark Mode is active */
+        :root[data-theme="dark"] .nav-logo img {
+            filter: invert(1) brightness(2); 
+            
+            /* NOTE: If your logo has colors (like the red/blue X), use this line instead to preserve them:
+            filter: invert(1) hue-rotate(180deg) brightness(1.2); */
+        }
+
+        /* ===== Hero: full-width Spline scene, scrolls with the page, text on top ===== */
+        .hero-section { display: none; position: relative; align-items: center; min-height: calc(100vh - 100px); padding: 2rem 0; }
+        .hero-section.active { display: flex; }
+        .hero-3d { 
+            position: absolute; top: -25px; bottom: 0; left: 50%;
+            width: 100vw; margin-left: -50vw; z-index: 0; overflow: visible; touch-action: pan-y;
+        }
+        /* Model size & position -- tweak these 4 numbers */
+        .hero-3d { --model-w: 104%; --model-h: 128%; --model-top: -12%; --model-right: -12%; }
+        .hero-3d spline-viewer {
+            position: absolute; display: block;
+            width: var(--model-w); height: var(--model-h);
+            top: var(--model-top); right: var(--model-right);
+            filter: saturate(2.2) contrast(1.25) brightness(1.1); /* vivid colour, no glow or shadow */
+            animation: modelFloat 6s ease-in-out infinite;
+        }
+        @keyframes modelFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-14px); } }
+        @media (prefers-reduced-motion: reduce) { .hero-3d spline-viewer { animation: none; } }
+        .hero-text { position: relative; z-index: 1; max-width: 560px; text-align: left; }
+        .hero-text { pointer-events: none; }
+        .hero-text .action-btn { pointer-events: auto; }
+        .hero-text h1 { font-size: clamp(2.2rem, 5vw, 4rem); margin-bottom: 1.5rem; text-shadow: 0 2px 18px rgba(0,0,0,0.75), 0 0 2px rgba(0,0,0,0.6); }
+        .hero-text p { color: var(--text-main); opacity: 0.95; text-shadow: 0 1px 12px rgba(0,0,0,0.7); font-size: 1.1rem; line-height: 1.8; margin: 0 0 2rem; }
         
-        /* NOTE: If your logo has colors (like the red/blue X), use this line instead to preserve them:
-        filter: invert(1) hue-rotate(180deg) brightness(1.2); */
-    }
-</style>
-
-<a href="#" class="nav-logo" data-target="home">
-    <img src="your-transparent-logo.png" alt="Vortex 14.0">
-</a>
+        @media (max-width: 800px) {
+            .hero-section.active { align-items: flex-end; min-height: 90vh; padding-bottom: 3rem; }
+            .hero-text { text-align: center; margin: 0 auto; }
+            .hero-3d { --model-w: 100%; --model-h: 100%; --model-top: 0; --model-right: 0; }
+            .hero-3d { overflow: hidden; }
+        }
     </style>
 </head>
 <body>
@@ -595,11 +624,16 @@
 
     <main class="main-container">
         
-        <!-- Tab: HOME -->
-        <section id="home" class="tab-content active text-section">
-            <h1 class="font-heading">Welcome to VORTEX <span class="gradient-text">14.0</span></h1>
-            <p>Asia's Largest Chem-Fest organized by the Institute of Chemical Technology (ICT), Mumbai. Where Chemical Engineering, Pharma, and Futuristic Technology converge into a single dimension of innovation.</p>
-            <button class="action-btn btn-info" style="font-size: 1rem; padding: 12px 30px;" onclick="document.querySelector('.nav-tab[data-target=\'events\']').click()">Explore Events</button>
+        <!-- Tab: HOME WITH SPLINE 3D SCENE -->
+        <section id="home" class="tab-content active hero-section">
+            <div class="hero-text">
+                <h1 class="font-heading">Welcome to VORTEX <span class="gradient-text">14.0</span></h1>
+                <p>Asia's Largest Chem-Fest organized by the Institute of Chemical Technology (ICT), Mumbai. Where Chemical Engineering, Pharma, and Futuristic Technology converge into a single dimension of innovation.</p>
+                <button class="action-btn btn-info" style="font-size: 1rem; padding: 12px 30px;" onclick="document.querySelector('.nav-tab[data-target=\'events\']').click()">Explore Events</button>
+            </div>
+            <div class="hero-3d">
+                <spline-viewer events-target="global" background="rgba(0,0,0,0)" loading="eager" url="https://prod.spline.design/pfQQVuMYEseBdYzQ/scene.splinecode?v=20261003i" loading-anim-type="spinner-small-dark"></spline-viewer>
+            </div>
         </section>
 
         <!-- Tab: EVENTS -->
@@ -830,8 +864,8 @@
                 const cartIconRect = cartIcon.getBoundingClientRect();
 
                 createFlyingParticle(btnRect, cartIconRect, 'var(--primary-cyan)', () => {
-    addToCartLogic(id, name, cat);
-});
+                    addToCartLogic(id, name, cat);
+                });
 
                 btnElement.textContent = 'Adding...';
                 btnElement.classList.add('added');
@@ -936,13 +970,63 @@
                     discountContainer.classList.remove('celebrate-animation');
                     void discountContainer.offsetWidth; // trigger reflow
                     discountContainer.classList.add('celebrate-animation');
-discountMsgEl.style.color = 'var(--success-green)';
+                    discountMsgEl.style.color = 'var(--success-green)';
                     setTimeout(() => discountMsgEl.style.color = 'var(--primary-cyan)', 1200);
                 }
                 
                 previousDiscountPercent = newDiscountPercent;
             };
         });
+    </script>
+    
+    <!-- Spline Continuous Spin Engine -->
+    <script>
+        // Wheel over the scene scrolls the page instead of zooming the model
+        (function () {
+            const wrap = document.querySelector('.hero-3d');
+            if (wrap) wrap.addEventListener('wheel', e => e.stopPropagation(), { capture: true, passive: true });
+        })();
+
+        const SPIN_AXIS = 'z'; 
+        const SPIN_RINGS = [
+            { name: 'Group',   speed:  0.7 },
+            { name: 'Group 5', speed: -0.5 },
+            { name: 'Group 3', speed:  0.35 }
+        ];
+
+        (function () {
+            const viewer = document.querySelector('spline-viewer');
+            if (!viewer) return;
+
+            function attach() {
+                if (!viewer._spline) return;
+                const app = viewer._spline;
+                
+                const rings = SPIN_RINGS.map(r => {
+                    const o = app.findObjectByName(r.name);
+                    return o && { o, s: r.speed, base: o.rotation[SPIN_AXIS], angle: 0, written: o.rotation[SPIN_AXIS] };
+                }).filter(Boolean);
+                
+                let last = performance.now();
+                const tick = now => {
+                    const dt = Math.min((now - last) / 1000, 0.1); 
+                    last = now;
+                    rings.forEach(r => {
+                        const cur = r.o.rotation[SPIN_AXIS];
+                        const TAU = Math.PI * 2;
+                        const diff = ((cur - r.written + Math.PI) % TAU + TAU) % TAU - Math.PI; 
+                        if (Math.abs(diff) > 1e-3) r.base = cur; 
+                        r.angle += r.s * dt;
+                        r.written = r.base + r.angle;
+                        r.o.rotation[SPIN_AXIS] = r.written;
+                    });
+                    requestAnimationFrame(tick);
+                };
+                requestAnimationFrame(tick);
+            }
+            viewer.addEventListener('load-complete', attach);
+            if (viewer._loaded) attach();
+        })();
     </script>
 </body>
 </html>
