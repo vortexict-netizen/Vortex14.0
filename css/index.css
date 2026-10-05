@@ -17,7 +17,7 @@
 
 :root[data-theme="light"] {
   --bg-color: #f4f4f6;
-  --nav-bg: rgba(244, 244, 246, 0.85);
+  --nav-bg: rgb(246, 246, 246);
   --primary-cyan: #008996;
   --primary-purple: #8b00cc;
   --success-green: #00aa55;
@@ -102,9 +102,6 @@ h4,
 /* Default state (Dark Mode is active) */
 .logo-light { 
     display: none; 
-}
-.logo-dark {
-    filter: invert(1) brightness(2);
 }
 
 /* Swapped state (Light Mode is active) */
