@@ -13,8 +13,9 @@
     <!-- Link to your CSS file -->
     <link rel="stylesheet" href="css/registration.css">
     
-    <!-- Cloudflare Turnstile Captcha Script -->
-    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+    <!-- Google reCAPTCHA v3 Script -->
+    <!-- REPLACE 'YOUR_SITE_KEY' WITH YOUR ACTUAL GOOGLE SITE KEY -->
+    <script src="https://www.google.com/recaptcha/api.js?render=6LcIgeAtAAAAAJuakH7S9z9eNDTFvsW7ilxBkxYf"></script>
 </head>
 <body>
 
@@ -116,20 +117,16 @@
             
             <div class="form-group">
                 <label for="transactionId">Transaction ID</label>
-                <!-- Note: Changed ID from "Trans ID" to "transactionId" because spaces are invalid in HTML IDs -->
                 <input type="text" id="transactionId" name="transactionId" class="form-control" placeholder="Enter Transaction ID" required>
             </div>
 
-            <!-- CAPTCHA Widget -->
-            <div class="captcha-container">
-                <div class="cf-turnstile" data-sitekey="6LcIgeAtAAAAAJuakH7S9z9eNDTFvsW7ilxBkxYf"></div>
-            </div>
+            <!-- Notice: The Cloudflare div was removed from here. reCAPTCHA v3 is invisible. -->
 
             <button type="submit" class="submit-btn">Complete Registration</button>
         </form>
     </div>
 
-    <!-- This script handles the Turnstile token and sends the FormData -->
+    <!-- Frontend logic script -->
     <script src="./scripts/registration.js" defer></script>
 </body>
 </html>

@@ -1,23 +1,20 @@
-// server.js
 const express = require('express');
-const multer = require('multer'); // Required for parsing FormData and files
+const multer = require('multer'); 
 require('dotenv').config();
 
 const app = express();
 const port = process.env.PORT || 3000;
 
-// Configure multer to hold files in memory (or configure it to save to disk)
+// Configure multer to parse the FormData and files
 const upload = multer({ storage: multer.memoryStorage() });
 
-// Your Cloudflare Turnstile Secret Key
-const TURNSTILE_SECRET_KEY = process.env.TURNSTILE_SECRET_KEY;
+// Your Google reCAPTCHA Secret Key (from your .env file)
+const RECAPTCHA_SECRET_KEY = process.env.RECAPTCHA_SECRET_KEY;
 
-// Endpoint must handle multipart/form-data because of the file uploads
-app.post('/api/register', upload.fields([{ name: 'idCard' }, { name: 'payment' }]), async (req, res) => {
-    // Extract text fields from req.body
-    const { fullName, phone, instituteId, size, captchaToken } = req.body;
+app.post('/api/register', upload.fields([{ name: 'payment' }]), async (req, res) => {
     
-    // Extract files from req.files
+    // Extract data and the token
+    const { fullName, phone, instituteId, size, transactionId, captchaToken } = req.body;
     const files = req.files; 
 
     if (!captchaToken) {
@@ -25,30 +22,30 @@ app.post('/api/register', upload.fields([{ name: 'idCard' }, { name: 'payment' }
     }
 
     try {
-        // 1. Verify the token with Cloudflare Turnstile (NOT Google)
-        const verifyUrl = 'https://challenges.cloudflare.com/turnstile/v0/siteverify';
+        // 1. Verify the token with Google
+        const verifyUrl = 'https://www.google.com/recaptcha/api/siteverify';
         
         const response = await fetch(verifyUrl, {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: `secret=${TURNSTILE_SECRET_KEY}&response=${captchaToken}`
+            body: `secret=${RECAPTCHA_SECRET_KEY}&response=${captchaToken}`
         });
         
-        const turnstileData = await response.json();
+        const googleData = await response.json();
 
-        // 2. Evaluate the Cloudflare response
-        if (!turnstileData.success) {
-            console.warn('Bot detected by Turnstile:', turnstileData['error-codes']);
+        // 2. Evaluate the Google reCAPTCHA v3 response (0.0 is bot, 1.0 is human)
+        if (!googleData.success || googleData.score < 0.5) {
+            console.warn('Bot detected! Score:', googleData.score);
             return res.status(403).json({ error: 'Security check failed.' });
         }
 
-        // 3. Security passed! Process the user data and files here
-        // console.log("User:", fullName, "ID File:", files.idCard[0].originalname);
+        // 3. Security passed! Process the user data and save the file
+        // console.log("User:", fullName, "Transaction:", transactionId);
 
         res.status(200).json({ message: 'Registration Successful!' });
 
     } catch (error) {
-        console.error("Turnstile validation error:", error);
+        console.error("reCAPTCHA validation error:", error);
         res.status(500).json({ error: 'Internal server error validating security token' });
     }
 });

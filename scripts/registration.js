@@ -27,42 +27,44 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
-        // 2. Captcha Verification Check (Frontend)
-        const captchaResponse = document.querySelector('[name="cf-turnstile-response"]').value;
-        if (!captchaResponse) {
-            alert("Please complete the security check.");
-            return;
-        }
-
-        // 3. Gather Data
+        // 2. Gather Data
         const formData = new FormData();
         formData.append('fullName', document.getElementById('fullName').value);
         formData.append('phone', document.getElementById('phone').value);
         formData.append('instituteId', document.getElementById('instituteId').value);
         formData.append('size', document.querySelector('input[name="size"]:checked').value);
-        formData.append('idCard', document.getElementById('idCardUpload').files[0]);
-        formData.append('payment', document.getElementById('paymentUpload').files[0]);
+        formData.append('transactionId', document.getElementById('transactionId').value);
         
-        // Append the Cloudflare token
-        formData.append('captchaToken', captchaResponse);
+        // Append optional files only if they exist (prevents errors if missing)
+        const paymentFile = document.getElementById('paymentUpload').files[0];
+        if (paymentFile) formData.append('payment', paymentFile);
 
-        // 4. Send to Backend API
-        fetch('/api/register', {
-            method: 'POST',
-            body: formData // Do not set 'Content-Type'. The browser handles the multipart boundary automatically.
-        })
-        .then(response => {
-            if (!response.ok) throw new Error("Security check failed on server");
-            return response.json();
-        })
-        .then(data => {
-            alert("Registration Successful!");
-            // Optional: document.getElementById('registrationForm').reset();
-            // Optional: turnstile.reset(); // Reset widget for future submissions
-        })
-        .catch(error => {
-            console.error("Error:", error);
-            alert("Registration failed. Please try again.");
+        // 3. Execute Google reCAPTCHA v3, then send to backend
+        // REPLACE 'YOUR_SITE_KEY' WITH YOUR ACTUAL GOOGLE SITE KEY
+        grecaptcha.ready(function() {
+            grecaptcha.execute('YOUR_SITE_KEY', {action: 'register'}).then(function(token) {
+                
+                // Append the generated Google token to the form data
+                formData.append('captchaToken', token);
+
+                // 4. Send to Backend API
+                fetch('/api/register', {
+                    method: 'POST',
+                    body: formData // Content-Type is set automatically by the browser for FormData
+                })
+                .then(response => {
+                    if (!response.ok) throw new Error("Security check failed on server");
+                    return response.json();
+                })
+                .then(data => {
+                    alert("Registration Successful!");
+                    // Optional: document.getElementById('registrationForm').reset();
+                })
+                .catch(error => {
+                    console.error("Error:", error);
+                    alert("Registration failed. Please try again.");
+                });
+            });
         });
     });
 });
