@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vortex 14.0 | Registration</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Orbitron:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Link to your CSS file -->
+    <link rel="stylesheet" href="css/registration.css">
+    
+    <!-- Cloudflare Turnstile Captcha Script -->
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+</head>
+<body>
+
+    <!-- Simple Navbar for Theme Toggle & Back Button -->
+    <nav class="navbar">
+        <a href="index.html" class="back-link"><i class="fa-solid fa-arrow-left"></i> Back to Home</a>
+        <button class="icon-btn" id="themeToggleBtn" aria-label="Toggle Theme">
+            <i class="fa-solid fa-sun" id="themeIcon"></i>
+        </button>
+    </nav>
+
+    <div class="registration-container">
+        <div class="form-header">
+            <h2><span class="gradient-text">Register</span> Now</h2>
+            <p>Secure your spot at Vortex 14.0</p>
+        </div>
+
+        <form id="registrationForm">
+            
+            <!-- HONEYPOT-->
+            <div class="visually-hidden" aria-hidden="true">
+                <label for="bot_field">Do not fill this out if you are human</label>
+                <input type="text" id="bot_field" name="bot_field" tabindex="-1" autocomplete="off">
+            </div>
+
+            <div class="form-group">
+                <label for="fullName">Full Name</label>
+                <input type="text" id="fullName" class="form-control" placeholder="Enter your full name" required>
+            </div>
+            
+            <div class="academic-year">
+                <label class="year"><input type="radio" name="year" value="F.Y" required><span class="year-btn">F.Y</span></label>
+                <label class="year"><input type="radio" name="year" value="S.Y"><span class="year-btn">S.Y</span></label>
+                <label class="year"><input type="radio" name="year" value="T.Y"><span class="year-btn">T.Y</span></label>
+                <label class="year"><input type="radio" name="year" value="Fin.Y"><span class="year-btn">Fin.Y</span></label>
+                <label class="year"><input type="radio" name="year" value="PG-F.Y"><span class="year-btn">PG-F.Y</span></label>
+                <label class="year"><input type="radio" name="year" value="PG-S.Y"><span class="year-btn">PG-S.Y</span></label>
+                <label class="year"><input type="radio" name="year" value="Ph.D"><span class="year-btn">Ph.D</span></label>
+            </div>
+
+            <div class="form-group" style="margin-top: 1.5rem;">
+                <label for="phone">Phone Number</label>
+                <input type="tel" id="phone" class="form-control" placeholder="+91 00000 00000" pattern="[0-9+\s-]{10,14}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="instituteId">Institute mail ID</label>
+                <input type="email" id="instituteId" class="form-control" placeholder="e.g., john.doe@institute.edu" required>
+            </div>
+
+            <!-- T-Shirt Size & Reference Images -->
+            <div class="form-group">
+                <label>Size</label>
+                
+                <div class="reference-grid">
+                    <div class="ref-card">
+                        <span class="ref-title">Merch Preview</span>
+                        <img src="photos/preview-image.jpg" alt="T-Shirt Preview">
+                    </div>
+                    <div class="ref-card">
+                        <span class="ref-title">Size Chart</span>
+                        <img src="photos/size-chart-image.jpg" alt="Size Chart">
+                    </div>
+                </div>
+
+                <div class="size-selector">
+                    <label class="size-label"><input type="radio" name="size" value="XS" required><span class="size-btn">XS</span></label>
+                    <label class="size-label"><input type="radio" name="size" value="S"><span class="size-btn">S</span></label>
+                    <label class="size-label"><input type="radio" name="size" value="M"><span class="size-btn">M</span></label>
+                    <label class="size-label"><input type="radio" name="size" value="L"><span class="size-btn">L</span></label>
+                    <label class="size-label"><input type="radio" name="size" value="XL"><span class="size-btn">XL</span></label>
+                    <label class="size-label"><input type="radio" name="size" value="XXL"><span class="size-btn">XXL</span></label>
+                    <label class="size-label"><input type="radio" name="size" value="XXXL"><span class="size-btn">3XL</span></label>
+                </div>
+            </div>
+
+            <hr class="divider">
+
+            <!-- Payment QR & File Uploads -->
+            <div class="form-group">
+                <label>Verification & Payment</label>
+                
+                <div class="ref-card qr-card">
+                    <span class="ref-title">Scan to Pay (₹500)</span>
+                    <img src="photos/qr-code.jpg" alt="Payment QR Code">
+                </div>
+
+                <div class="upload-grid" style="display:flex; justify-content:center; align-items:center; text-align:center;">
+                    <div class="file-upload-wrapper" style="display:flex; flex-direction:column; align-items:center; justify-content:center; margin:0 auto; text-align:center;">
+                        <input type="file" id="paymentUpload" accept="image/*" required onchange="previewImage(event, 'paymentPreview')">
+                        <div class="upload-placeholder" id="paymentPlaceholder" style="display:flex; align-items:center; justify-content:center; text-align:center;">
+                            <i class="fa-solid fa-receipt"></i>
+                            <span>Upload Screenshot</span>
+                        </div>
+                        <img id="paymentPreview" class="image-preview" alt="Payment Preview" style="display:block; margin:12px auto 0; object-fit:cover;">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="transactionId">Transaction ID</label>
+                <!-- Note: Changed ID from "Trans ID" to "transactionId" because spaces are invalid in HTML IDs -->
+                <input type="text" id="transactionId" name="transactionId" class="form-control" placeholder="Enter Transaction ID" required>
+            </div>
+
+            <!-- CAPTCHA Widget -->
+            <div class="captcha-container">
+                <div class="cf-turnstile" data-sitekey="1x00000000000000000000AA"></div>
+            </div>
+
+            <button type="submit" class="submit-btn">Complete Registration</button>
+        </form>
+    </div>
+
+    <!-- This script handles the Turnstile token and sends the FormData -->
+    <script src="./scripts/registration.js" defer></script>
+</body>
+</html>
