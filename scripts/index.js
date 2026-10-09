@@ -32,20 +32,25 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // --- Theme Toggle Logic ---
+  // --- 1. THEME TOGGLE WITH LOCAL STORAGE ---
   const themeBtn = document.getElementById("themeToggleBtn");
   const themeIcon = document.getElementById("themeIcon");
   const htmlElement = document.documentElement;
 
+  // Load saved theme on startup
+  const savedTheme = localStorage.getItem('vortex_theme') || 'dark';
+  htmlElement.setAttribute('data-theme', savedTheme);
+  themeIcon.className = savedTheme === 'dark' ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+
   themeBtn.addEventListener("click", () => {
     const currentTheme = htmlElement.getAttribute("data-theme");
-    if (currentTheme === "dark") {
-      htmlElement.setAttribute("data-theme", "light");
-      themeIcon.className = "fa-solid fa-moon";
-    } else {
-      htmlElement.setAttribute("data-theme", "dark");
-      themeIcon.className = "fa-solid fa-sun";
-    }
+    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    
+    htmlElement.setAttribute("data-theme", newTheme);
+    themeIcon.className = newTheme === 'dark' ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+    
+    // Save to Local Storage
+    localStorage.setItem('vortex_theme', newTheme);
   });
 
   // --- Cart Sidebar Toggle ---
@@ -68,21 +73,21 @@ document.addEventListener("DOMContentLoaded", () => {
     let html = "";
     items.forEach((item) => {
       html += `
-                        <div class="event-card" id="card-${item.id}">
-                            <div class="event-info">
-                                <h3>${item.name}</h3>
-                                <p>${item.desc}</p>
-                                <div class="event-price">₹500</div>
-                            </div>
-                            <div class="interactive-btn-wrapper">
-                                <span class="default-label">OPTIONS</span>
-                                <div class="revealed-actions">
-                                    <button class="action-btn btn-info">Info</button>
-                                    <button class="action-btn btn-cart" onclick="handleAddToCart('${item.id}', '${item.name}', '${item.cat}')" id="btn-${item.id}">Add to Cart</button>
-                                </div>
-                            </div>
-                        </div>
-                    `;
+        <div class="event-card" id="card-${item.id}">
+            <div class="event-info">
+                <h3>${item.name}</h3>
+                <p>${item.desc}</p>
+                <div class="event-price">₹500</div>
+            </div>
+            <div class="interactive-btn-wrapper">
+                <span class="default-label">OPTIONS</span>
+                <div class="revealed-actions">
+                    <button class="action-btn btn-info">Info</button>
+                    <button class="action-btn btn-cart" onclick="handleAddToCart('${item.id}', '${item.name}', '${item.cat}')" id="btn-${item.id}">Add to Cart</button>
+                </div>
+            </div>
+        </div>
+      `;
     });
     container.innerHTML = html;
   };
@@ -92,8 +97,8 @@ document.addEventListener("DOMContentLoaded", () => {
   renderCategory("prodigy", "grid-prodigy");
   renderCategory("pharma", "grid-pharma");
 
-  // --- Cart Logic & Animations ---
-  let cart = [];
+  // --- 2. CART LOGIC WITH LOCAL STORAGE ---
+  let cart = JSON.parse(localStorage.getItem('vortex_cart')) || [];
   let previousDiscountPercent = 0;
   const EVENT_PRICE = 500;
 
@@ -102,8 +107,8 @@ document.addEventListener("DOMContentLoaded", () => {
     particle.className = "flying-particle";
     particle.style.background = color;
 
-    const startX = startRect.left + startRect.width / 2 - 7;
-    const startY = startRect.top + startRect.height / 2 - 7;
+    const startX = startRect.left + (startRect.width / 2) - 7;
+    const startY = startRect.top + (startRect.height / 2) - 7;
     particle.style.left = `0px`;
     particle.style.top = `0px`;
     particle.style.transform = `translate(${startX}px, ${startY}px) scale(1)`;
@@ -111,8 +116,8 @@ document.addEventListener("DOMContentLoaded", () => {
     document.body.appendChild(particle);
     void particle.offsetWidth;
 
-    const endX = endRect.left + endRect.width / 2 - 7;
-    const endY = endRect.top + endRect.height / 2 - 7;
+    const endX = endRect.left + (endRect.width / 2) - 7;
+    const endY = endRect.top + (endRect.height / 2) - 7;
 
     particle.style.transform = `translate(${endX}px, ${endY}px) scale(0.3)`;
     particle.style.opacity = "0.3";
@@ -140,6 +145,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const addToCartLogic = (id, name, cat) => {
     cart.push({ id, name, category: cat, price: EVENT_PRICE });
+    localStorage.setItem('vortex_cart', JSON.stringify(cart));
+    
     const btn = document.getElementById(`btn-${id}`);
     if (btn) btn.textContent = "Added";
     updateCartUI();
@@ -161,6 +168,7 @@ document.addEventListener("DOMContentLoaded", () => {
     createFlyingParticle(cartIconRect, targetRect, "#ff4757", () => {});
 
     cart = cart.filter((item) => item.id !== id);
+    localStorage.setItem('vortex_cart', JSON.stringify(cart));
 
     const btn = document.getElementById(`btn-${id}`);
     if (btn) {
@@ -181,20 +189,29 @@ document.addEventListener("DOMContentLoaded", () => {
       listEl.innerHTML = cart
         .map(
           (item) => `
-                        <div class="cart-item">
-                            <div class="item-details">
-                                <h4>${item.name}</h4>
-                                <p>${item.category} Series</p>
-                            </div>
-                            <div style="display: flex; align-items: center; gap: 1rem;">
-                                <span style="font-family: 'Orbitron'; font-size: 0.85rem;">₹${item.price}</span>
-                                <button class="remove-item" onclick="handleRemoveFromCart('${item.id}')"><i class="fa-solid fa-trash"></i></button>
-                            </div>
-                        </div>
-                    `,
+            <div class="cart-item">
+                <div class="item-details">
+                    <h4>${item.name}</h4>
+                    <p>${item.category} Series</p>
+                </div>
+                <div style="display: flex; align-items: center; gap: 1rem;">
+                    <span style="font-family: 'Orbitron'; font-size: 0.85rem;">₹${item.price}</span>
+                    <button class="remove-item" onclick="handleRemoveFromCart('${item.id}')"><i class="fa-solid fa-trash"></i></button>
+                </div>
+            </div>
+        `,
         )
         .join("");
     }
+
+    // Ensure buttons remain in "Added" state upon refresh
+    cart.forEach((item) => {
+      const btn = document.getElementById(`btn-${item.id}`);
+      if (btn) {
+        btn.textContent = "Added";
+        btn.classList.add("added");
+      }
+    });
 
     calculateCartTotals();
   };
@@ -237,8 +254,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const finalTotal = eligibleTotal - discountAmount + ineligibleTotal;
 
     document.getElementById("cartSubtotal").textContent = `₹${subtotal}`;
-    document.getElementById("discountLabel").textContent =
-      `Discount (${newDiscountPercent * 100}%)`;
+    document.getElementById("discountLabel").textContent = `Discount (${newDiscountPercent * 100}%)`;
     document.getElementById("cartDiscount").textContent = `-₹${discountAmount}`;
     document.getElementById("cartTotal").textContent = `₹${finalTotal}`;
 
@@ -264,6 +280,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     previousDiscountPercent = newDiscountPercent;
   };
+
+  // Run immediately to display saved items
+  updateCartUI();
 
   // --- SVG PIE Hover & Click Interactions ---
   const pieSlices = document.querySelectorAll(".pie-slice");
@@ -298,85 +317,77 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
   });
-});
 
-// for toggling  of the navbar
-// --- Mobile Hamburger Menu ---
-const menuBtn = document.getElementById("menuToggleBtn");
-const navLinksEl = document.querySelector(".nav-links");
+  // --- Mobile Hamburger Menu ---
+  const menuBtn = document.getElementById("menuToggleBtn");
+  const navLinksEl = document.querySelector(".nav-links");
 
-const closeMenu = () => {
-  menuBtn.classList.remove("open");
-  navLinksEl.classList.remove("open");
-  menuBtn.setAttribute("aria-expanded", "false");
-};
+  const closeMenu = () => {
+    menuBtn.classList.remove("open");
+    navLinksEl.classList.remove("open");
+    menuBtn.setAttribute("aria-expanded", "false");
+  };
 
-menuBtn.addEventListener("click", () => {
-  const isOpen = navLinksEl.classList.toggle("open");
-  menuBtn.classList.toggle("open", isOpen);
-  menuBtn.setAttribute("aria-expanded", isOpen);
-  if (isOpen) cartSidebar.classList.remove("active"); // don't show both panels
-});
+  menuBtn.addEventListener("click", () => {
+    const isOpen = navLinksEl.classList.toggle("open");
+    menuBtn.classList.toggle("open", isOpen);
+    menuBtn.setAttribute("aria-expanded", isOpen);
+    if (isOpen) cartSidebar.classList.remove("active");
+  });
 
-// Opening the cart closes the menu
-cartToggleBtn.addEventListener("click", closeMenu);
+  cartToggleBtn.addEventListener("click", closeMenu);
 
-// Picking a page (or the logo) closes the menu
-navLinksEl.addEventListener("click", (e) => {
-  if (e.target.closest("a")) closeMenu();
-});
-document.querySelector(".nav-logo").addEventListener("click", closeMenu);
+  navLinksEl.addEventListener("click", (e) => {
+    if (e.target.closest("a")) closeMenu();
+  });
+  
+  document.querySelector(".nav-logo").addEventListener("click", closeMenu);
 
-// Tapping outside the navbar closes it
-document.addEventListener("click", (e) => {
-  if (!e.target.closest(".navbar")) closeMenu();
-});
+  document.addEventListener("click", (e) => {
+    if (!e.target.closest(".navbar")) closeMenu();
+  });
 
-// Rotating the phone or resizing to desktop resets the menu
-window.addEventListener("resize", () => {
-  if (window.innerWidth > 800) closeMenu();
-});
+  window.addEventListener("resize", () => {
+    if (window.innerWidth > 800) closeMenu();
+  });
 
-// --- Hide navbar on scroll down, show on scroll up ---
-const navbarEl = document.querySelector(".navbar");
-let lastScrollY = window.scrollY;
-let scrollTicking = false;
+  // --- Hide navbar on scroll down, show on scroll up ---
+  const navbarEl = document.querySelector(".navbar");
+  let lastScrollY = window.scrollY;
+  let scrollTicking = false;
 
-const handleNavbarScroll = () => {
-  const currentY = Math.max(window.scrollY, 0); // ignores iOS bounce overscroll
-  const delta = currentY - lastScrollY;
+  const handleNavbarScroll = () => {
+    const currentY = Math.max(window.scrollY, 0); 
+    const delta = currentY - lastScrollY;
 
-  // Ignore tiny movements so it doesn't flicker
-  if (Math.abs(delta) > 8) {
-    const menuOpen = navLinksEl.classList.contains("open");
+    if (Math.abs(delta) > 8) {
+      const menuOpen = navLinksEl.classList.contains("open");
 
-    if (delta > 0 && currentY > navbarEl.offsetHeight && !menuOpen) {
-      // scrolling down -> hide
-      navbarEl.classList.add("nav-hidden");
-      document.body.classList.add("nav-is-hidden");
-    } else if (delta < 0) {
-      // scrolling up -> show
+      if (delta > 0 && currentY > navbarEl.offsetHeight && !menuOpen) {
+        navbarEl.classList.add("nav-hidden");
+        document.body.classList.add("nav-is-hidden");
+      } else if (delta < 0) {
+        navbarEl.classList.remove("nav-hidden");
+        document.body.classList.remove("nav-is-hidden");
+      }
+      lastScrollY = currentY;
+    }
+
+    if (currentY <= 0) {
       navbarEl.classList.remove("nav-hidden");
       document.body.classList.remove("nav-is-hidden");
     }
-    lastScrollY = currentY;
-  }
+    scrollTicking = false;
+  };
 
-  // Always show the navbar at the very top
-  if (currentY <= 0) {
-    navbarEl.classList.remove("nav-hidden");
-    document.body.classList.remove("nav-is-hidden");
-  }
-  scrollTicking = false;
-};
-
-window.addEventListener(
-  "scroll",
-  () => {
-    if (!scrollTicking) {
-      requestAnimationFrame(handleNavbarScroll);
-      scrollTicking = true;
-    }
-  },
-  { passive: true },
-);
+  window.addEventListener(
+    "scroll",
+    () => {
+      if (!scrollTicking) {
+        requestAnimationFrame(handleNavbarScroll);
+        scrollTicking = true;
+      }
+    },
+    { passive: true },
+  );
+});
