@@ -15,15 +15,24 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
+    
+    <!-- AOS Animation Library CSS -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
 
     <link rel="stylesheet" href="./css/index.css" />
   </head>
   <body>
+    
+    <!-- Custom Glowing Cursor -->
+    <div class="glow-cursor" id="glow-cursor"></div>
+
+    <!-- HTML5 Canvas for Chemistry Background -->
+    <canvas id="chem-canvas"></canvas>
+
     <nav class="navbar">
       <a href="#" class="nav-logo" data-target="home">
        <!-- Image for Light Mode -->
     <img src="photos/vortex_L.png" alt="Vortex 14.0" class="logo-light" />
-    
     <!-- Image for Dark Mode -->
     <img src="photos/vortex_D.png" alt="Vortex 14.0" class="logo-dark" />
       </a>
@@ -42,12 +51,7 @@
           <span class="cart-badge" id="cartCount">0</span>
         </button>
         <!-- NEW: Hamburger (mobile only) -->
-        <button
-          class="menu-btn"
-          id="menuToggleBtn"
-          aria-label="Toggle Menu"
-          aria-expanded="false"
-        >
+        <button class="menu-btn" id="menuToggleBtn" aria-label="Toggle Menu" aria-expanded="false">
           <span></span><span></span><span></span>
         </button>
       </div>
@@ -66,11 +70,7 @@
         </button>
       </div>
       <div class="cart-items" id="cartItemsList">
-        <p
-          style="color: var(--text-muted); text-align: center; margin-top: 2rem"
-        >
-          Cart is empty.
-        </p>
+        <p style="color: var(--text-muted); text-align: center; margin-top: 2rem">Cart is empty.</p>
       </div>
       <div class="cart-summary">
         <div class="summary-row">
@@ -85,197 +85,59 @@
           <span>Total</span>
           <span id="cartTotal">₹0</span>
         </div>
-        <p class="discount-msg" id="discountMsg">
-          Add more events to unlock series discounts!
-        </p>
+        <p class="discount-msg" id="discountMsg">Add more events to unlock series discounts!</p>
         <button class="checkout-btn">Proceed to Checkout</button>
       </div>
     </div>
 
     <main class="main-container">
-      <!-- Tab: HOME WITH EXACT MATCH SVG PIE SYSTEM -->
+      <!-- Tab: HOME -->
       <section id="home" class="tab-content active hero-section">
-        <div class="hero-text">
+        <div class="hero-text" data-aos="fade-right" data-aos-duration="1000">
           <h1 class="font-heading">
             Welcome to VORTEX <span class="gradient-text">14.0</span>
           </h1>
           <p>
             Asia's Largest Chem-Fest organized by the Institute of Chemical
             Technology (ICT), Mumbai. Where Chemical Engineering, Pharma, and
-            Futuristic Technology converge into a single dimension of
-            innovation.
+            Futuristic Technology converge into a single dimension of innovation.
           </p>
-          <button
-            class="action-btn btn-info"
-            style="font-size: 1rem; padding: 12px 30px"
-            onclick="
-              document.querySelector('.nav-tab[data-target=\'events\']').click()
-            "
-          >
+          <button class="action-btn btn-info" style="font-size: 1rem; padding: 12px 30px" onclick="document.querySelector('.nav-tab[data-target=\'events\']').click()">
             Explore Events
           </button>
         </div>
 
-        <div class="hero-3d">
+        <div class="hero-3d" data-aos="zoom-in" data-aos-duration="1200" data-aos-delay="200">
           <svg viewBox="0 0 400 400" class="vortex-pie">
             <defs>
               <filter id="glow">
                 <feGaussianBlur stdDeviation="2.5" result="coloredBlur" />
-                <feMerge>
-                  <feMergeNode in="coloredBlur" />
-                  <feMergeNode in="SourceGraphic" />
-                </feMerge>
+                <feMerge><feMergeNode in="coloredBlur" /><feMergeNode in="SourceGraphic" /></feMerge>
               </filter>
             </defs>
-
-            <!-- Outer Ring 3: Rotates Clockwise (White & Cyan) -->
+            <!-- Outer Ring 3 -->
             <g class="spin-cw-slow" filter="url(#glow)">
-              <!-- White Segment (Top Left) -->
-              <circle
-                cx="200"
-                cy="200"
-                r="160"
-                fill="none"
-                stroke="#ffffff"
-                stroke-width="15"
-                stroke-dasharray="260.3 1005.3"
-                stroke-dashoffset="-614.3"
-              />
-              <!-- White Segment (Right) -->
-              <circle
-                cx="200"
-                cy="200"
-                r="160"
-                fill="none"
-                stroke="#ffffff"
-                stroke-width="15"
-                stroke-dasharray="251.3 1005.3"
-                stroke-dashoffset="-893.6"
-              />
-              <!-- White Segment (Bottom) -->
-              <circle
-                cx="200"
-                cy="200"
-                r="160"
-                fill="none"
-                stroke="#ffffff"
-                stroke-width="15"
-                stroke-dasharray="195.4 1005.3"
-                stroke-dashoffset="-167.5"
-              />
-              <!-- Cyan Segment (Bottom Left) -->
-              <circle
-                cx="200"
-                cy="200"
-                r="160"
-                fill="none"
-                stroke="#45aaf2"
-                stroke-width="15"
-                stroke-dasharray="167.5 1005.3"
-                stroke-dashoffset="-404.9"
-              />
+              <circle cx="200" cy="200" r="160" fill="none" stroke="#ffffff" stroke-width="15" stroke-dasharray="260.3 1005.3" stroke-dashoffset="-614.3" />
+              <circle cx="200" cy="200" r="160" fill="none" stroke="#ffffff" stroke-width="15" stroke-dasharray="251.3 1005.3" stroke-dashoffset="-893.6" />
+              <circle cx="200" cy="200" r="160" fill="none" stroke="#ffffff" stroke-width="15" stroke-dasharray="195.4 1005.3" stroke-dashoffset="-167.5" />
+              <circle cx="200" cy="200" r="160" fill="none" stroke="#45aaf2" stroke-width="15" stroke-dasharray="167.5 1005.3" stroke-dashoffset="-404.9" />
             </g>
-
-            <!-- Middle Ring 2: Rotates Counter-Clockwise (Yellow & Cyan) -->
+            <!-- Middle Ring 2 -->
             <g class="spin-ccw-med" filter="url(#glow)">
-              <!-- Yellow Segment (Left & Bottom) -->
-              <circle
-                cx="200"
-                cy="200"
-                r="135"
-                fill="none"
-                stroke="#ffd93d"
-                stroke-width="15"
-                stroke-dasharray="329.8 848.2"
-                stroke-dashoffset="-141.3"
-              />
-              <!-- Yellow Segment (Top Left) -->
-              <circle
-                cx="200"
-                cy="200"
-                r="135"
-                fill="none"
-                stroke="#ffd93d"
-                stroke-width="15"
-                stroke-dasharray="106.0 848.2"
-                stroke-dashoffset="-506.5"
-              />
-              <!-- Cyan Segment (Top Right) -->
-              <circle
-                cx="200"
-                cy="200"
-                r="135"
-                fill="none"
-                stroke="#45aaf2"
-                stroke-width="15"
-                stroke-dasharray="212.0 848.2"
-                stroke-dashoffset="-659.7"
-              />
+              <circle cx="200" cy="200" r="135" fill="none" stroke="#ffd93d" stroke-width="15" stroke-dasharray="329.8 848.2" stroke-dashoffset="-141.3" />
+              <circle cx="200" cy="200" r="135" fill="none" stroke="#ffd93d" stroke-width="15" stroke-dasharray="106.0 848.2" stroke-dashoffset="-506.5" />
+              <circle cx="200" cy="200" r="135" fill="none" stroke="#45aaf2" stroke-width="15" stroke-dasharray="212.0 848.2" stroke-dashoffset="-659.7" />
             </g>
-
-            <!-- Inner Ring 1: Rotates Clockwise (Red segments) -->
+            <!-- Inner Ring 1 -->
             <g class="spin-cw-fast" filter="url(#glow)">
-              <!-- Red Segment (Top & Right) -->
-              <circle
-                cx="200"
-                cy="200"
-                r="110"
-                fill="none"
-                stroke="#ff5a4d"
-                stroke-width="15"
-                stroke-dasharray="383.9 691.1"
-                stroke-dashoffset="-326.3"
-              />
-              <!-- Red Segment (Bottom) -->
-              <circle
-                cx="200"
-                cy="200"
-                r="110"
-                fill="none"
-                stroke="#ff5a4d"
-                stroke-width="15"
-                stroke-dasharray="172.7 691.1"
-                stroke-dashoffset="-86.3"
-              />
+              <circle cx="200" cy="200" r="110" fill="none" stroke="#ff5a4d" stroke-width="15" stroke-dasharray="383.9 691.1" stroke-dashoffset="-326.3" />
+              <circle cx="200" cy="200" r="110" fill="none" stroke="#ff5a4d" stroke-width="15" stroke-dasharray="172.7 691.1" stroke-dashoffset="-86.3" />
             </g>
-
-            <!-- Center Interactive Solid Pie (3 wedges of 120°, radius 48) -->
+            <!-- Center Interactive Solid Pie -->
             <g class="spin-ccw-slow center-pie-group">
-              <!-- Events (Yellow, top) -->
-              <path
-                class="pie-slice"
-                fill="#ffd93d"
-                color="#ffd93d"
-                d="M200 200 L158.431 176 A48 48 0 0 1 241.569 176 Z"
-                style="--gx: 0px; --gy: -2px; --hx: 0px; --hy: -7px"
-                data-title="Events"
-                data-text="Explore all events"
-                data-target="events"
-              />
-
-              <!-- FAQ (Red, bottom right) -->
-              <path
-                class="pie-slice"
-                fill="#ff5a4d"
-                color="#ff5a4d"
-                d="M200 200 L241.569 176 A48 48 0 0 1 200 248 Z"
-                style="--gx: 1.73px; --gy: 1px; --hx: 6.06px; --hy: 3.5px"
-                data-title="FAQ"
-                data-text="Your questions answered"
-                data-target="faq"
-              />
-
-              <!-- About (Blue, bottom left) -->
-              <path
-                class="pie-slice"
-                fill="#45aaf2"
-                color="#45aaf2"
-                d="M200 200 L200 248 A48 48 0 0 1 158.431 176 Z"
-                style="--gx: -1.73px; --gy: 1px; --hx: -6.06px; --hy: 3.5px"
-                data-title="About"
-                data-text="About Vortex 14.0"
-                data-target="about"
-              />
+              <path class="pie-slice" fill="#ffd93d" color="#ffd93d" d="M200 200 L158.431 176 A48 48 0 0 1 241.569 176 Z" style="--gx: 0px; --gy: -2px; --hx: 0px; --hy: -7px" data-title="Events" data-text="Explore all events" data-target="events" />
+              <path class="pie-slice" fill="#ff5a4d" color="#ff5a4d" d="M200 200 L241.569 176 A48 48 0 0 1 200 248 Z" style="--gx: 1.73px; --gy: 1px; --hx: 6.06px; --hy: 3.5px" data-title="FAQ" data-text="Your questions answered" data-target="faq" />
+              <path class="pie-slice" fill="#45aaf2" color="#45aaf2" d="M200 200 L200 248 A48 48 0 0 1 158.431 176 Z" style="--gx: -1.73px; --gy: 1px; --hx: -6.06px; --hy: 3.5px" data-title="About" data-text="About Vortex 14.0" data-target="about" />
             </g>
           </svg>
         </div>
@@ -285,22 +147,15 @@
       <section id="events" class="tab-content">
         <div style="padding-top: 2rem">
           <section class="series-section">
-            <h2 class="series-title">
-              <span style="color: var(--primary-cyan)">01.</span> General Series
-            </h2>
+            <h2 class="series-title" data-aos="fade-right"><span style="color: var(--primary-cyan)">01.</span> General Series</h2>
             <div class="events-grid" id="grid-general"></div>
           </section>
           <section class="series-section">
-            <h2 class="series-title">
-              <span style="color: var(--primary-purple)">02.</span> Prodigy
-              Series
-            </h2>
+            <h2 class="series-title" data-aos="fade-right"><span style="color: var(--primary-purple)">02.</span> Prodigy Series</h2>
             <div class="events-grid" id="grid-prodigy"></div>
           </section>
           <section class="series-section">
-            <h2 class="series-title">
-              <span class="gradient-text">03.</span> Pharma Series
-            </h2>
+            <h2 class="series-title" data-aos="fade-right"><span class="gradient-text">03.</span> Pharma Series</h2>
             <div class="events-grid" id="grid-pharma"></div>
           </section>
         </div>
@@ -308,31 +163,19 @@
 
       <!-- Tab: FAQ -->
       <section id="faq" class="tab-content text-section">
-        <h2 class="font-heading" style="margin-bottom: 2rem">
-          Frequently Asked <span class="gradient-text">Questions</span>
-        </h2>
+        <h2 class="font-heading" style="margin-bottom: 2rem" data-aos="fade-up">Frequently Asked <span class="gradient-text">Questions</span></h2>
         <div class="faq-grid">
-          <div class="faq-item">
+          <div class="faq-item" data-aos="fade-up" data-aos-delay="100">
             <h3>Who can participate in Vortex 14.0?</h3>
-            <p style="color: var(--text-muted); font-size: 0.9rem; margin: 0">
-              Students from any recognized college or university can
-              participate. Some events may have specific prerequisites outlined
-              in their info sections.
-            </p>
+            <p style="color: var(--text-muted); font-size: 0.9rem; margin: 0">Students from any recognized college or university can participate. Some events may have specific prerequisites outlined in their info sections.</p>
           </div>
-          <div class="faq-item">
+          <div class="faq-item" data-aos="fade-up" data-aos-delay="200">
             <h3>How do the Series discounts work?</h3>
-            <p style="color: var(--text-muted); font-size: 0.9rem; margin: 0">
-              If you add 5+ eligible events, you get 50% off. Completing 1 full
-              series grants 60% off, 2 series grants 62%, and all 3 series gives
-              a massive 70% discount. Note: Sr. IDP is excluded from discounts.
-            </p>
+            <p style="color: var(--text-muted); font-size: 0.9rem; margin: 0">If you add 5+ eligible events, you get 50% off. Completing 1 full series grants 60% off, 2 series grants 62%, and all 3 series gives a massive 70% discount. Note: Sr. IDP is excluded from discounts.</p>
           </div>
-          <div class="faq-item">
+          <div class="faq-item" data-aos="fade-up" data-aos-delay="300">
             <h3>Where is the fest located?</h3>
-            <p style="color: var(--text-muted); font-size: 0.9rem; margin: 0">
-              The fest is hosted at the ICT Mumbai campus, Matunga, Mumbai.
-            </p>
+            <p style="color: var(--text-muted); font-size: 0.9rem; margin: 0">The fest is hosted at the ICT Mumbai campus, Matunga, Mumbai.</p>
           </div>
         </div>
       </section>
@@ -340,11 +183,8 @@
       <!-- Tab: ABOUT -->
       <section id="about" class="tab-content">
         <div class="about-wrapper">
-            
-            <!-- Top Split Cards -->
             <div class="about-split">
-                <!-- Event Card -->
-                <div class="info-card">
+                <div class="info-card" data-aos="fade-right">
                     <h3 class="font-heading">The Event</h3>
                     <p>Vortex is a curated series of competitions, labs, and talks that blend fundamentals with real-world practice. Each track—Prodigy, General, and Pharma—delivers hands-on challenges, live demos, and mentorship.</p>
                     <ul>
@@ -354,375 +194,63 @@
                     </ul>
                 </div>
 
-                <!-- Institute Card -->
-                <div class="info-card">
+                <div class="info-card" data-aos="fade-left">
                     <h3 class="font-heading">Institute of Chemical Technology, Mumbai</h3>
                     <p>The Institute of Chemical Technology (ICT), Mumbai, is a premier institute renowned for excellence in chemical engineering, chemical sciences, and allied fields. Established in 1933 as UDCT and granted Deemed-to-be University status in 2008, ICT combines strong academic foundations with deep industry integration.</p>
-                    <p>Known for rigorous education, impactful research, and a distinguished alumni network, ICT Mumbai continues to contribute significantly to industry, innovation, and society.</p>
-                    
                     <div class="address-block">
                         <i class="fa-solid fa-location-dot"></i>
                         <span>Nathalal Parekh Marg, Matunga, Mumbai - 400019, India</span>
                     </div>
-                    
-                    <a href="https://www.ictmumbai.edu.in/" target="_blank" class="visit-btn">
-                        Visit Website <i class="fa-solid fa-arrow-right"></i>
-                    </a>
+                    <a href="https://www.ictmumbai.edu.in/" target="_blank" class="visit-btn">Visit Website <i class="fa-solid fa-arrow-right"></i></a>
                 </div>
             </div>
 
-            <!-- Convenor Section -->
-            <div class="team-header">
-                <div>
-                    <h2>Convenor</h2>
-                    <p>Faculty advisor guiding Vortex 14.0</p>
-                </div>
+            <div class="team-header" data-aos="fade-up">
+                <div><h2>Convenor</h2><p>Faculty advisor guiding Vortex 14.0</p></div>
             </div>
             <div class="team-grid" style="grid-template-columns: repeat(auto-fill, minmax(280px, 320px));">
-                <!-- Single Convenor Card -->
-                <div class="team-card">
-                    <div class="team-img-wrapper">
-                        <!-- Replace src with actual image -->
-                        <img src="photos/convenor.jpg" alt="Prof. Mandar P Badve">
-                    </div>
+                <div class="team-card" data-aos="fade-up" data-aos-delay="100">
+                    <div class="team-img-wrapper"><img src="photos/convenor.jpg" alt="Prof. Mandar P Badve"></div>
                     <div class="team-info">
-                        <h4>Prof. Mandar P Badve</h4>
-                        <span class="role">Assistant Professor</span>
-                        <p>Department of Chemical Engineering, Institute of Chemical Technology, Matunga, Mumbai-400019</p>
+                        <h4>Prof. Mandar P Badve</h4><span class="role">Assistant Professor</span>
+                        <p>Department of Chemical Engineering, Institute of Chemical Technology</p>
                     </div>
                 </div>
             </div>
 
-            <!-- Core Team Section -->
-            <div class="team-header">
-                <div>
-                    <h2>Core Team</h2>
-                    <p>The people designing every detail.</p>
-                </div>
+            <div class="team-header" data-aos="fade-up">
+                <div><h2>Core Team</h2><p>The people designing every detail.</p></div>
                 <button class="contact-team-btn">Contact team <i class="fa-solid fa-arrow-right"></i></button>
             </div>
             
             <div class="team-grid">
-                <!-- Core Team Member 1 -->
-                <div class="team-card">
-                    <div class="team-img-wrapper">
-                        <img src="photos/Core/kshitij.png" alt="Kshitij Joshi">
-                    </div>
-                    <div class="team-info">
-                        <h4>Kshitij Joshi</h4>
-                        <span class="role">Secretary</span>
-                        <p>Leading Vortex 14.0 with passion and dedication.</p>
-                    </div>
-                </div>
-
-                <!-- Core Team Member 2 -->
-                <div class="team-card">
-                    <div class="team-img-wrapper">
-                        <img src="photos/Core/rupak.png" alt="Rupak Humad">
-                    </div>
-                    <div class="team-info">
-                        <h4>Rupak Humad</h4>
-                        <span class="role">Secretary</span>
-                        <p>Leading Vortex 14.0 with passion and dedication.</p>
-                    </div>
-                </div>
-
-                <!-- Core Team Member 3 -->
-                <div class="team-card">
-                    <div class="team-img-wrapper">
-                        <img src="photos/Core/aayush.png" alt="Aayush Dongarwar">
-                    </div>
-                    <div class="team-info">
-                        <h4>Aayush Dongarwar</h4>
-                        <span class="role">Technical Head</span>
-                        <p>Overseeing the technical aspects of Vortex 14.0. Passionate about innovation and excellence. Excited to drive the technical vision of the event.</p>
-                    </div>
-                </div>
-
-                <!-- Core Team Member 4 -->
-                <div class="team-card">
-                    <div class="team-img-wrapper">
-                        <img src="photos/Core/avni.png" alt="Avni Kondejkar">
-                    </div>
-                    <div class="team-info">
-                        <h4>Avni Kondejkar</h4>
-                        <span class="role">Overall Event Head</span>
-                        <p>Leading Vortex 14.0 with passion and dedication.</p>
-                    </div>
-                </div>
-
-                <!-- Core Team Member 5 -->
-                <div class="team-card">
-                    <div class="team-img-wrapper">
-                        <img src="photos/Core/prajval.png" alt="Prajval Barve">
-                    </div>
-                    <div class="team-info">
-                        <h4>Prajval Barve</h4>
-                        <span class="role">Overall Event Head</span>
-                        <p>Leading Vortex 14.0 with passion and dedication.</p>
-                    </div>
-                </div>
-
-                <!-- Core Team Member 6 -->
-                <div class="team-card">
-                    <div class="team-img-wrapper">
-                        <img src="photos/Core/preet.png" alt="Preet Panchal">
-                    </div>
-                    <div class="team-info">
-                        <h4>Preet Panchal</h4>
-                        <span class="role">Overall Event Head</span>
-                        <p>Leading Vortex 14.0 with passion and dedication.</p>
-                    </div>
-                </div>
-
-                <!-- Core Team Member 7 -->
-                <div class="team-card">
-                    <div class="team-img-wrapper">
-                        <img src="photos/Core/piyush.png" alt="Piyush Nirban">
-                    </div>
-                    <div class="team-info">
-                        <h4>Piyush Nirban</h4>
-                        <span class="role">PG representative</span>
-                        <p>Leading Vortex 14.0 with passion and dedication.</p>
-                    </div>
-                </div>
-
-                <!-- Core Team Member 8  -->
-                <div class="team-card">
-                    <div class="team-img-wrapper">
-                        <img src="photos/Core/shraddha.png" alt="Shraddha Behra">
-                    </div>
-                    <div class="team-info">
-                        <h4>Shraddha Behra</h4>
-                        <span class="role">Sponsorship Head</span>
-                        <p>Leading Vortex 14.0 with passion and dedication.</p>
-                    </div>
-                </div>
-
-                <!-- Core Team Member 9 -->
-                <div class="team-card">
-                    <div class="team-img-wrapper">
-                        <img src="photos/Core/pranav.png" alt="Pranav Joshi">
-                    </div>
-                    <div class="team-info">
-                        <h4>Pranav Joshi</h4>
-                        <span class="role">Sponsorship Head</span>
-                        <p>Leading Vortex 14.0 with passion and dedication.</p>
-                    </div>
-                </div>
-                <!-- Core Team Member 10 -->
-                <div class="team-card">
-                    <div class="team-img-wrapper">
-                        <img src="photos/Core/mrunal.png" alt="Mrunal Bhat">
-                    </div>
-                    <div class="team-info">
-                        <h4>Mrunal Bhat</h4>
-                        <span class="role">Resource & Logistics Head</span>
-                        <p>Leading Vortex 14.0 with passion and dedication.</p>
-                    </div>
-                </div>
-
-                <!-- Core Team Member 11 -->
-                <div class="team-card">
-                    <div class="team-img-wrapper">
-                        <img src="photos/Core/ishan.png" alt="Ishan Chhaparwal">
-                    </div>
-                    <div class="team-info">
-                        <h4>Ishan Chhaparwal</h4>
-                        <span class="role">Resource & Logistics Head</span>
-                        <p>Leading Vortex 14.0 with passion and dedication.</p>
-                    </div>
-                </div>
-                <!-- Core Team Member 12 -->
-                <div class="team-card">
-                    <div class="team-img-wrapper">
-                        <img src="photos/Core/dharam.png" alt="Dharam Visaria">
-                    </div>
-                    <div class="team-info">
-                        <h4>Dharam Visaria</h4>
-                        <span class="role">Campus Ambassador</span>
-                        <p>Leading Vortex 14.0 with passion and dedication.</p>
-                    </div>
-                </div>
-
-                <!-- Core Team Member 13 -->
-                <div class="team-card">
-                    <div class="team-img-wrapper">
-                        <img src="photos/Core/prapti.png" alt="Prapti Pandey">
-                    </div>
-                    <div class="team-info">
-                        <h4>Prapti Pandey</h4>
-                        <span class="role">Design Head</span>
-                        <p>Leading Vortex 14.0 with passion and dedication.</p>
-                    </div>
-                </div>
-
-                <!-- Core Team Member 14 -->
-                <div class="team-card">
-                    <div class="team-img-wrapper">
-                        <img src="photos/Core/prem.png" alt="Prem Kudale">
-                    </div>
-                    <div class="team-info">
-                        <h4>Prem Kudale</h4>
-                        <span class="role">Design Head</span>
-                        <p>Leading Vortex 14.0 with passion and dedication.</p>
-                    </div>
-                </div>
-
-                <!-- Core Team Member 15 -->
-                <div class="team-card">
-                    <div class="team-img-wrapper">
-                        <img src="photos/Core/sanyuja.png" alt="Sanyuja Sonawane">
-                    </div>
-                    <div class="team-info">
-                        <h4>Sanyuja Sonawane</h4>
-                        <span class="role">Creatives Head</span>
-                        <p>Leading Vortex 14.0 with passion and dedication.</p>
-                    </div>
-                </div>
-
-                <!-- Core Team Member 16 -->
-                <div class="team-card">
-                    <div class="team-img-wrapper">
-                        <img src="photos/Core/yutika.png" alt="Yutika Rathi">
-                    </div>
-                    <div class="team-info">
-                        <h4>Yutika Rathi</h4>
-                        <span class="role">Creatives Head</span>
-                        <p>Leading Vortex 14.0 with passion and dedication.</p>
-                    </div>
-                </div>
-
-                <!-- Core Team Member 17 -->
-                <div class="team-card">
-                    <div class="team-img-wrapper">
-                        <img src="photos/Core/uday.png" alt="Uday Gondane">
-                    </div>
-                    <div class="team-info">
-                        <h4>Uday Gondane</h4>
-                        <span class="role">Registration Head</span>
-                        <p>Leading Vortex 14.0 with passion and dedication.</p>
-                    </div>
-                </div>
-
-                <!-- Core Team Member 18 -->
-                <div class="team-card">
-                    <div class="team-img-wrapper">
-                        <img src="photos/Core/karthikey.png" alt="Karthikey Daga">
-                    </div>
-                    <div class="team-info">
-                        <h4>Karthikey Daga</h4>
-                        <span class="role">Registration Head</span>
-                        <p>Leading Vortex 14.0 with passion and dedication.</p>
-                    </div>
-                </div>
-
-                <!-- Core Team Member 19 -->
-                <div class="team-card">
-                    <div class="team-img-wrapper">
-                        <img src="photos/Core/aditi.png" alt="Aditi Narute">
-                    </div>
-                    <div class="team-info">
-                        <h4>Aditi Narute</h4>
-                        <span class="role">Content & Social Media Head</span>
-                        <p>Leading Vortex 14.0 with passion and dedication.</p>
-                    </div>
-                </div>
-
-                <!-- Core Team Member 20 -->
-                <div class="team-card">
-                    <div class="team-img-wrapper">
-                        <img src="photos/Core/soham.png" alt="Soham Patil">
-                    </div>
-                    <div class="team-info">
-                        <h4>Soham Patil</h4>
-                        <span class="role">Content & Social Media Head</span>
-                        <p>Leading Vortex 14.0 with passion and dedication.</p>
-                    </div>
-                </div>
-
-                <!-- Core Team Member 21 -->
-                <div class="team-card">
-                    <div class="team-img-wrapper">
-                        <img src="photos/Core/alina.png" alt="Alina Kausar">
-                    </div>
-                    <div class="team-info">
-                        <h4>Alina Kausar</h4>
-                        <span class="role">Public Relations Head</span>
-                        <p>Leading Vortex 14.0 with passion and dedication.</p>
-                    </div>
-                </div>
-
-                <!-- Core Team Member 22 -->
-                <div class="team-card">
-                    <div class="team-img-wrapper">
-                        <img src="photos/Core/leisha.png" alt="Leisha Agrawal">
-                    </div>
-                    <div class="team-info">
-                        <h4>Leisha Agrawal</h4>
-                        <span class="role">Public Relations Head</span>
-                        <p>Leading Vortex 14.0 with passion and dedication.</p>
-                    </div>
-                </div>
-
-                <!-- Core Team Member 23 -->
-                <div class="team-card">
-                    <div class="team-img-wrapper">
-                        <img src="photos/Core/mrunalp.png" alt="Mrunal Pawar">
-                    </div>
-                    <div class="team-info">
-                        <h4>Mrunal Pawar</h4>
-                        <span class="role">Public Relations Head</span>
-                        <p>Leading Vortex 14.0 with passion and dedication.</p>
-                    </div>
-                </div>
-                
-                <!-- Core Team Member 24 -->
-                <div class="team-card">
-                    <div class="team-img-wrapper">
-                        <img src="photos/Core/kimaya.png" alt="Kimaya Patankar">
-                    </div>
-                    <div class="team-info">
-                        <h4>Kimaya Patankar</h4>
-                        <span class="role">Hospitality Head</span>
-                        <p>Leading Vortex 14.0 with passion and dedication.</p>
-                    </div>
-                </div>
-
-                <!-- Core Team Member 25 -->
-                <div class="team-card">
-                    <div class="team-img-wrapper">
-                        <img src="photos/Core/arya.png" alt="Aarya Kore">
-                    </div>
-                    <div class="team-info">
-                        <h4>Aarya Kore</h4>
-                        <span class="role">Hospitality Head</span>
-                        <p>Leading Vortex 14.0 with passion and dedication.</p>
-                    </div>
-                </div>
-                
-                <div class="team-card">
-                    <div class="team-img-wrapper">
-                        <img src="photos/Core/pranav_b.png" alt="Pranav Bhavsar">
-                    </div>
-                    <!-- Core Team Member 26 -->
-                    <div class="team-info">
-                        <h4>Pranav Bhavsar</h4>
-                        <span class="role">Videography & Photography Head</span>
-                        <p>Leading Vortex 14.0 with passion and dedication.</p>
-                    </div>
-                </div>
-                <!-- Core Team Member 27 -->
-                <div class="team-card">
-                    <div class="team-img-wrapper">
-                        <img src="photos/Core/soham_d.png" alt="Soham Deshpande">
-                    </div>
-                    <div class="team-info">
-                        <h4>Soham Deshpande</h4>
-                        <span class="role">Videography & Photography Head</span>
-                        <p>Leading Vortex 14.0 with passion and dedication.</p>
-                    </div>
-                </div>
+              <div class="team-card" data-aos="fade-up" data-aos-delay="50"><div class="team-img-wrapper"><img src="photos/Core/kshitij.png" alt="Kshitij Joshi"></div><div class="team-info"><h4>Kshitij Joshi</h4><span class="role">Secretary</span><p>Leading Vortex 14.0 with passion and dedication.</p></div></div>
+              <div class="team-card" data-aos="fade-up" data-aos-delay="100"><div class="team-img-wrapper"><img src="photos/Core/rupak.png" alt="Rupak Humad"></div><div class="team-info"><h4>Rupak Humad</h4><span class="role">Secretary</span><p>Leading Vortex 14.0 with passion and dedication.</p></div></div>
+              <div class="team-card" data-aos="fade-up" data-aos-delay="150"><div class="team-img-wrapper"><img src="photos/Core/aayush.png" alt="Aayush Dongarwar"></div><div class="team-info"><h4>Aayush Dongarwar</h4><span class="role">Technical Head</span><p>Overseeing the technical aspects of Vortex 14.0. Passionate about innovation and excellence. Excited to drive the technical vision of the event.</p></div></div>
+              <div class="team-card" data-aos="fade-up"><div class="team-img-wrapper"><img src="photos/Core/avani.png" alt="Avani Kondejkar"></div><div class="team-info"><h4>Avani Kondejkar</h4><span class="role">Overall Event Head</span><p>Leading Vortex 14.0 with passion and dedication.</p></div></div>
+              <div class="team-card" data-aos="fade-up"><div class="team-img-wrapper"><img src="photos/Core/prajval.png" alt="Prajval Barve"></div><div class="team-info"><h4>Prajval Barve</h4><span class="role">Overall Event Head</span><p>Leading Vortex 14.0 with passion and dedication.</p></div></div>
+              <div class="team-card" data-aos="fade-up"><div class="team-img-wrapper"><img src="photos/Core/preet.png" alt="Preet Panchal"></div><div class="team-info"><h4>Preet Panchal</h4><span class="role">Overall Event Head</span><p>Leading Vortex 14.0 with passion and dedication.</p></div></div>
+              <div class="team-card" data-aos="fade-up"><div class="team-img-wrapper"><img src="photos/Core/piyush.png" alt="Piyush Nirban"></div><div class="team-info"><h4>Piyush Nirban</h4><span class="role">PG representative</span><p>Leading Vortex 14.0 with passion and dedication.</p></div></div>
+              <div class="team-card" data-aos="fade-up"><div class="team-img-wrapper"><img src="photos/Core/shraddha.png" alt="Shraddha Behra"></div><div class="team-info"><h4>Shraddha Behra</h4><span class="role">Sponsorship Head</span><p>Leading Vortex 14.0 with passion and dedication.</p></div></div>
+              <div class="team-card" data-aos="fade-up"><div class="team-img-wrapper"><img src="photos/Core/pranav.png" alt="Pranav Joshi"></div><div class="team-info"><h4>Pranav Joshi</h4><span class="role">Sponsorship Head</span><p>Leading Vortex 14.0 with passion and dedication.</p></div></div>
+              <div class="team-card" data-aos="fade-up"><div class="team-img-wrapper"><img src="photos/Core/mrunal.png" alt="Mrunal Bhat"></div><div class="team-info"><h4>Mrunal Bhat</h4><span class="role">Resource &amp; Logistics Head</span><p>Leading Vortex 14.0 with passion and dedication.</p></div></div>
+              <div class="team-card" data-aos="fade-up"><div class="team-img-wrapper"><img src="photos/Core/ishan.png" alt="Ishan Chhaparwal"></div><div class="team-info"><h4>Ishan Chhaparwal</h4><span class="role">Resource &amp; Logistics Head</span><p>Leading Vortex 14.0 with passion and dedication.</p></div></div>
+              <div class="team-card" data-aos="fade-up"><div class="team-img-wrapper"><img src="photos/Core/dharam.png" alt="Dharam Visaria"></div><div class="team-info"><h4>Dharam Visaria</h4><span class="role">Campus Ambassador</span><p>Leading Vortex 14.0 with passion and dedication.</p></div></div>
+              <div class="team-card" data-aos="fade-up"><div class="team-img-wrapper"><img src="photos/Core/prapti.png" alt="Prapti Pandey"></div><div class="team-info"><h4>Prapti Pandey</h4><span class="role">Design Head</span><p>Leading Vortex 14.0 with passion and dedication.</p></div></div>
+              <div class="team-card" data-aos="fade-up"><div class="team-img-wrapper"><img src="photos/Core/prem.png" alt="Prem Kudale"></div><div class="team-info"><h4>Prem Kudale</h4><span class="role">Design Head</span><p>Leading Vortex 14.0 with passion and dedication.</p></div></div>
+              <div class="team-card" data-aos="fade-up"><div class="team-img-wrapper"><img src="photos/Core/sanyuja.png" alt="Sanyuja Sonawane"></div><div class="team-info"><h4>Sanyuja Sonawane</h4><span class="role">Creatives Head</span><p>Leading Vortex 14.0 with passion and dedication.</p></div></div>
+              <div class="team-card" data-aos="fade-up"><div class="team-img-wrapper"><img src="photos/Core/yutika.png" alt="Yutika Rathi"></div><div class="team-info"><h4>Yutika Rathi</h4><span class="role">Creatives Head</span><p>Leading Vortex 14.0 with passion and dedication.</p></div></div>
+              <div class="team-card" data-aos="fade-up"><div class="team-img-wrapper"><img src="photos/Core/uday.png" alt="Uday Gondane"></div><div class="team-info"><h4>Uday Gondane</h4><span class="role">Registration Head</span><p>Leading Vortex 14.0 with passion and dedication.</p></div></div>
+              <div class="team-card" data-aos="fade-up"><div class="team-img-wrapper"><img src="photos/Core/karthikey.png" alt="Karthikey Daga"></div><div class="team-info"><h4>Karthikey Daga</h4><span class="role">Registration Head</span><p>Leading Vortex 14.0 with passion and dedication.</p></div></div>
+              <div class="team-card" data-aos="fade-up"><div class="team-img-wrapper"><img src="photos/Core/aditi.png" alt="Aditi Narute"></div><div class="team-info"><h4>Aditi Narute</h4><span class="role">Content &amp; Social Media Head</span><p>Leading Vortex 14.0 with passion and dedication.</p></div></div>
+              <div class="team-card" data-aos="fade-up"><div class="team-img-wrapper"><img src="photos/Core/soham.png" alt="Soham Patil"></div><div class="team-info"><h4>Soham Patil</h4><span class="role">Content &amp; Social Media Head</span><p>Leading Vortex 14.0 with passion and dedication.</p></div></div>
+              <div class="team-card" data-aos="fade-up"><div class="team-img-wrapper"><img src="photos/Core/alina.png" alt="Alina Kausar"></div><div class="team-info"><h4>Alina Kausar</h4><span class="role">Public Relations Head</span><p>Leading Vortex 14.0 with passion and dedication.</p></div></div>
+              <div class="team-card" data-aos="fade-up"><div class="team-img-wrapper"><img src="photos/Core/leisha.png" alt="Leisha Agrawal"></div><div class="team-info"><h4>Leisha Agrawal</h4><span class="role">Public Relations Head</span><p>Leading Vortex 14.0 with passion and dedication.</p></div></div>
+              <div class="team-card" data-aos="fade-up"><div class="team-img-wrapper"><img src="photos/Core/mrunal_p.png" alt="Mrunal Pawar"></div><div class="team-info"><h4>Mrunal Pawar</h4><span class="role">Public Relations Head</span><p>Leading Vortex 14.0 with passion and dedication.</p></div></div>
+              <div class="team-card" data-aos="fade-up"><div class="team-img-wrapper"><img src="photos/Core/kimaya.png" alt="Kimaya Patankar"></div><div class="team-info"><h4>Kimaya Patankar</h4><span class="role">Hospitality Head</span><p>Leading Vortex 14.0 with passion and dedication.</p></div></div>
+              <div class="team-card" data-aos="fade-up"><div class="team-img-wrapper"><img src="photos/Core/arya.png" alt="Aarya Kore"></div><div class="team-info"><h4>Aarya Kore</h4><span class="role">Hospitality Head</span><p>Leading Vortex 14.0 with passion and dedication.</p></div></div>
+              <div class="team-card" data-aos="fade-up"><div class="team-img-wrapper"><img src="photos/Core/pranav_b.png" alt="Pranav Bhavsar"></div><div class="team-info"><h4>Pranav Bhavsar</h4><span class="role">Videography &amp; Photography Head</span><p>Leading Vortex 14.0 with passion and dedication.</p></div></div>
+              <div class="team-card" data-aos="fade-up"><div class="team-img-wrapper"><img src="photos/Core/soham_j.png" alt="Soham Deshpande"></div><div class="team-info"><h4>Soham Deshpande</h4><span class="role">Videography &amp; Photography Head</span><p>Leading Vortex 14.0 with passion and dedication.</p></div></div>
             </div>
         </div>
       </section>
@@ -732,60 +260,23 @@
           <div class="footer-col brand">
             <h3>Vortex Events</h3>
             <p>ICT Mumbai's Premier Chemical Engineering Fest</p>
-            <p style="margin-top: 1rem; font-size: 0.8rem">
-            Theme : EquiNexus             </p>
+            <p style="margin-top: 1rem; font-size: 0.8rem">Theme : EquiNexus</p>
           </div>
           <div class="footer-col">
             <h3>Quick Links</h3>
-            <a
-              href="#"
-              onclick="
-                document.querySelector('.nav-tab[data-target=\'home\']').click()
-              "
-              >Home</a
-            >
-            <a
-              href="#"
-              onclick="
-                document
-                  .querySelector('.nav-tab[data-target=\'events\']')
-                  .click()
-              "
-              >Events</a
-            >
+            <a href="#" onclick="document.querySelector('.nav-tab[data-target=\'home\']').click()">Home</a>
+            <a href="#" onclick="document.querySelector('.nav-tab[data-target=\'events\']').click()">Events</a>
             <a href="#">Sponsors</a>
-            <a
-              href="#"
-              onclick="
-                document
-                  .querySelector('.nav-tab[data-target=\'about\']')
-                  .click()
-              "
-              >About Us</a
-            >
+            <a href="#" onclick="document.querySelector('.nav-tab[data-target=\'about\']').click()">About Us</a>
           </div>
           <div class="footer-col">
             <h3>Contact</h3>
-            <p>
-              <i class="fa-regular fa-envelope"></i>
-              vortexsecretary.ta@ug.ictmumbai.edu.in
-            </p>
+            <p><i class="fa-regular fa-envelope"></i> vortexsecretary.ta@ug.ictmumbai.edu.in</p>
             <div class="contact-details">
-              <p
-                style="
-                  font-weight: 600;
-                  color: var(--text-main);
-                  margin-bottom: 0.5rem;
-                "
-              >
-                Secretary Contact Details:
-              </p>
+              <p style="font-weight: 600; color: var(--text-main); margin-bottom: 0.5rem;">Secretary Contact Details:</p>
               <p><i class="fa-solid fa-phone"></i> Kshitij Joshi: 9763172716</p>
               <p><i class="fa-solid fa-phone"></i> Rupak Humad: 9967952108</p>
-              <p>
-                <i class="fa-solid fa-location-dot"></i> ICT Mumbai, Matunga,
-                Mumbai - 400019
-              </p>
+              <p><i class="fa-solid fa-location-dot"></i> ICT Mumbai, Matunga, Mumbai - 400019</p>
             </div>
           </div>
           <div class="footer-col">
@@ -798,9 +289,10 @@
       </footer>
     </main>
 
-    <!-- CUSTOM TOOLTIP ELEMENT -->
     <div class="node-tip" id="nodeTip"><strong></strong><span></span></div>
 
+    <!-- AOS Animation Library JS -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script type="module" src="./scripts/index.js"></script>
   </body>
 </html>
