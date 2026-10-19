@@ -1,0 +1,759 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vortex 14.0 | Asia's Largest Chem-Fest</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Orbitron:wght@400;500;700;900&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+
+    <link rel="stylesheet" href="./css/index.css" />
+
+    <link rel="stylesheet" href="./css/fx.css" />
+    <link rel="stylesheet" href="./css/checkout.css" />
+  </head>
+  <script src="./scripts/fx.js" defer></script>
+
+  <body>
+    <nav class="navbar">
+      <a href="#" class="nav-logo" data-target="home">
+        <!-- Image for Light Mode -->
+        <img src="photos/vortex_L.png" alt="Vortex 14.0" class="logo-light" />
+
+        <!-- Image for Dark Mode -->
+        <img src="photos/vortex_D.png" alt="Vortex 14.0" class="logo-dark" />
+      </a>
+      <ul class="nav-links">
+        <li><a class="nav-tab active" data-target="home">Home</a></li>
+        <li><a class="nav-tab" data-target="events">Events</a></li>
+        <li><a class="nav-tab" data-target="faq">FAQ</a></li>
+        <li>
+          <a data-target="about" href="about.html">About</a>
+        </li>
+        <li>
+          <a class="nav-tab" data-target="checkout">Checkout</a>
+        </li>
+        <li>
+          <a class="nav-tab" data-target="check-purchase">Check Purchase</a>
+        </li>
+      </ul>
+      <div class="nav-controls">
+        <button class="icon-btn" id="themeToggleBtn" aria-label="Toggle Theme">
+          <i class="fa-solid fa-sun" id="themeIcon"></i>
+        </button>
+        <button class="icon-btn" id="cartToggleBtn" aria-label="Open Cart">
+          <i class="fa-solid fa-cart-shopping"></i>
+          <span class="cart-badge" id="cartCount">0</span>
+        </button>
+        <!-- NEW: Hamburger (mobile only) -->
+        <button
+          class="menu-btn"
+          id="menuToggleBtn"
+          aria-label="Toggle Menu"
+          aria-expanded="false"
+        >
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </nav>
+
+    <div class="ambient-bg">
+      <div class="orb orb-1"></div>
+      <div class="orb orb-2"></div>
+    </div>
+
+    <div class="cart-sidebar" id="cartSidebar">
+      <div class="cart-header">
+        <h3 class="font-heading" style="font-size: 1rem">Your Cart</h3>
+        <button class="close-cart" id="closeCartBtn">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <div class="cart-items" id="cartItemsList">
+        <p
+          style="color: var(--text-muted); text-align: center; margin-top: 2rem"
+        >
+          Cart is empty.
+        </p>
+      </div>
+      <div class="cart-summary">
+        <div class="summary-row">
+          <span>Subtotal</span>
+          <span id="cartSubtotal">₹0</span>
+        </div>
+        <div class="summary-row discount" id="discountContainer">
+          <span id="discountLabel">Discount (0%)</span>
+          <span id="cartDiscount">-₹0</span>
+        </div>
+        <div class="summary-row total">
+          <span>Total</span>
+          <span id="cartTotal">₹0</span>
+        </div>
+        <p class="discount-msg" id="discountMsg">
+          Add more events to unlock series discounts!
+        </p>
+        <button class="checkout-btn">Proceed to Checkout</button>
+      </div>
+    </div>
+
+    <main class="main-container">
+      <!-- Tab: HOME WITH EXACT MATCH SVG PIE SYSTEM -->
+      <section id="home" class="tab-content active hero-section">
+        <div class="hero-text">
+          <h1 class="font-heading">
+            Welcome to VORTEX <span class="gradient-text">14.0</span>
+          </h1>
+          <p>
+            Asia's Largest Chem-Fest organized by the Institute of Chemical
+            Technology (ICT), Mumbai. Where Chemical Engineering, Pharma, and
+            Futuristic Technology converge into a single dimension of
+            innovation.
+          </p>
+          <button
+            class="action-btn btn-info"
+            style="font-size: 1rem; padding: 12px 30px"
+            onclick="
+              document.querySelector('.nav-tab[data-target=\'events\']').click()
+            "
+          >
+            Explore Events
+          </button>
+        </div>
+
+        <div class="hero-3d">
+          <svg viewBox="0 0 400 400" class="vortex-pie">
+            <defs>
+              <filter id="glow">
+                <feGaussianBlur stdDeviation="2.5" result="coloredBlur" />
+                <feMerge>
+                  <feMergeNode in="coloredBlur" />
+                  <feMergeNode in="SourceGraphic" />
+                </feMerge>
+              </filter>
+            </defs>
+
+            <!-- Outer Ring 3: Rotates Clockwise (White & Cyan) -->
+            <g class="spin-cw-slow" filter="url(#glow)">
+              <!-- White Segment (Top Left) -->
+              <circle
+                cx="200"
+                cy="200"
+                r="160"
+                fill="none"
+                stroke="#ffffff"
+                stroke-width="15"
+                stroke-dasharray="260.3 1005.3"
+                stroke-dashoffset="-614.3"
+              />
+              <!-- White Segment (Right) -->
+              <circle
+                cx="200"
+                cy="200"
+                r="160"
+                fill="none"
+                stroke="#ffffff"
+                stroke-width="15"
+                stroke-dasharray="251.3 1005.3"
+                stroke-dashoffset="-893.6"
+              />
+              <!-- White Segment (Bottom) -->
+              <circle
+                cx="200"
+                cy="200"
+                r="160"
+                fill="none"
+                stroke="#ffffff"
+                stroke-width="15"
+                stroke-dasharray="195.4 1005.3"
+                stroke-dashoffset="-167.5"
+              />
+              <!-- Cyan Segment (Bottom Left) -->
+              <circle
+                cx="200"
+                cy="200"
+                r="160"
+                fill="none"
+                stroke="#45aaf2"
+                stroke-width="15"
+                stroke-dasharray="167.5 1005.3"
+                stroke-dashoffset="-404.9"
+              />
+            </g>
+
+            <!-- Middle Ring 2: Rotates Counter-Clockwise (Yellow & Cyan) -->
+            <g class="spin-ccw-med" filter="url(#glow)">
+              <!-- Yellow Segment (Left & Bottom) -->
+              <circle
+                cx="200"
+                cy="200"
+                r="135"
+                fill="none"
+                stroke="#ffd93d"
+                stroke-width="15"
+                stroke-dasharray="329.8 848.2"
+                stroke-dashoffset="-141.3"
+              />
+              <!-- Yellow Segment (Top Left) -->
+              <circle
+                cx="200"
+                cy="200"
+                r="135"
+                fill="none"
+                stroke="#ffd93d"
+                stroke-width="15"
+                stroke-dasharray="106.0 848.2"
+                stroke-dashoffset="-506.5"
+              />
+              <!-- Cyan Segment (Top Right) -->
+              <circle
+                cx="200"
+                cy="200"
+                r="135"
+                fill="none"
+                stroke="#45aaf2"
+                stroke-width="15"
+                stroke-dasharray="212.0 848.2"
+                stroke-dashoffset="-659.7"
+              />
+            </g>
+
+            <!-- Inner Ring 1: Rotates Clockwise (Red segments) -->
+            <g class="spin-cw-fast" filter="url(#glow)">
+              <!-- Red Segment (Top & Right) -->
+              <circle
+                cx="200"
+                cy="200"
+                r="110"
+                fill="none"
+                stroke="#ff5a4d"
+                stroke-width="15"
+                stroke-dasharray="383.9 691.1"
+                stroke-dashoffset="-326.3"
+              />
+              <!-- Red Segment (Bottom) -->
+              <circle
+                cx="200"
+                cy="200"
+                r="110"
+                fill="none"
+                stroke="#ff5a4d"
+                stroke-width="15"
+                stroke-dasharray="172.7 691.1"
+                stroke-dashoffset="-86.3"
+              />
+            </g>
+
+            <!-- Center Interactive Solid Pie (3 wedges of 120°, radius 48) -->
+            <g class="spin-ccw-slow center-pie-group">
+              <!-- Events (Yellow, top) -->
+              <path
+                class="pie-slice"
+                fill="#ffd93d"
+                color="#ffd93d"
+                d="M200 200 L158.431 176 A48 48 0 0 1 241.569 176 Z"
+                style="--gx: 0px; --gy: -2px; --hx: 0px; --hy: -7px"
+                data-title="Events"
+                data-text="Explore all events"
+                data-target="events"
+              />
+
+              <!-- FAQ (Red, bottom right) -->
+              <path
+                class="pie-slice"
+                fill="#ff5a4d"
+                color="#ff5a4d"
+                d="M200 200 L241.569 176 A48 48 0 0 1 200 248 Z"
+                style="--gx: 1.73px; --gy: 1px; --hx: 6.06px; --hy: 3.5px"
+                data-title="FAQ"
+                data-text="Your questions answered"
+                data-target="faq"
+              />
+
+              <!-- About (Blue, bottom left) -->
+              <path
+                class="pie-slice"
+                fill="#45aaf2"
+                color="#45aaf2"
+                d="M200 200 L200 248 A48 48 0 0 1 158.431 176 Z"
+                style="--gx: -1.73px; --gy: 1px; --hx: -6.06px; --hy: 3.5px"
+                data-title="About"
+                data-text="About Vortex 14.0"
+                data-target="about"
+              />
+            </g>
+          </svg>
+        </div>
+      </section>
+
+      <!-- Tab: EVENTS -->
+      <section id="events" class="tab-content">
+        <div style="padding-top: 2rem">
+          <section class="series-section">
+            <h2 class="series-title">
+              <span style="color: var(--primary-cyan)">01.</span> General Series
+            </h2>
+            <div class="events-grid" id="grid-general"></div>
+          </section>
+          <section class="series-section">
+            <h2 class="series-title">
+              <span style="color: var(--primary-purple)">02.</span> Prodigy
+              Series
+            </h2>
+            <div class="events-grid" id="grid-prodigy"></div>
+          </section>
+          <section class="series-section">
+            <h2 class="series-title">
+              <span class="gradient-text">03.</span> Pharma Series
+            </h2>
+            <div class="events-grid" id="grid-pharma"></div>
+          </section>
+        </div>
+      </section>
+
+      <!-- Tab: FAQ -->
+      <section id="faq" class="tab-content text-section">
+        <h2 class="font-heading" style="margin-bottom: 2rem">
+          Frequently Asked <span class="gradient-text">Questions</span>
+        </h2>
+        <div class="faq-grid">
+          <div class="faq-item">
+            <h3>Who can participate in Vortex 14.0?</h3>
+            <p style="color: var(--text-muted); font-size: 0.9rem; margin: 0">
+              Students from any recognized college or university can
+              participate. Some events may have specific prerequisites outlined
+              in their info sections.
+            </p>
+          </div>
+          <div class="faq-item">
+            <h3>How do the Series discounts work?</h3>
+            <p style="color: var(--text-muted); font-size: 0.9rem; margin: 0">
+              If you add 5+ eligible events, you get 50% off. Completing 1 full
+              series grants 60% off, 2 series grants 62%, and all 3 series gives
+              a massive 70% discount. Note: Sr. IDP is excluded from discounts.
+            </p>
+          </div>
+          <div class="faq-item">
+            <h3>Where is the fest located?</h3>
+            <p style="color: var(--text-muted); font-size: 0.9rem; margin: 0">
+              The fest is hosted at the ICT Mumbai campus, Matunga, Mumbai.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Tab: ABOUT -->
+
+      <!-- CHECKOUT TAB -->
+      <section id="checkout" class="tab-content checkout-section">
+        <div class="checkout-header">
+          <span class="checkout-eyebrow">VORTEX 14.0 REGISTRATION</span>
+
+          <h1 class="font-heading">
+            Complete Your <span class="gradient-text">Registration</span>
+          </h1>
+
+          <p>
+            Please fill in your details carefully and verify your information
+            before proceeding. Accurate details help us process your
+            registration.
+          </p>
+        </div>
+
+        <div class="checkout-layout">
+          <!-- PARTICIPANT FORM -->
+          <form id="checkoutForm" class="checkout-form" novalidate>
+            <h2>Participant Details</h2>
+
+            <div class="form-field">
+              <label for="checkoutName">Full Name</label>
+
+              <input
+                type="text"
+                id="checkoutName"
+                name="name"
+                placeholder="Enter your full name"
+                autocomplete="name"
+                maxlength="100"
+                required
+              />
+
+              <small class="field-error" data-error-for="checkoutName"></small>
+            </div>
+
+            <div class="form-field">
+              <label for="checkoutEmail">Email Address</label>
+
+              <input
+                type="email"
+                id="checkoutEmail"
+                name="email"
+                placeholder="you@example.com"
+                autocomplete="email"
+                maxlength="254"
+                required
+              />
+
+              <small class="field-error" data-error-for="checkoutEmail"></small>
+            </div>
+
+            <div class="form-field">
+              <label for="checkoutRoll">
+                Roll Number / Enrollment Number
+              </label>
+
+              <input
+                type="text"
+                id="checkoutRoll"
+                name="rollNumber"
+                placeholder="Enter your roll or enrollment number"
+                maxlength="40"
+                required
+              />
+
+              <small class="field-error" data-error-for="checkoutRoll"></small>
+            </div>
+
+            <div class="form-field">
+              <label for="checkoutYear">Academic Year / Programme</label>
+
+              <select id="checkoutYear" name="academicYear" required>
+                <option value="">Select your year</option>
+                <option value="FY">FY — First Year</option>
+                <option value="SY">SY — Second Year</option>
+                <option value="TY">TY — Third Year</option>
+                <option value="Final Year">Final Year</option>
+                <option value="Master's">Master's</option>
+                <option value="PhD">PhD</option>
+              </select>
+
+              <small class="field-error" data-error-for="checkoutYear"></small>
+            </div>
+            <div class="form-field">
+              <label for="checkoutBranch">Branch Name</label>
+
+              <input
+                type="text"
+                id="checkoutBranch"
+                name="branch"
+                placeholder="Enter your branch name"
+                maxlength="100"
+                required
+              />
+
+              <small
+                class="field-error"
+                data-error-for="checkoutBranch"
+              ></small>
+            </div>
+
+            <div class="checkout-note">
+              <i class="fa-solid fa-circle-info"></i>
+
+              <p>
+                Please ensure your name, email address, roll number and academic
+                year are correct. Incorrect details may affect your
+                registration.
+              </p>
+            </div>
+
+            <p
+              id="checkoutStatus"
+              class="checkout-status"
+              role="status"
+              aria-live="polite"
+            ></p>
+            <a id="downloadReceiptLink" href="#" style="display: none" download>
+              Download Receipt
+            </a>
+
+            <button
+              type="submit"
+              id="checkoutSubmitBtn"
+              class="checkout-submit-btn"
+            >
+              Submit Registration
+              <i class="fa-solid fa-arrow-right"></i>
+            </button>
+          </form>
+
+          <!-- BILLING SUMMARY -->
+          <aside class="billing-card">
+            <h2>Billing Summary</h2>
+
+            <p class="billing-subtitle">
+              Review the events selected in your cart.
+            </p>
+
+            <div class="billing-event-count" id="checkoutEventCount">
+              0 events
+            </div>
+
+            <div id="checkoutEventList" class="checkout-event-list">
+              <p class="checkout-empty">
+                Your cart is empty. Add events before checkout.
+              </p>
+            </div>
+
+            <div class="billing-divider"></div>
+
+            <div class="billing-row">
+              <span>Subtotal</span>
+              <span id="checkoutSubtotal">₹0</span>
+            </div>
+
+            <div class="billing-row billing-discount">
+              <span id="checkoutDiscountLabel">Discount (0%)</span>
+              <span id="checkoutDiscount">-₹0</span>
+            </div>
+
+            <div class="billing-divider"></div>
+
+            <div class="billing-row billing-total">
+              <span>Total Payable</span>
+              <span id="checkoutTotal">₹0</span>
+            </div>
+
+            <p id="checkoutDiscountMsg" class="checkout-discount-message">
+              Add events to see your available discounts.
+            </p>
+
+            <button type="button" id="checkoutBackBtn" class="back-events-btn">
+              <i class="fa-solid fa-arrow-left"></i>
+              Back to Events
+            </button>
+          </aside>
+        </div>
+      </section>
+
+      <!-- CHECK PURCHASE TAB -->
+      <section id="check-purchase" class="tab-content checkout-section">
+        <div class="checkout-header">
+          <span class="checkout-eyebrow">VORTEX 14.0 REGISTRATION</span>
+
+          <h1 class="font-heading">
+            Check Your <span class="gradient-text">Purchase</span>
+          </h1>
+
+          <p>
+            Enter your Purchase ID and registered email address to retrieve your
+            registration details.
+          </p>
+        </div>
+
+        <div class="checkout-layout">
+          <form id="checkPurchaseForm" class="checkout-form" novalidate>
+            <h2>Find Your Registration</h2>
+
+            <div class="form-field">
+              <label for="purchaseIdInput">Purchase ID</label>
+              <input
+                type="text"
+                id="purchaseIdInput"
+                name="purchaseId"
+                placeholder="Enter your registration Purchase ID"
+                required
+              />
+            </div>
+
+            <div class="form-field">
+              <label for="purchaseEmailInput">Registered Email</label>
+              <input
+                type="email"
+                id="purchaseEmailInput"
+                name="email"
+                placeholder="Enter the email used during registration"
+                autocomplete="email"
+                required
+              />
+            </div>
+
+            <p
+              id="purchaseLookupStatus"
+              class="checkout-status"
+              role="status"
+              aria-live="polite"
+            ></p>
+
+            <button
+              type="submit"
+              id="checkPurchaseBtn"
+              class="checkout-submit-btn"
+            >
+              Find Registration
+              <i class="fa-solid fa-magnifying-glass"></i>
+            </button>
+
+            <div id="purchaseResult" hidden>
+              <h2>Registration Found</h2>
+
+              <p>
+                <strong>Purchase ID:</strong>
+                <span id="resultPurchaseId"></span>
+              </p>
+
+              <p>
+                <strong>Payment Status:</strong>
+                <span id="resultPaymentStatus"></span>
+              </p>
+
+              <p>
+                <strong>Name:</strong>
+                <span id="resultName"></span>
+              </p>
+
+              <p>
+                <strong>Email:</strong>
+                <span id="resultEmail"></span>
+              </p>
+
+              <p>
+                <strong>Roll / Enrollment Number:</strong>
+                <span id="resultRoll"></span>
+              </p>
+
+              <p>
+                <strong>Academic Year:</strong>
+                <span id="resultYear"></span>
+              </p>
+
+              <p>
+                <strong>Branch:</strong>
+                <span id="resultBranch"></span>
+              </p>
+
+              <h3>Purchased Events</h3>
+              <div id="resultEvents"></div>
+
+              <hr />
+
+              <p>
+                <strong>Subtotal:</strong>
+                <span id="resultSubtotal"></span>
+              </p>
+
+              <p>
+                <strong>Discount:</strong>
+                <span id="resultDiscount"></span>
+              </p>
+
+              <p>
+                <strong>Total Paid:</strong>
+                <span id="resultTotal"></span>
+              </p>
+
+              <p>
+                <strong>Razorpay Order ID:</strong>
+                <span id="resultOrderId"></span>
+              </p>
+
+              <p>
+                <strong>Razorpay Payment ID:</strong>
+                <span id="resultPaymentId"></span>
+              </p>
+
+              <p>
+                <strong>Purchase Date:</strong>
+                <span id="resultPaidAt"></span>
+              </p>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      <footer>
+        <div class="footer-grid">
+          <div class="footer-col brand">
+            <h3>Vortex Events</h3>
+            <p>ICT Mumbai's Premier Chemical Engineering Fest</p>
+            <p style="margin-top: 1rem; font-size: 0.8rem">Theme : EquiNexus</p>
+          </div>
+          <div class="footer-col">
+            <h3>Quick Links</h3>
+            <a
+              href="#"
+              onclick="
+                document.querySelector('.nav-tab[data-target=\'home\']').click()
+              "
+              >Home</a
+            >
+            <a
+              href="#"
+              onclick="
+                document
+                  .querySelector('.nav-tab[data-target=\'events\']')
+                  .click()
+              "
+              >Events</a
+            >
+            <a href="#">Sponsors</a>
+            <a
+              href="#"
+              onclick="
+                document
+                  .querySelector('.nav-tab[data-target=\'about\']')
+                  .click()
+              "
+              >About Us</a
+            >
+          </div>
+          <div class="footer-col">
+            <h3>Contact</h3>
+            <p>
+              <i class="fa-regular fa-envelope"></i>
+              vortexsecretary.ta@ug.ictmumbai.edu.in
+            </p>
+            <div class="contact-details">
+              <p
+                style="
+                  font-weight: 600;
+                  color: var(--text-main);
+                  margin-bottom: 0.5rem;
+                "
+              >
+                Secretary Contact Details:
+              </p>
+              <p><i class="fa-solid fa-phone"></i> Kshitij Joshi: 9763172716</p>
+              <p><i class="fa-solid fa-phone"></i> Rupak Humad: 9967952108</p>
+              <p>
+                <i class="fa-solid fa-location-dot"></i> ICT Mumbai, Matunga,
+                Mumbai - 400019
+              </p>
+            </div>
+          </div>
+          <div class="footer-col">
+            <h3>Connect</h3>
+            <div class="social-links">
+              <a
+                href="https://www.instagram.com/vortex_ict?cplk=MXExc2M3ZTZqZWhlOA=="
+                ><i class="fa-brands fa-instagram"></i
+              ></a>
+            </div>
+          </div>
+        </div>
+      </footer>
+    </main>
+
+    <!-- CUSTOM TOOLTIP ELEMENT -->
+    <div class="node-tip" id="nodeTip"><strong></strong><span></span></div>
+
+    <!-- <script type="module" src="./scripts/index.js"></script> -->
+
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script type="module" src="./scripts/check-purchase.js"></script>
+    <script type="module" src="./scripts/checkout.js"></script>
+    <script type="module" src="./scripts/navigation.js"></script>
+    <script type="module" src="./scripts/theme.js"></script>
+    <script type="module" src="./scripts/cart-checkout.js"></script>
+    <script type="module" src="./scripts/pie-interactions.js"></script>
+    <script type="module" src="./scripts/mobile-navbar.js"></script>
+  </body>
+</html>

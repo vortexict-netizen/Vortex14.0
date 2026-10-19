@@ -1,0 +1,105 @@
+const eventsData = [
+  {
+    id: "advent",
+    name: "Advent",
+    cat: "general",
+    desc: "Core Flagship Event",
+    price: "100",
+  },
+  {
+    id: "sdp",
+    name: "SDP",
+    cat: "general",
+    desc: "Student Development",
+    price: "100",
+  },
+  { id: "ud", name: "UD", cat: "general", desc: "Core Event", price: "99" },
+  {
+    id: "upbiz",
+    name: "Upbiz",
+    cat: "general",
+    desc: "Business & Strategy",
+    price: "100",
+  },
+  {
+    id: "ignite",
+    name: "Ignite",
+    cat: "general",
+    desc: "Innovation",
+    price: "100",
+  },
+
+  {
+    id: "codathon",
+    name: "Codathon",
+    cat: "prodigy",
+    desc: "Tech & Coding",
+    price: "100",
+  },
+  {
+    id: "chemflow",
+    name: "Chemflow",
+    cat: "prodigy",
+    desc: "Process Simulation",
+    price: "100",
+  },
+  {
+    id: "jridp",
+    name: "Jr. IDP",
+    cat: "prodigy",
+    desc: "Industry Problem (Jr)",
+    price: "100",
+  },
+  {
+    id: "papyrus",
+    name: "Papyrus",
+    cat: "prodigy",
+    desc: "Paper Presentation",
+    price: "100",
+  },
+  {
+    id: "sridp",
+    name: "Sr. IDP",
+    cat: "prodigy",
+    desc: "Industry Problem (Sr) *Excluded from discounts",
+    price: "100",
+  },
+
+  {
+    id: "mootcourt",
+    name: "Mootcourt",
+    cat: "pharma",
+    desc: "IP & Law",
+    price: "100",
+  },
+  {
+    id: "cosmecure",
+    name: "Cosmecure",
+    cat: "pharma",
+    desc: "Cosmetics Formulation",
+    price: "100",
+  },
+  {
+    id: "geneauction",
+    name: "Geneauction",
+    cat: "pharma",
+    desc: "Bio-Tech Bidding",
+    price: "100",
+  },
+  {
+    id: "blueprint",
+    name: "Blueprint",
+    cat: "pharma",
+    desc: "Pharma Plant Design",
+    price: "100",
+  },
+  {
+    id: "pharmquest",
+    name: "Pharmquest",
+    cat: "pharma",
+    desc: "Medical Quiz",
+    price: "100",
+  },
+];
+
+export default eventsData;
