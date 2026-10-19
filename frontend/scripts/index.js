@@ -10,7 +10,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
   navTabs.forEach((tab) => {
     tab.addEventListener("click", (event) => {
-      event.preventDefault();
+      if (!tab.getAttribute("href") || tab.getAttribute("href") === "#") {
+        event.preventDefault();
+      }
 
       const targetId = tab.getAttribute("data-target");
       const targetContent = document.getElementById(targetId);
@@ -72,7 +74,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // =========================================
-  // 3. CART SIDEBAR
+  // 3. CART SIDEBAR (Hidden for now)
   // =========================================
 
   const cartToggleBtn = document.getElementById("cartToggleBtn");
@@ -89,7 +91,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // =========================================
-  // 4. EVENT RENDERING
+  // 4. EVENT RENDERING (Clean Info Button)
   // =========================================
 
   const EVENT_PRICE = 500;
@@ -122,32 +124,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
       info.append(title, description, price);
 
-      const wrapper = document.createElement("div");
-      wrapper.className = "interactive-btn-wrapper";
-
-      const label = document.createElement("span");
-      label.className = "default-label";
-      label.textContent = "OPTIONS";
-
-      const actions = document.createElement("div");
-      actions.className = "revealed-actions";
-
-      const infoButton = document.createElement("button");
+      const infoButton = document.createElement("a");
       infoButton.className = "action-btn btn-info";
       infoButton.textContent = "Info";
+      infoButton.style.display = "inline-block";
+      infoButton.style.textDecoration = "none";
+      infoButton.style.textAlign = "center";
+      infoButton.style.marginTop = "1rem";
+      infoButton.style.width = "fit-content";
+      
+      const cleanFileName = item.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+      infoButton.href = `/event details/${cleanFileName}.html`;
 
-      const cartButton = document.createElement("button");
-      cartButton.className = "action-btn btn-cart";
-      cartButton.id = `btn-${item.id}`;
-      cartButton.textContent = "Add to Cart";
-
-      cartButton.addEventListener("click", () => {
-        window.handleAddToCart(item.id, item.name, item.cat);
-      });
-
-      actions.append(infoButton, cartButton);
-      wrapper.append(label, actions);
-      card.append(info, wrapper);
+      card.append(info, infoButton);
       container.appendChild(card);
     });
   };
@@ -178,7 +167,6 @@ document.addEventListener("DOMContentLoaded", () => {
     cart = [];
   }
 
-  // Normalize saved prices. The backend must independently verify prices.
   cart = cart.map((item) => ({
     ...item,
     price: EVENT_PRICE,
@@ -219,7 +207,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const endY = endRect.top + endRect.height / 2 - 7;
 
     particle.style.transform = `translate(${endX}px, ${endY}px) scale(0.3)`;
-
     particle.style.opacity = "0.3";
 
     setTimeout(() => {
@@ -234,7 +221,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const getCartBilling = () => {
     const eligibleItems = cart.filter((item) => item.id !== "sridp");
-
     const ineligibleItems = cart.filter((item) => item.id === "sridp");
 
     const counts = {
@@ -272,17 +258,13 @@ document.addEventListener("DOMContentLoaded", () => {
       message = "5+ eligible events — 50% discount applied!";
     } else if (eligibleItems.length > 0) {
       const remaining = Math.max(0, 5 - eligibleItems.length);
-
       message = `Add ${remaining} more eligible event(s) for 50% off.`;
     }
 
     const subtotal = cart.reduce((sum, item) => sum + EVENT_PRICE, 0);
-
     const eligibleSubtotal = eligibleItems.length * EVENT_PRICE;
     const excludedSubtotal = ineligibleItems.length * EVENT_PRICE;
-
     const discount = eligibleSubtotal * discountPercent;
-
     const total = eligibleSubtotal - discount + excludedSubtotal;
 
     return {
@@ -300,26 +282,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const calculateCartTotals = () => {
     const billing = getCartBilling();
-
-    document.getElementById("cartSubtotal").textContent = formatINR(
-      billing.subtotal,
-    );
-
-    document.getElementById("discountLabel").textContent =
-      `Discount (${billing.discountPercent * 100}%)`;
-
-    document.getElementById("cartDiscount").textContent =
-      `-${formatINR(billing.discount)}`;
-
-    document.getElementById("cartTotal").textContent = formatINR(billing.total);
-
+    const cartSubtotal = document.getElementById("cartSubtotal");
+    const discountLabel = document.getElementById("discountLabel");
+    const cartDiscount = document.getElementById("cartDiscount");
+    const cartTotal = document.getElementById("cartTotal");
     const message = document.getElementById("discountMsg");
 
-    message.textContent = billing.message;
+    if (cartSubtotal) cartSubtotal.textContent = formatINR(billing.subtotal);
+    if (discountLabel) discountLabel.textContent = `Discount (${billing.discountPercent * 100}%)`;
+    if (cartDiscount) cartDiscount.textContent = `-${formatINR(billing.discount)}`;
+    if (cartTotal) cartTotal.textContent = formatINR(billing.total);
+    if (message) message.textContent = billing.message;
 
     if (billing.discountPercent > previousDiscountPercent) {
       const discountContainer = document.getElementById("discountContainer");
-
       discountContainer?.classList.remove("celebrate-animation");
 
       if (discountContainer) {
@@ -327,11 +303,12 @@ document.addEventListener("DOMContentLoaded", () => {
         discountContainer.classList.add("celebrate-animation");
       }
 
-      message.style.color = "var(--success-green)";
-
-      setTimeout(() => {
-        message.style.color = "var(--primary-cyan)";
-      }, 1200);
+      if (message) {
+        message.style.color = "var(--success-green)";
+        setTimeout(() => {
+          message.style.color = "var(--primary-cyan)";
+        }, 1200);
+      }
     }
 
     previousDiscountPercent = billing.discountPercent;
@@ -351,18 +328,14 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!list) return;
 
     const eventCount = document.getElementById("checkoutEventCount");
-
-    eventCount.textContent = `${cart.length} event${cart.length === 1 ? "" : "s"}`;
-
+    if (eventCount) eventCount.textContent = `${cart.length} event${cart.length === 1 ? "" : "s"}`;
     list.replaceChildren();
 
     if (cart.length === 0) {
       const emptyMessage = document.createElement("p");
-
       emptyMessage.className = "checkout-empty";
       emptyMessage.textContent =
         "Your cart is empty. Add events before checkout.";
-
       list.appendChild(emptyMessage);
     } else {
       cart.forEach((item) => {
@@ -389,22 +362,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const billing = getCartBilling();
 
-    document.getElementById("checkoutSubtotal").textContent = formatINR(
-      billing.subtotal,
-    );
+    const checkoutSubtotal = document.getElementById("checkoutSubtotal");
+    const checkoutDiscountLabel = document.getElementById("checkoutDiscountLabel");
+    const checkoutDiscount = document.getElementById("checkoutDiscount");
+    const checkoutTotal = document.getElementById("checkoutTotal");
+    const checkoutDiscountMsg = document.getElementById("checkoutDiscountMsg");
 
-    document.getElementById("checkoutDiscountLabel").textContent =
-      `Discount (${billing.discountPercent * 100}%)`;
-
-    document.getElementById("checkoutDiscount").textContent =
-      `-${formatINR(billing.discount)}`;
-
-    document.getElementById("checkoutTotal").textContent = formatINR(
-      billing.total,
-    );
-
-    document.getElementById("checkoutDiscountMsg").textContent =
-      billing.message;
+    if (checkoutSubtotal) checkoutSubtotal.textContent = formatINR(billing.subtotal);
+    if (checkoutDiscountLabel) checkoutDiscountLabel.textContent = `Discount (${billing.discountPercent * 100}%)`;
+    if (checkoutDiscount) checkoutDiscount.textContent = `-${formatINR(billing.discount)}`;
+    if (checkoutTotal) checkoutTotal.textContent = formatINR(billing.total);
+    if (checkoutDiscountMsg) checkoutDiscountMsg.textContent = billing.message;
 
     if (checkoutBtn) {
       checkoutBtn.disabled = cart.length === 0;
@@ -416,78 +384,67 @@ document.addEventListener("DOMContentLoaded", () => {
   // =========================================
 
   const updateCartUI = () => {
-    document.getElementById("cartCount").textContent = cart.length;
+    const cartCountEl = document.getElementById("cartCount");
+    if (cartCountEl) cartCountEl.textContent = cart.length;
 
     const list = document.getElementById("cartItemsList");
+    if (list) {
+        list.replaceChildren();
 
-    list.replaceChildren();
+        if (cart.length === 0) {
+        const empty = document.createElement("p");
+        empty.style.color = "var(--text-muted)";
+        empty.style.textAlign = "center";
+        empty.style.marginTop = "2rem";
+        empty.textContent = "Cart is empty.";
+        list.appendChild(empty);
+        } else {
+        cart.forEach((item) => {
+            const row = document.createElement("div");
+            row.className = "cart-item";
 
-    if (cart.length === 0) {
-      const empty = document.createElement("p");
+            const details = document.createElement("div");
+            details.className = "item-details";
 
-      empty.style.color = "var(--text-muted)";
-      empty.style.textAlign = "center";
-      empty.style.marginTop = "2rem";
-      empty.textContent = "Cart is empty.";
+            const name = document.createElement("h4");
+            name.textContent = item.name;
 
-      list.appendChild(empty);
-    } else {
-      cart.forEach((item) => {
-        const row = document.createElement("div");
-        row.className = "cart-item";
+            const category = document.createElement("p");
+            category.textContent = `${item.category} Series`;
 
-        const details = document.createElement("div");
-        details.className = "item-details";
+            details.append(name, category);
 
-        const name = document.createElement("h4");
-        name.textContent = item.name;
+            const right = document.createElement("div");
+            right.style.display = "flex";
+            right.style.alignItems = "center";
+            right.style.gap = "1rem";
 
-        const category = document.createElement("p");
-        category.textContent = `${item.category} Series`;
+            const price = document.createElement("span");
+            price.style.fontFamily = "'Orbitron'";
+            price.style.fontSize = "0.85rem";
+            price.textContent = formatINR(EVENT_PRICE);
 
-        details.append(name, category);
+            const removeButton = document.createElement("button");
+            removeButton.className = "remove-item";
+            removeButton.setAttribute(
+            "aria-label",
+            `Remove ${item.name} from cart`,
+            );
 
-        const right = document.createElement("div");
+            const icon = document.createElement("i");
+            icon.className = "fa-solid fa-trash";
+            removeButton.appendChild(icon);
 
-        right.style.display = "flex";
-        right.style.alignItems = "center";
-        right.style.gap = "1rem";
+            removeButton.addEventListener("click", () => {
+            window.handleRemoveFromCart(item.id);
+            });
 
-        const price = document.createElement("span");
-        price.style.fontFamily = "'Orbitron'";
-        price.style.fontSize = "0.85rem";
-        price.textContent = formatINR(EVENT_PRICE);
-
-        const removeButton = document.createElement("button");
-        removeButton.className = "remove-item";
-        removeButton.setAttribute(
-          "aria-label",
-          `Remove ${item.name} from cart`,
-        );
-
-        const icon = document.createElement("i");
-        icon.className = "fa-solid fa-trash";
-
-        removeButton.appendChild(icon);
-
-        removeButton.addEventListener("click", () => {
-          window.handleRemoveFromCart(item.id);
+            right.append(price, removeButton);
+            row.append(details, right);
+            list.appendChild(row);
         });
-
-        right.append(price, removeButton);
-        row.append(details, right);
-        list.appendChild(row);
-      });
+        }
     }
-
-    cart.forEach((item) => {
-      const button = document.getElementById(`btn-${item.id}`);
-
-      if (button) {
-        button.textContent = "Added";
-        button.classList.add("added");
-      }
-    });
 
     calculateCartTotals();
     renderCheckoutBilling();
@@ -500,40 +457,13 @@ document.addEventListener("DOMContentLoaded", () => {
   window.handleAddToCart = (id, name, category) => {
     if (cart.some((item) => item.id === id)) return;
 
-    const button = document.getElementById(`btn-${id}`);
-
-    if (!button) return;
-
-    const startRect = button.getBoundingClientRect();
-    const endRect = cartIcon?.getBoundingClientRect();
-
     const addItem = () => {
-      cart.push({
-        id,
-        name,
-        category,
-        price: EVENT_PRICE,
-      });
-
+      cart.push({ id, name, category, price: EVENT_PRICE });
       saveCart();
       updateCartUI();
-
-      const updatedButton = document.getElementById(`btn-${id}`);
-
-      if (updatedButton) {
-        updatedButton.textContent = "Added";
-        updatedButton.classList.add("added");
-      }
     };
-
-    button.textContent = "Adding...";
-    button.classList.add("added");
-
-    if (endRect) {
-      createFlyingParticle(startRect, endRect, "var(--primary-cyan)", addItem);
-    } else {
-      addItem();
-    }
+    
+    addItem();
   };
 
   // =========================================
@@ -541,234 +471,13 @@ document.addEventListener("DOMContentLoaded", () => {
   // =========================================
 
   window.handleRemoveFromCart = (id) => {
-    const card = document.getElementById(`card-${id}`);
-
-    if (card && cartIcon) {
-      createFlyingParticle(
-        cartIcon.getBoundingClientRect(),
-        card.getBoundingClientRect(),
-        "#ff4757",
-      );
-    }
-
     cart = cart.filter((item) => item.id !== id);
-
     saveCart();
-
-    const button = document.getElementById(`btn-${id}`);
-
-    if (button) {
-      button.textContent = "Add to Cart";
-      button.classList.remove("added");
-    }
-
     updateCartUI();
   };
 
   // =========================================
-  // 13. OPEN CHECKOUT
-  // =========================================
-
-  checkoutBtn?.addEventListener("click", () => {
-    if (cart.length === 0) {
-      cartSidebar?.classList.add("active");
-
-      document.getElementById("discountMsg").textContent =
-        "Please add at least one event before checkout.";
-
-      return;
-    }
-
-    cartSidebar?.classList.remove("active");
-    renderCheckoutBilling();
-
-    document.querySelector('.nav-tab[data-target="checkout"]')?.click();
-  });
-
-  checkoutBackBtn?.addEventListener("click", () => {
-    document.querySelector('.nav-tab[data-target="events"]')?.click();
-  });
-
-  // =========================================
-  // 14. CHECKOUT VALIDATION
-  // =========================================
-
-  // Configure this regex if your institution uses a specific
-  // roll-number or enrollment-number format.
-  window.isValidVortexRollNumber = (rollNumber) => {
-    return /^[A-Za-z0-9][A-Za-z0-9 /-]{2,39}$/.test(
-      String(rollNumber || "").trim(),
-    );
-  };
-
-  const setFieldError = (fieldId, message) => {
-    const field = document.getElementById(fieldId);
-
-    const error = document.querySelector(`[data-error-for="${fieldId}"]`);
-
-    if (error) error.textContent = message;
-
-    if (field) {
-      field.setAttribute("aria-invalid", message ? "true" : "false");
-    }
-  };
-
-  const clearCheckoutErrors = () => {
-    ["checkoutName", "checkoutEmail", "checkoutRoll", "checkoutYear"].forEach(
-      (id) => setFieldError(id, ""),
-    );
-
-    checkoutStatus.textContent = "";
-    checkoutStatus.className = "checkout-status";
-  };
-
-  const validateCheckout = () => {
-    clearCheckoutErrors();
-
-    let valid = true;
-
-    const name = document.getElementById("checkoutName").value.trim();
-    const email = document.getElementById("checkoutEmail").value.trim();
-    const roll = document.getElementById("checkoutRoll").value.trim();
-    const year = document.getElementById("checkoutYear").value;
-
-    const namePattern = /^[\p{L}][\p{L}\p{M} .'-]*$/u;
-
-    if (name.length < 2 || name.length > 100 || !namePattern.test(name)) {
-      setFieldError("checkoutName", "Enter a valid full name.");
-
-      valid = false;
-    }
-
-    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
-
-    if (email.length > 254 || !emailPattern.test(email)) {
-      setFieldError(
-        "checkoutEmail",
-        "Enter a valid email address, such as name@example.com.",
-      );
-
-      valid = false;
-    }
-
-    if (!window.isValidVortexRollNumber(roll)) {
-      setFieldError("checkoutRoll", "Enter a valid roll/enrollment number.");
-
-      valid = false;
-    }
-
-    const allowedYears = ["FY", "SY", "TY", "Final Year", "Master's", "PhD"];
-
-    if (!allowedYears.includes(year)) {
-      setFieldError("checkoutYear", "Select your academic year or programme.");
-
-      valid = false;
-    }
-
-    if (cart.length === 0) {
-      checkoutStatus.textContent =
-        "Your cart is empty. Please add an event before checking out.";
-
-      checkoutStatus.classList.add("error");
-
-      valid = false;
-    }
-
-    return valid;
-  };
-
-  ["checkoutName", "checkoutEmail", "checkoutRoll", "checkoutYear"].forEach(
-    (id) => {
-      const field = document.getElementById(id);
-
-      field?.addEventListener("input", () => {
-        setFieldError(id, "");
-      });
-
-      field?.addEventListener("change", () => {
-        setFieldError(id, "");
-      });
-    },
-  );
-
-  // =========================================
-  // 15. REGISTRATION SUBMISSION
-  // =========================================
-
-  /*
-   * This is a placeholder until your backend endpoint is connected.
-   * It intentionally does not claim a registration was saved.
-   */
-  window.submitVortexRegistration = async (registration) => {
-    console.log("Validated registration payload:", registration);
-
-    throw new Error(
-      "Registration submission is not connected to the backend yet.",
-    );
-  };
-
-  checkoutForm?.addEventListener("submit", async (event) => {
-    event.preventDefault();
-
-    if (!validateCheckout()) return;
-
-    const billing = getCartBilling();
-
-    const registration = {
-      name: document.getElementById("checkoutName").value.trim(),
-
-      email: document
-        .getElementById("checkoutEmail")
-        .value.trim()
-        .toLowerCase(),
-
-      rollNumber: document.getElementById("checkoutRoll").value.trim(),
-
-      academicYear: document.getElementById("checkoutYear").value,
-
-      events: cart.map((item) => ({
-        id: item.id,
-        name: item.name,
-        category: item.category,
-      })),
-
-      billing: {
-        subtotal: billing.subtotal,
-        discountPercent: billing.discountPercent * 100,
-        discount: billing.discount,
-        total: billing.total,
-      },
-    };
-
-    const submitButton = document.getElementById("checkoutSubmitBtn");
-
-    submitButton.disabled = true;
-    submitButton.textContent = "Submitting...";
-
-    checkoutStatus.textContent = "";
-    checkoutStatus.className = "checkout-status";
-
-    try {
-      await window.submitVortexRegistration(registration);
-
-      checkoutStatus.textContent = "Registration submitted successfully.";
-
-      checkoutStatus.classList.add("success");
-    } catch (error) {
-      checkoutStatus.textContent =
-        error?.message || "Unable to submit registration. Please try again.";
-
-      checkoutStatus.classList.add("error");
-    } finally {
-      submitButton.disabled = false;
-
-      submitButton.innerHTML =
-        'Submit Registration <i class="fa-solid fa-arrow-right"></i>';
-    }
-  });
-
-  // =========================================
-  // 16. SVG PIE INTERACTIONS
+  // 13. SVG PIE INTERACTIONS
   // =========================================
 
   const pieSlices = document.querySelectorAll(".pie-slice");
@@ -778,9 +487,7 @@ document.addEventListener("DOMContentLoaded", () => {
     slice.addEventListener("mouseenter", () => {
       tip.querySelector("strong").textContent =
         slice.getAttribute("data-title");
-
       tip.querySelector("span").textContent = slice.getAttribute("data-text");
-
       tip.classList.add("show");
     });
 
@@ -795,15 +502,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
     slice.addEventListener("click", () => {
       tip.classList.remove("show");
-
       const target = slice.getAttribute("data-target");
-
       document.querySelector(`.nav-tab[data-target="${target}"]`)?.click();
     });
   });
 
   // =========================================
-  // 17. MOBILE MENU
+  // 14. MOBILE MENU
   // =========================================
 
   const menuBtn = document.getElementById("menuToggleBtn");
@@ -817,7 +522,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   menuBtn?.addEventListener("click", () => {
     const isOpen = navLinksEl.classList.toggle("open");
-
     menuBtn.classList.toggle("open", isOpen);
     menuBtn.setAttribute("aria-expanded", String(isOpen));
 
@@ -841,11 +545,10 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // =========================================
-  // 18. NAVBAR SCROLL BEHAVIOUR
+  // 15. NAVBAR SCROLL BEHAVIOUR
   // =========================================
 
   const navbarEl = document.querySelector(".navbar");
-
   let lastScrollY = window.scrollY;
   let scrollTicking = false;
 
@@ -863,7 +566,6 @@ document.addEventListener("DOMContentLoaded", () => {
         navbarEl.classList.remove("nav-hidden");
         document.body.classList.remove("nav-is-hidden");
       }
-
       lastScrollY = currentY;
     }
 
@@ -886,10 +588,5 @@ document.addEventListener("DOMContentLoaded", () => {
     { passive: true },
   );
 
-  // =========================================
-  // 19. INITIALIZE CART AND CHECKOUT
-  // =========================================
-
   updateCartUI();
-  renderCheckoutBilling();
 });

@@ -26,7 +26,7 @@
   formulas.forEach((text, i) => {
     const s = document.createElement("span");
     s.textContent = text;
-    const dur = 16 + ((i * 7) % 11) * 1.4;
+    const dur = 4 + ((i * 7) % 11) * 1.4;
     s.style.cssText =
       `--x:${((i * 37) % 86) + 3}%;--y:${((i * 53) % 80) + 8}%;` +
       `--s:${(0.85 + ((i * 3) % 5) * 0.12).toFixed(2)}rem;` +
