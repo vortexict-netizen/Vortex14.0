@@ -17,6 +17,9 @@
       html[data-theme="light"] * { text-shadow: none !important; }
       html[data-theme="light"] .nav-logo img { filter: none !important; box-shadow: none !important; }
     </style>
+    
+    <!-- Link the chemical equations script -->
+    <script src="./scripts/fx.js" defer></script>
   </head>
   <body>
     
@@ -39,7 +42,7 @@
       </div>
     </nav>
 
-    <!-- Combined Background: Electrons + Rising Bubbles -->
+    <!-- Background (Equations will generate here via script below) -->
     <div class="ambient-bg">
       <div class="orb orb-1"></div>
       <div class="orb orb-2"></div>
@@ -48,12 +51,8 @@
         <div class="electron e-2"></div>
         <div class="electron e-3"></div>
       </div>
-      <!-- Rising Chemical Reactions -->
-      <i class="bubble b1"></i><i class="bubble b2"></i><i class="bubble b3"></i>
-      <i class="bubble b4"></i><i class="bubble b5"></i><i class="bubble b6"></i>
     </div>
 
-    <!-- Increased top padding here (6rem instead of 4rem) -->
     <main class="main-container about-wrapper" style="padding-top: 6rem;">
       
       <div class="about-split">
@@ -272,7 +271,63 @@
       </div>
     </footer>
 
-    <script type="module" src="./scripts/theme.js"></script>
+    <!-- Glowing cursor element -->
+    <div id="glowing-cursor"></div>
+
+    <!-- Scripts for About Page -->
+    <script>
+      // 1. Glowing Cursor Logic
+      const cursor = document.getElementById('glowing-cursor');
+      document.addEventListener('mousemove', (e) => {
+        cursor.style.left = e.clientX + 'px';
+        cursor.style.top = e.clientY + 'px';
+      });
+
+      // Add click effect to cursor
+      document.addEventListener('mousedown', () => cursor.style.transform = 'translate(-50%, -50%) scale(0.7)');
+      document.addEventListener('mouseup', () => cursor.style.transform = 'translate(-50%, -50%) scale(1)');
+
+      // 2. Standalone Chemical Reactions Background Generator
+      const createReaction = () => {
+        const bgContainer = document.querySelector('.ambient-bg');
+        if (!bgContainer) return;
+
+        const formulas = [
+          'H₂O ⇌ H⁺ + OH⁻', 'CH₄ + 2O₂ → CO₂ + 2H₂O', 'N₂ + 3H₂ ⇌ 2NH₃', 
+          'C₆H₁₂O₆ → 2C₂H₅OH + 2CO₂', 'ΔG = ΔH - TΔS', 'PV = nRT', 
+          'E = mc²', 'NaCl → Na⁺ + Cl⁻', 'CO₂ + H₂O → H₂CO₃'
+        ];
+
+        const el = document.createElement('div');
+        el.innerText = formulas[Math.floor(Math.random() * formulas.length)];
+        el.style.position = 'absolute';
+        el.style.left = Math.random() * 95 + 'vw';
+        el.style.bottom = '-50px';
+        el.style.color = 'rgba(0, 243, 255, 0.3)';
+        el.style.fontFamily = "'Orbitron', sans-serif";
+        el.style.fontSize = (Math.random() * 12 + 10) + 'px';
+        el.style.pointerEvents = 'none';
+        
+        // Increased duration = slower speed. Now takes 15 to 25 seconds to reach the top.
+        const duration = Math.random() * 10 + 15; 
+        el.style.transition = `transform ${duration}s linear, opacity ${duration}s linear`;
+        el.style.opacity = '0';
+        
+        bgContainer.appendChild(el);
+
+        // Float upwards without rotation (strictly horizontal text)
+        setTimeout(() => {
+          el.style.transform = `translateY(-110vh)`;
+          el.style.opacity = '1';
+        }, 50);
+
+        // Remove element after it leaves the screen
+        setTimeout(() => el.remove(), duration * 1000);
+      };
+
+      // Spawns a new reaction every 800 milliseconds (slower spawn rate)
+      setInterval(createReaction, 800);
+    </script>
     <script type="module" src="./scripts/mobile-navbar.js"></script>
   </body>
 </html>
