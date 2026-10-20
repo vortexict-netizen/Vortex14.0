@@ -16,7 +16,12 @@
     <style>
       html[data-theme="light"] * { text-shadow: none !important; }
       html[data-theme="light"] .nav-logo img { filter: none !important; box-shadow: none !important; }
-      #cartToggleBtn, #cartSidebar, .btn-cart { display: none !important; }
+      
+      #cartToggleBtn, 
+      #cartSidebar, 
+      .btn-cart { 
+        display: none !important; 
+      }
     </style>
     
     <script src="./scripts/fx.js" defer></script>
@@ -80,26 +85,22 @@
           <p>Asia's Largest Chem-Fest organized by the Institute of Chemical Technology (ICT), Mumbai. Where Chemical Engineering, Pharma, and Futuristic Technology converge into a single dimension of innovation.</p>
           <button class="action-btn btn-info" style="font-size: 1rem; padding: 12px 30px" onclick="document.querySelector('.nav-tab[data-target=\'events\']').click()">Explore Events</button>
         </div>
+        
+        <!-- Hardware Optimized Logo -->
         <div class="hero-3d">
           <svg viewBox="0 0 400 400" class="vortex-pie">
-            <defs>
-              <filter id="glow">
-                <feGaussianBlur stdDeviation="2.5" result="coloredBlur" />
-                <feMerge><feMergeNode in="coloredBlur" /><feMergeNode in="SourceGraphic" /></feMerge>
-              </filter>
-            </defs>
-            <g class="spin-cw-slow" filter="url(#glow)">
+            <g class="spin-cw-slow">
               <circle cx="200" cy="200" r="160" fill="none" stroke="#ffffff" stroke-width="15" stroke-dasharray="260.3 1005.3" stroke-dashoffset="-614.3" />
               <circle cx="200" cy="200" r="160" fill="none" stroke="#ffffff" stroke-width="15" stroke-dasharray="251.3 1005.3" stroke-dashoffset="-893.6" />
               <circle cx="200" cy="200" r="160" fill="none" stroke="#ffffff" stroke-width="15" stroke-dasharray="195.4 1005.3" stroke-dashoffset="-167.5" />
               <circle cx="200" cy="200" r="160" fill="none" stroke="#45aaf2" stroke-width="15" stroke-dasharray="167.5 1005.3" stroke-dashoffset="-404.9" />
             </g>
-            <g class="spin-ccw-med" filter="url(#glow)">
+            <g class="spin-ccw-med">
               <circle cx="200" cy="200" r="135" fill="none" stroke="#ffd93d" stroke-width="15" stroke-dasharray="329.8 848.2" stroke-dashoffset="-141.3" />
               <circle cx="200" cy="200" r="135" fill="none" stroke="#ffd93d" stroke-width="15" stroke-dasharray="106.0 848.2" stroke-dashoffset="-506.5" />
               <circle cx="200" cy="200" r="135" fill="none" stroke="#45aaf2" stroke-width="15" stroke-dasharray="212.0 848.2" stroke-dashoffset="-659.7" />
             </g>
-            <g class="spin-cw-fast" filter="url(#glow)">
+            <g class="spin-cw-fast">
               <circle cx="200" cy="200" r="110" fill="none" stroke="#ff5a4d" stroke-width="15" stroke-dasharray="383.9 691.1" stroke-dashoffset="-326.3" />
               <circle cx="200" cy="200" r="110" fill="none" stroke="#ff5a4d" stroke-width="15" stroke-dasharray="172.7 691.1" stroke-dashoffset="-86.3" />
             </g>
