@@ -1,4 +1,4 @@
-import eventsData from "./data/eventsData.js";
+import eventsData from "../data/eventsData.js";
 
 // =========================================
 // 1. SPA TAB NAVIGATION
@@ -49,7 +49,10 @@ const themeBtn = document.getElementById("themeToggleBtn");
 const themeIcon = document.getElementById("themeIcon");
 const htmlElement = document.documentElement;
 
-const savedTheme = localStorage.getItem("vortex_theme") || "dark";
+let savedTheme = "dark";
+try {
+  savedTheme = localStorage.getItem("vortex_theme") || "dark";
+} catch (e) {}
 
 htmlElement.setAttribute("data-theme", savedTheme);
 
@@ -69,7 +72,9 @@ themeBtn?.addEventListener("click", () => {
       newTheme === "dark" ? "fa-solid fa-sun" : "fa-solid fa-moon";
   }
 
-  localStorage.setItem("vortex_theme", newTheme);
+  try {
+    localStorage.setItem("vortex_theme", newTheme);
+  } catch(e) {}
 });
 
 // =========================================
@@ -89,13 +94,13 @@ closeCartBtn?.addEventListener("click", () => {
 });
 
 // =========================================
-// 4. EVENT RENDERING (Clean Info Button)
+// 4. EVENT RENDERING
 // =========================================
 
 const EVENT_PRICE = 500;
 
 const renderCategory = (categoryId, containerId) => {
-  const items = eventsData.filter((event) => event.cat === categoryId);
+  const items = eventsData.filter((event) => event.cat === categoryId || event.category === categoryId);
   const container = document.getElementById(containerId);
 
   if (!container) return;
@@ -125,18 +130,27 @@ const renderCategory = (categoryId, containerId) => {
     const infoButton = document.createElement("a");
     infoButton.className = "action-btn btn-info info-link";
     infoButton.textContent = "Info";
-    // Pointing to 'event details' folder based on previous steps
-    infoButton.href = `./data/event details/${item.id}.html`;
+    
+    // Proper path generation
+    infoButton.href = `./data/details/${item.id}.html`;
     infoButton.setAttribute("aria-label", `More information about ${item.name}`);
+    
+    // Force the button to rest on top of any CSS clipping
+    infoButton.style.position = "relative";
+    infoButton.style.zIndex = "10";
 
     card.append(info, infoButton);
     container.appendChild(card);
   });
 };
 
-renderCategory("general", "grid-general");
-renderCategory("prodigy", "grid-prodigy");
-renderCategory("pharma", "grid-pharma");
+try {
+  renderCategory("general", "grid-general");
+  renderCategory("prodigy", "grid-prodigy");
+  renderCategory("pharma", "grid-pharma");
+} catch(e) {
+  console.error("Error rendering categories:", e);
+}
 
 // =========================================
 // 5. CART STATE
@@ -168,7 +182,9 @@ cart = cart.map((item) => ({
 let previousDiscountPercent = 0;
 
 const saveCart = () => {
-  localStorage.setItem("vortex_cart", JSON.stringify(cart));
+  try {
+    localStorage.setItem("vortex_cart", JSON.stringify(cart));
+  } catch(e) {}
 };
 
 const formatINR = (amount) =>

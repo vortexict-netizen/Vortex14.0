@@ -16,16 +16,11 @@
     <style>
       html[data-theme="light"] * { text-shadow: none !important; }
       html[data-theme="light"] .nav-logo img { filter: none !important; box-shadow: none !important; }
+      #cartToggleBtn, #cartSidebar, .btn-cart { display: none !important; }
     </style>
-    <style>
-  #cartToggleBtn, 
-  #cartSidebar, 
-  .btn-cart { 
-    display: none !important; 
-  }
-</style>
+    
+    <script src="./scripts/fx.js" defer></script>
   </head>
-  <script src="./scripts/fx.js" defer></script>
 
   <body>
     <nav class="navbar">
@@ -188,12 +183,7 @@
     </footer>
 
     <div class="node-tip" id="nodeTip"><strong></strong><span></span></div>
-    <script type="module" src="./scripts/navigation.js"></script>
-    <script type="module" src="./scripts/theme.js"></script>
-    <script type="module" src="./scripts/cart-checkout.js"></script>
-    <script type="module" src="./scripts/pie-interactions.js"></script>
-    <script type="module" src="./scripts/mobile-navbar.js"></script>
-    <script type="module" src="./scripts/index.js"></script>s
+    
+    <script type="module" src="./scripts/index.js"></script>
   </body>
 </html>
-
