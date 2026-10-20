@@ -125,16 +125,10 @@ document.addEventListener("DOMContentLoaded", () => {
       info.append(title, description, price);
 
       const infoButton = document.createElement("a");
-      infoButton.className = "action-btn btn-info";
+      infoButton.className = "action-btn btn-info info-link";
       infoButton.textContent = "Info";
-      infoButton.style.display = "inline-block";
-      infoButton.style.textDecoration = "none";
-      infoButton.style.textAlign = "center";
-      infoButton.style.marginTop = "1rem";
-      infoButton.style.width = "fit-content";
-      
-      const cleanFileName = item.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
-      infoButton.href = `/event details/${cleanFileName}.html`;
+      infoButton.href = `./data/details/${item.id}.html`;
+      infoButton.setAttribute("aria-label", `More information about ${item.name}`);
 
       card.append(info, infoButton);
       container.appendChild(card);
@@ -328,7 +322,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!list) return;
 
     const eventCount = document.getElementById("checkoutEventCount");
-    if (eventCount) eventCount.textContent = `${cart.length} event${cart.length === 1 ? "" : "s"}`;
+    if (eventCount) eventCount.textContent = `cart.lengthevent{cart.length === 1 ? "" : "s"}`;
     list.replaceChildren();
 
     if (cart.length === 0) {
@@ -590,3 +584,4 @@ document.addEventListener("DOMContentLoaded", () => {
 
   updateCartUI();
 });
+
