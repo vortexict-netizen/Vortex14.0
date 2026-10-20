@@ -125,7 +125,8 @@ const renderCategory = (categoryId, containerId) => {
     const infoButton = document.createElement("a");
     infoButton.className = "action-btn btn-info info-link";
     infoButton.textContent = "Info";
-    infoButton.href = `./data/details/${item.id}.html`;
+    // Pointing to 'event details' folder based on previous steps
+    infoButton.href = `./data/event details/${item.id}.html`;
     infoButton.setAttribute("aria-label", `More information about ${item.name}`);
 
     card.append(info, infoButton);
@@ -245,7 +246,10 @@ const renderCheckoutBilling = () => {
   if (!list) return;
 
   const eventCount = document.getElementById("checkoutEventCount");
-  if (eventCount) eventCount.textContent = `cart.lengthevent{cart.length === 1 ? "" : "s"}`;
+  if (eventCount) {
+      eventCount.textContent = `${cart.length} event${cart.length === 1 ? "" : "s"}`;
+  }
+  
   list.replaceChildren();
 
   if (cart.length === 0) {
@@ -523,4 +527,3 @@ window.addEventListener(
 );
 
 updateCartUI();
-
