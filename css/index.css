@@ -206,3 +206,25 @@ footer { background: var(--footer-bg); border-top: 1px solid var(--glass-border)
   10%, 90% { opacity: 1; }
   100% { transform: translate(40vw, -110vh); opacity: 0; }
 }
+
+#glowing-cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: rgba(0, 243, 255, 0.4);
+  pointer-events: none;
+  z-index: 9999;
+  /* Will-change warns the browser to put this on the GPU */
+  will-change: transform;
+  transition: background 0.2s, transform 0.1s ease-out;
+}
+
+/* Hide on touchscreens to save battery */
+@media (pointer: coarse) {
+  #glowing-cursor {
+    display: none !important;
+  }
+}
