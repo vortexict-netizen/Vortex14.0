@@ -548,19 +548,3 @@ updateCartUI();
 // 11. GLOWING CURSOR (Optimized GPU Rendering)
 // =========================================
 const cursor = document.getElementById("glowing-cursor");
-if (cursor) {
-  document.addEventListener("mousemove", (e) => {
-    // translate3d forces the GPU to handle the movement without layout recalculations
-    cursor.style.transform = `translate3d(${e.clientX - 10}px, ${e.clientY - 10}px, 0)`;
-  });
-  
-  document.addEventListener("mousedown", (e) => {
-    cursor.style.transform = `translate3d(${e.clientX - 10}px, ${e.clientY - 10}px, 0) scale(0.6)`;
-    cursor.style.background = "rgba(189, 0, 255, 0.6)";
-  });
-  
-  document.addEventListener("mouseup", (e) => {
-    cursor.style.transform = `translate3d(${e.clientX - 10}px, ${e.clientY - 10}px, 0) scale(1)`;
-    cursor.style.background = "rgba(0, 243, 255, 0.4)";
-  });
-}
