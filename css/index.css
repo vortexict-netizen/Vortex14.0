@@ -104,7 +104,8 @@ h1, h2, h3, h4, .font-heading { font-family: "Orbitron", sans-serif; font-weight
 .action-btn { background: transparent; border: 1px solid; padding: 8px 12px; border-radius: 20px; font-family: "Inter", sans-serif; font-size: 0.75rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease; }
 .btn-info { border-color: var(--primary-cyan); color: var(--primary-cyan); }
 .btn-info:hover { background: var(--primary-cyan); color: #000; box-shadow: 0 0 12px rgba(0,243,255,0.4); }
-.info-link { display: inline-block; text-decoration: none; text-align: center; margin-top: 1rem; width: fit-content; }
+.info-link { display: inline-block; text-decoration: none; text-align: center; margin-top: 1rem; width: fit-content; } 
+
 .btn-cart { border-color: var(--primary-purple); color: var(--primary-purple); }
 .btn-cart:hover, .btn-cart.added { background: var(--primary-purple); color: #fff; }
 .btn-cart.added { opacity: 0.7; cursor: not-allowed; }
