@@ -55,8 +55,8 @@ h1, h2, h3, h4, .font-heading { font-family: "Orbitron", sans-serif; font-weight
 .orb { position: absolute; border-radius: 50%; filter: blur(120px); opacity: var(--orb-opacity); will-change: transform; }
 .orb-1 { width: 40vw; height: 40vw; top: -10%; left: -10%; background: radial-gradient(circle, var(--primary-purple) 0%, transparent 70%); animation: drift-1 15s infinite linear alternate; }
 .orb-2 { width: 50vw; height: 50vw; bottom: -20%; right: -10%; background: radial-gradient(circle, var(--primary-cyan) 0%, transparent 70%); animation: drift-2 15s infinite linear alternate; }
-@keyframes drift-1 { 0% { transform: translate(0, 0) scale(1); } 100% { transform: translate(10vw, 15vh) scale(1.1); } }
-@keyframes drift-2 { 0% { transform: translate(0, 0) scale(1); } 100% { transform: translate(-15vw, -10vh) scale(1.2); } }
+@keyframes drift-1 { 0% { transform: translate3d(0, 0, 0) scale(1); } 100% { transform: translate3d(10vw, 15vh, 0) scale(1.1); } }
+@keyframes drift-2 { 0% { transform: translate3d(0, 0, 0) scale(1); } 100% { transform: translate3d(-15vw, -10vh, 0) scale(1.2); } }
 
 .main-container { max-width: 1200px; margin: 100px auto 0; padding: 0 2rem; position: relative; z-index: 1; min-height: calc(100vh - 100px); display: flex; flex-direction: column; }
 .tab-content { display: none; flex: 1; animation: fadeInTab 0.5s cubic-bezier(0.25, 1, 0.5, 1) forwards; }
@@ -72,7 +72,7 @@ h1, h2, h3, h4, .font-heading { font-family: "Orbitron", sans-serif; font-weight
 .hero-text h1 { font-size: clamp(2.2rem, 5vw, 4rem); margin-bottom: 1.5rem; text-shadow: 0 2px 18px rgba(0,0,0,0.75), 0 0 2px rgba(0,0,0,0.6); }
 .hero-text p { color: var(--text-main); opacity: 0.95; text-shadow: 0 1px 12px rgba(0,0,0,0.7); font-size: 1.1rem; line-height: 1.8; margin: 0 0 2rem; }
 .hero-3d { position: absolute; right: 0; top: 0; bottom: 0; width: 50%; display: flex; align-items: center; justify-content: center; perspective: 1200px; }
-.vortex-pie { width: 100%; max-width: 600px; height: auto; transform: rotateX(25deg) rotateY(-15deg); transform-style: preserve-3d; animation: floatPie 6s ease-in-out infinite; filter: drop-shadow(0 25px 35px rgba(0,0,0,0.6)); }
+.vortex-pie { width: 100%; max-width: 600px; height: auto; transform: rotateX(25deg) rotateY(-15deg); transform-style: preserve-3d; animation: floatPie 6s ease-in-out infinite; filter: drop-shadow(0 25px 35px rgba(0,0,0,0.6)) drop-shadow(0 0 8px rgba(255,255,255,0.3)); }
 @keyframes floatPie { 0%, 100% { transform: rotateX(25deg) rotateY(-15deg) translateZ(0px); } 50% { transform: rotateX(25deg) rotateY(-15deg) translateZ(20px); } }
 .spin-cw-fast { transform-origin: 200px 200px; animation: spin 18s linear infinite; }
 .spin-ccw-med { transform-origin: 200px 200px; animation: spin-reverse 24s linear infinite; }
@@ -88,14 +88,28 @@ h1, h2, h3, h4, .font-heading { font-family: "Orbitron", sans-serif; font-weight
 .node-tip strong { display: block; font-family: "Orbitron", sans-serif; letter-spacing: 1px; text-transform: uppercase; color: var(--primary-cyan); font-size: 0.95rem; }
 .node-tip span { font-size: 0.85rem; color: var(--text-muted); }
 
+/* FAQ Accordion Styling */
 .faq-grid, .about-content { text-align: left; max-width: 800px; margin: 0 auto; }
-.faq-item { background: var(--glass-bg); border: 1px solid var(--glass-border); padding: 1.5rem; border-radius: 12px; margin-bottom: 1rem; }
-.faq-item h3 { font-size: 1.1rem; color: var(--primary-cyan); margin-bottom: 0.5rem; }
+.faq-item { background: var(--glass-bg); border: 1px solid var(--glass-border); padding: 1.2rem 1.5rem; border-radius: 12px; margin-bottom: 1rem; transition: border-color 0.3s ease, background 0.3s ease; }
+.faq-item[open] { border-color: rgba(0, 243, 255, 0.4); }
+.faq-question { display: flex; justify-content: space-between; align-items: center; cursor: pointer; list-style: none; }
+.faq-question::-webkit-details-marker { display: none; }
+.faq-question h3 { font-size: 1.05rem; color: var(--primary-cyan); margin: 0; transition: color 0.3s ease; }
+.faq-question:hover h3 { color: var(--text-main); }
+.faq-arrow { color: var(--primary-cyan); font-size: 0.9rem; transition: transform 0.3s ease; }
+.faq-item[open] .faq-arrow { transform: rotate(180deg); }
+.faq-answer { padding-top: 1rem; margin-top: 0.8rem; border-top: 1px solid var(--glass-border); animation: fadeInFaq 0.3s ease forwards; }
+.faq-answer p { color: var(--text-muted); font-size: 0.9rem; margin: 0; line-height: 1.6; white-space: pre-line; }
+
+@keyframes fadeInFaq {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
 .series-section { margin-bottom: 4rem; }
 .series-title { font-size: 1.8rem; margin-bottom: 2rem; border-bottom: 1px solid var(--glass-border); padding-bottom: 0.5rem; display: inline-block; }
 .events-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem; }
 
-/* FIX: Changed height to min-height so content isn't clipped out of bounds */
 .event-card { 
   background: var(--glass-bg); 
   border: 1px solid var(--glass-border); 
@@ -118,7 +132,6 @@ h1, h2, h3, h4, .font-heading { font-family: "Orbitron", sans-serif; font-weight
 .default-label { position: absolute; font-family: "Orbitron", sans-serif; font-size: 0.8rem; font-weight: 700; letter-spacing: 1px; color: var(--text-main); transition: opacity 0.3s ease, transform 0.4s ease; pointer-events: none; }
 .revealed-actions { display: flex; gap: 8px; opacity: 0; transform: translateY(20px); transition: opacity 0.3s ease, transform 0.4s cubic-bezier(0.25, 1, 0.5, 1); white-space: nowrap; }
 
-/* FIX: Added z-index and relative positioning so it registers clicks correctly */
 .action-btn { position: relative; z-index: 10; background: transparent; border: 1px solid; padding: 8px 12px; border-radius: 20px; font-family: "Inter", sans-serif; font-size: 0.75rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease; display: inline-block; margin-top: 15px; }
 .btn-info { border-color: var(--primary-cyan); color: var(--primary-cyan); text-decoration: none; text-align: center; }
 .btn-info:hover { background: var(--primary-cyan); color: #000; box-shadow: 0 0 12px rgba(0,243,255,0.4); }
@@ -205,14 +218,4 @@ footer { background: var(--footer-bg); border-top: 1px solid var(--glass-border)
   0% { transform: translate(0, 0); opacity: 0; }
   10%, 90% { opacity: 1; }
   100% { transform: translate(40vw, -110vh); opacity: 0; }
-}
-
-#glowing-cursor {
-}
-
-/* Hide on touchscreens to save battery */
-@media (pointer: coarse) {
-  #glowing-cursor {
-    display: none !important;
-  }
 }
