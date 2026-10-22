@@ -503,7 +503,9 @@ document.addEventListener("click", (event) => {
 });
 
 window.addEventListener("resize", () => {
-  if (window.innerWidth > 800) closeMenu();
+  if (window.innerWidth >= 768) {
+    animate();
+}
 });
 
 const navbarEl = document.querySelector(".navbar");
@@ -535,15 +537,13 @@ const handleNavbarScroll = () => {
   scrollTicking = false;
 };
 
-window.addEventListener(
-  "scroll",
-  () => {
-    if (!scrollTicking) {
-      requestAnimationFrame(handleNavbarScroll);
-      scrollTicking = true;
-    }
-  },
-  { passive: true },
-);
+window.addEventListener('load', () => {
+    AOS.init({
+        duration: 800,
+        easing: 'ease-out-cubic',
+        once: true,
+        offset: 50
+    });
+});
 
 updateCartUI();
