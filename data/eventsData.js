@@ -37,7 +37,7 @@ const eventsData = [
     id: "codathon",
     name: "Codathon",
     cat: "prodigy",
-    desc: "Tech & Coding",
+    desc: "Stress-free problem solving focused on exploration and clever logic.",
     price: "100",
   },
   {
