@@ -78,7 +78,7 @@ themeBtn?.addEventListener("click", () => {
 });
 
 // =========================================
-// 3. CART SIDEBAR (Hidden for now)
+// 3. CART SIDEBAR
 // =========================================
 
 const cartToggleBtn = document.getElementById("cartToggleBtn");
@@ -94,10 +94,8 @@ closeCartBtn?.addEventListener("click", () => {
 });
 
 // =========================================
-// 4. EVENT RENDERING
+// 4. EVENT RENDERING (Dynamic Prices)
 // =========================================
-
-const EVENT_PRICE = 500;
 
 const renderCategory = (categoryId, containerId) => {
   const items = eventsData.filter((event) => event.cat === categoryId || event.category === categoryId);
@@ -123,19 +121,16 @@ const renderCategory = (categoryId, containerId) => {
 
     const price = document.createElement("div");
     price.className = "event-price";
-    price.textContent = `₹${EVENT_PRICE}`;
+    // Displays the individual price from eventsData.js
+    price.textContent = `₹${item.price || 0}`;
 
     info.append(title, description, price);
 
     const infoButton = document.createElement("a");
     infoButton.className = "action-btn btn-info info-link";
     infoButton.textContent = "Info";
-    
-    // Proper path generation
     infoButton.href = `./data/details/${item.id}.html`;
     infoButton.setAttribute("aria-label", `More information about ${item.name}`);
-    
-    // Force the button to rest on top of any CSS clipping
     infoButton.style.position = "relative";
     infoButton.style.zIndex = "10";
 
@@ -174,10 +169,14 @@ try {
   cart = [];
 }
 
-cart = cart.map((item) => ({
-  ...item,
-  price: EVENT_PRICE,
-}));
+// Sync cart prices with eventsData just in case prices were changed in the code
+cart = cart.map((item) => {
+  const eventRecord = eventsData.find((e) => e.id === item.id);
+  return {
+    ...item,
+    price: eventRecord ? eventRecord.price : (item.price || 0),
+  };
+});
 
 let previousDiscountPercent = 0;
 
@@ -193,7 +192,7 @@ const formatINR = (amount) =>
   })}`;
 
 // =========================================
-// 6. DISCOUNT CALCULATION
+// 6. DISCOUNT CALCULATION (Dynamic Prices)
 // =========================================
 
 const getCartBilling = () => {
@@ -234,13 +233,14 @@ const getCartBilling = () => {
     discountPercent = 0.5;
     message = "5+ eligible events — 50% discount applied!";
   } else if (eligibleItems.length > 0) {
-    const remaining = Math.max(0, 5 - eligibleItems.length); // FIXED TYPO HERE
+    const remaining = Math.max(0, 5 - eligibleItems.length);
     message = `Add ${remaining} more eligible event(s) for 50% off.`;
   }
 
-  const subtotal = cart.reduce((sum, item) => sum + EVENT_PRICE, 0);
-  const eligibleSubtotal = eligibleItems.length * EVENT_PRICE;
-  const excludedSubtotal = ineligibleItems.length * EVENT_PRICE;
+  // Calculate totals based on actual item prices instead of a fixed flat rate
+  const subtotal = cart.reduce((sum, item) => sum + (item.price || 0), 0);
+  const eligibleSubtotal = eligibleItems.reduce((sum, item) => sum + (item.price || 0), 0);
+  const excludedSubtotal = ineligibleItems.reduce((sum, item) => sum + (item.price || 0), 0);
   const discount = eligibleSubtotal * discountPercent;
   const total = eligibleSubtotal - discount + excludedSubtotal;
 
@@ -288,7 +288,7 @@ const renderCheckoutBilling = () => {
       category.textContent = `${item.category} Series`;
 
       const price = document.createElement("strong");
-      price.textContent = formatINR(EVENT_PRICE);
+      price.textContent = formatINR(item.price);
 
       details.append(name, category);
       row.append(details, price);
@@ -393,7 +393,7 @@ const updateCartUI = () => {
           const price = document.createElement("span");
           price.style.fontFamily = "'Orbitron'";
           price.style.fontSize = "0.85rem";
-          price.textContent = formatINR(EVENT_PRICE);
+          price.textContent = formatINR(item.price);
 
           const removeButton = document.createElement("button");
           removeButton.className = "remove-item";
@@ -423,7 +423,11 @@ const updateCartUI = () => {
 
 window.handleAddToCart = (id, name, category) => {
   if (cart.some((item) => item.id === id)) return;
-  cart.push({ id, name, category, price: EVENT_PRICE });
+  // Automatically pull the correct price from eventsData.js so you don't have to edit every HTML details page
+  const eventRecord = eventsData.find((e) => e.id === id);
+  const itemPrice = eventRecord ? eventRecord.price : 0;
+  
+  cart.push({ id, name, category, price: itemPrice });
   saveCart();
   updateCartUI();
 };
@@ -543,8 +547,3 @@ window.addEventListener(
 );
 
 updateCartUI();
-
-// =========================================
-// 11. GLOWING CURSOR (Optimized GPU Rendering)
-// =========================================
-const cursor = document.getElementById("glowing-cursor");

@@ -13,7 +13,7 @@ const eventsData = [
     desc: "Student Development",
     price: "100",
   },
-  { id: "ud", name: "UD", cat: "general", desc: "Core Event", price: "99" },
+  { id: "ud", name: "UD", cat: "general", desc: "Core Event", price: "100" },
   {
     id: "upbiz",
     name: "Upbiz",
@@ -62,9 +62,15 @@ const eventsData = [
     name: "Sr. IDP",
     cat: "prodigy",
     desc: "Industry Problem (Sr) *Excluded from discounts",
-    price: "100",
+    price: "800",
   },
-
+  {
+    id: "sridpmultistatements",
+    name: "Sr. IDP (multiple statements)",
+    cat: "prodigy",
+    desc: "Industry Problem (Sr) *Excluded from discounts",
+    price: "1600",
+  },
   {
     id: "mootcourt",
     name: "Mootcourt",
