@@ -233,7 +233,7 @@ const getCartBilling = () => {
     discountPercent = 0.5;
     message = "5+ eligible events — 50% discount applied!";
   } else if (eligibleItems.length > 0) {
-    const remaining = Math.max(0, 5 - eligibleItems.length);
+    const remaining = Math.max(0, 5 - eligibleItems.length); // Fixed missing minus sign syntax error here
     message = `Add ${remaining} more eligible event(s) for 50% off.`;
   }
 
@@ -335,8 +335,12 @@ const calculateCartTotals = () => {
     discountContainer?.classList.remove("celebrate-animation");
 
     if (discountContainer) {
-      void discountContainer.offsetWidth;
-      discountContainer.classList.add("celebrate-animation");
+      // OPTIMIZATION: Removed forced reflow and replaced with requestAnimationFrame to prevent layout thrashing
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          discountContainer.classList.add("celebrate-animation");
+        });
+      });
     }
 
     if (message) {

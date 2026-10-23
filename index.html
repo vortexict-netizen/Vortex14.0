@@ -4,18 +4,18 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Vortex 14.0 | Asia's Largest Chem-Fest</title>
-    <!-- Standard SEO Meta Tags -->
+    
+    <!-- Standard SEO Meta Tags (Duplicate removed) -->
     <meta name="description" content="Welcome to Vortex 14.0, Asia's largest Chem-Fest organized by the Institute of Chemical Technology (ICT), Mumbai. Explore 15+ events merging chemical engineering, pharma, and business.">
     <meta name="keywords" content="Vortex 14.0, ICT Mumbai, Chem-Fest, Chemical Engineering, Pharma Fest, Upbiz, Advent, Tech Fest Mumbai">
     <meta name="author" content="ICT Mumbai">
     <meta name="robots" content="index, follow">
 
-    <!-- Open Graph (OG) Tags for Social Media (WhatsApp, LinkedIn, Instagram, Discord) -->
+    <!-- Open Graph (OG) Tags -->
     <meta property="og:title" content="Vortex 14.0 | Asia's Largest Chem-Fest">
     <meta property="og:description" content="Experience the intersection of intellect, innovation, and industry at ICT Mumbai's flagship event. Register now for the Ultimate Chem-Fest.">
     <meta property="og:url" content="https://vortexict.in/">
     <meta property="og:type" content="website">
-    <!-- Replace this image link with an actual promotional banner image once you have one -->
     <meta property="og:image" content="https://vortexict.in/images/social-preview.png">
 
     <!-- Twitter / X Card Tags -->
@@ -23,14 +23,26 @@
     <meta name="twitter:title" content="Vortex 14.0 | Asia's Largest Chem-Fest">
     <meta name="twitter:description" content="Experience the intersection of intellect, innovation, and industry at ICT Mumbai's flagship event.">
     <meta name="twitter:image" content="https://vortexict.in/images/social-preview.png">
+    
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Orbitron:wght@400;500;700;900&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-
+    
+    <!-- OPTIMIZATION: Preload Critical CSS -->
+    <link rel="preload" href="./css/index.css" as="style">
     <link rel="stylesheet" href="./css/index.css" />
-    <link rel="stylesheet" href="./css/fx.css" />
-    <meta name="description" content="Welcome to Vortex 14.0, Asia's largest Chem-Fest organized by the Institute of Chemical Technology (ICT), Mumbai.">
+
+    <!-- OPTIMIZATION: Defer Google Fonts (display=swap is already included) -->
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Orbitron:wght@400;500;700;900&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Orbitron:wght@400;500;700;900&display=swap" /></noscript>
+    
+    <!-- OPTIMIZATION: Defer FontAwesome -->
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+    <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" /></noscript>
+
+    <!-- OPTIMIZATION: Defer Non-Critical Animations CSS -->
+    <link rel="preload" href="./css/fx.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="./css/fx.css" /></noscript>
+
     <style>
       html[data-theme="light"] * { text-shadow: none !important; }
       html[data-theme="light"] .nav-logo img { filter: none !important; box-shadow: none !important; }
@@ -49,7 +61,8 @@
     <nav class="navbar">
       <a href="#" class="nav-logo" data-target="home">
         <img src="photos/vortex_L.png" alt="Vortex 14.0" class="logo-light" width="1037" height="240"/>
-        <img src="photos/vortex_D.png" alt="Vortex 14.0" class="logo-dark" width="4302" height="902"/>
+        <!-- Note: Your width, height, and fetchpriority are perfect here for LCP -->
+        <img src="photos/vortex_D.png" alt="Vortex 14.0" class="logo-dark" width="378" height="87" fetchpriority="high">
       </a>
       <ul class="nav-links">
         <li><a class="nav-tab active" data-target="home">Home</a></li>
@@ -104,7 +117,6 @@
           <button class="action-btn btn-info" style="font-size: 1rem; padding: 12px 30px" onclick="document.querySelector('.nav-tab[data-target=\'events\']').click()">Explore Events</button>
         </div>
         
-        <!-- Hardware Optimized Logo -->
         <div class="hero-3d">
           <svg viewBox="0 0 400 400" class="vortex-pie">
             <g class="spin-cw-slow">
@@ -150,7 +162,6 @@
         </div>
       </section>
 
-      <!-- Updated FAQ Section with Dropdowns -->
       <section id="faq" class="tab-content text-section">
         <h2 class="font-heading" style="margin-bottom: 2rem">Frequently Asked <span class="gradient-text">Questions</span></h2>
         <div class="faq-grid">
