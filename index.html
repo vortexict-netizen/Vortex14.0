@@ -314,5 +314,17 @@
     <div class="node-tip" id="nodeTip"><strong></strong><span></span></div>
     
     <script type="module" src="./scripts/index.js"></script>
+    <script>
+  window.addEventListener('load', function() {
+    if (window.location.hash === '#grid-general') {
+      setTimeout(function() {
+        const target = document.getElementById('grid-general');
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth' });
+        }
+      }, 300); // Wait 300ms for AOS and canvas to render
+    }
+  });
+</script>
   </body>
 </html>
