@@ -1,44 +1,64 @@
 import eventsData from "../data/eventsData.js";
 
 // =========================================
-// 1. SPA TAB NAVIGATION
+// 1. SPA TAB NAVIGATION & CACHE SYSTEM
 // =========================================
 
 const navTabs = document.querySelectorAll(".nav-tab, .nav-logo");
 const tabContents = document.querySelectorAll(".tab-content");
+
+const switchTab = (targetId) => {
+  const targetContent = document.getElementById(targetId);
+  if (!targetId || !targetContent) return;
+
+  document.querySelectorAll(".nav-tab").forEach((item) => item.classList.remove("active"));
+  
+  const activeTab = document.querySelector(`.nav-tab[data-target="${targetId}"]`);
+  if (activeTab) activeTab.classList.add("active");
+
+  tabContents.forEach((content) => content.classList.remove("active"));
+  targetContent.classList.add("active");
+};
 
 navTabs.forEach((tab) => {
   tab.addEventListener("click", (event) => {
     if (!tab.getAttribute("href") || tab.getAttribute("href") === "#") {
       event.preventDefault();
     }
-
-    const targetId = tab.getAttribute("data-target");
-    const targetContent = document.getElementById(targetId);
-
-    if (!targetId || !targetContent) return;
-
-    document
-      .querySelectorAll(".nav-tab")
-      .forEach((item) => item.classList.remove("active"));
-
-    const activeTab = document.querySelector(
-      `.nav-tab[data-target="${targetId}"]`,
-    );
-
-    if (activeTab) activeTab.classList.add("active");
-
-    tabContents.forEach((content) => {
-      content.classList.remove("active");
-    });
-
-    targetContent.classList.add("active");
-
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
-    });
+    switchTab(tab.getAttribute("data-target"));
+    window.scrollTo({ top: 0, behavior: "smooth" });
   });
+});
+
+// CACHE SYSTEM: Restore the exact tab and scroll position on load
+const savedState = sessionStorage.getItem("vortex_page_state");
+const initialHash = window.location.hash.substring(1);
+
+if (savedState) {
+  const { tab, scrollY } = JSON.parse(savedState);
+  switchTab(tab);
+  
+  // A tiny timeout ensures the DOM has rendered the tab before scrolling
+  setTimeout(() => {
+    window.scrollTo(0, scrollY);
+  }, 50);
+
+  // Clear it so it doesn't force this position on unrelated reloads
+  sessionStorage.removeItem("vortex_page_state");
+} else if (initialHash) {
+  // Fallback to URL hash if there is no cache
+  switchTab(initialHash);
+}
+
+// CACHE SYSTEM: Save the exact tab and scroll position right before leaving the page
+window.addEventListener("beforeunload", () => {
+  const activeTab = document.querySelector(".nav-tab.active");
+  if (activeTab) {
+    sessionStorage.setItem("vortex_page_state", JSON.stringify({
+      tab: activeTab.getAttribute("data-target"),
+      scrollY: window.scrollY
+    }));
+  }
 });
 
 // =========================================
