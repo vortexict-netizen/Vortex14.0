@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Vortex 14.0 | Asia's Largest Chem-Fest</title>
     
-    <!-- Standard SEO Meta Tags (Duplicate removed) -->
-    <meta name="description" content="Welcome to Vortex 14.0, Asia's largest Chem-Fest organized by the Institute of Chemical Technology (ICT), Mumbai. Explore 15+ events merging chemical engineering, pharma, and business.">
+    <!-- Standard SEO Meta Tags -->
+    <meta name="description" content="Welcome to Vortex 14.0, Asia's largest Chem-Fest at ICT Mumbai. Explore 15+ events merging chemical engineering, pharma, and business.">
     <meta name="keywords" content="Vortex 14.0, ICT Mumbai, Chem-Fest, Chemical Engineering, Pharma Fest, Upbiz, Advent, Tech Fest Mumbai">
     <meta name="author" content="ICT Mumbai">
     <meta name="robots" content="index, follow">
@@ -16,6 +16,7 @@
     <meta property="og:description" content="Experience the intersection of intellect, innovation, and industry at ICT Mumbai's flagship event. Register now for the Ultimate Chem-Fest.">
     <meta property="og:url" content="https://vortexict.in/">
     <meta property="og:type" content="website">
+    <meta property="og:image" content="https://vortexict.in/images/social-preview.png">
 
     <!-- Twitter / X Card Tags -->
     <meta name="twitter:card" content="summary_large_image">
@@ -30,7 +31,7 @@
     <link rel="preload" href="./css/index.css" as="style">
     <link rel="stylesheet" href="./css/index.css" />
 
-    <!-- OPTIMIZATION: Defer Google Fonts (display=swap is already included) -->
+    <!-- OPTIMIZATION: Defer Google Fonts -->
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Orbitron:wght@400;500;700;900&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'" />
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Orbitron:wght@400;500;700;900&display=swap" /></noscript>
     
@@ -112,7 +113,7 @@
         <div class="hero-text">
           <h1 class="font-heading">Welcome to VORTEX <span class="gradient-text">14.0</span></h1>
           <p>Asia's Largest Chem-Fest organized by the Institute of Chemical Technology (ICT), Mumbai. Where Chemical Engineering, Pharma, and Futuristic Technology converge into a single dimension of innovation.</p>
-          <button class="action-btn btn-info" style="font-size: 1rem; padding: 12px 30px" onclick="document.querySelector('.nav-tab[data-target=\'events\']').click()">Explore Events</button>
+          <a href="#events" class="action-btn btn-info" style="font-size: 1rem; padding: 12px 30px; display: inline-block; text-decoration: none;">Explore Events</a>
         </div>
         
         <div class="hero-3d">
@@ -216,7 +217,7 @@
               
               Papyrus: A unique research paper presentation event for showcasing innovative ideas.
               
-              Ignite: An exciting quiz competition testing your chemical engineering knowledge.
+              Ignate: An exciting quiz competition testing your chemical engineering knowledge.
               
               Blueprint: A plant design competition where creativity meets engineering precision.</p>
             </div>
@@ -283,9 +284,9 @@
         </div>
         <div class="footer-col">
           <h3>Quick Links</h3>
-          <a href="#" onclick="document.querySelector('.nav-tab[data-target=\'events\']').click()">Events</a>
-          <a href="#" onclick="document.querySelector('.nav-tab[data-target=\'faq\']').click()">FAQ</a>
-          <a href="about.html" onclick="document.querySelector('.nav-tab[data-target=\'about\']').click()">About Us</a>
+          <a href="#events">Events</a>
+          <a href="#faq">FAQ</a>
+          <a href="about.html">About Us</a>
         </div>
         <div class="footer-col">
           <h3>Contact</h3>
@@ -299,9 +300,7 @@
         </div>
         <div class="footer-col">
           <h3>Connect</h3>
-          <!-- Locate this section in your footer -->
           <div class="social-links">
-            <!-- Update the <a> tag to include aria-label -->
             <a href="https://www.instagram.com/vortex_ict?cplk=MXExc2M3ZTZqZWhlOA==" aria-label="Visit Vortex 14.0 on Instagram">
               <i class="fa-brands fa-instagram" aria-hidden="true"></i>
             </a>
@@ -313,5 +312,23 @@
     <div class="node-tip" id="nodeTip"><strong></strong><span></span></div>
     
     <script type="module" src="./scripts/index.js"></script>
+
+    <!-- Cross-Page Anchor Scrolling Fix -->
+    <script>
+      window.addEventListener('DOMContentLoaded', () => {
+        if (window.location.hash) {
+          const targetId = window.location.hash.substring(1); 
+          const targetElement = document.getElementById(targetId);
+          if (targetElement) {
+            setTimeout(() => {
+              window.scrollTo({
+                top: targetElement.offsetTop - 80, 
+                behavior: 'smooth'
+              });
+            }, 500); 
+          }
+        }
+      });
+    </script>
   </body>
 </html>
