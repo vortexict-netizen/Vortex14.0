@@ -52,6 +52,19 @@
       .btn-cart { 
         display: none !important; 
       }
+      /* Increase invisible clickable area for nav buttons */
+      .icon-btn, .menu-btn {
+        position: relative;
+      }
+      
+      .icon-btn::after, .menu-btn::after {
+        content: "";
+        position: absolute;
+        top: -15px;
+        right: -15px;
+        bottom: -15px;
+        left: -15px;
+      }
     </style>
     
     <script src="./scripts/fx.js" defer></script>
