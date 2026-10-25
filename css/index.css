@@ -36,7 +36,7 @@
 body { background-color: var(--bg-color); color: var(--text-main); font-family: "Inter", sans-serif; overflow-x: hidden; line-height: 1.6; min-height: 100vh; transition: background-color 0.4s ease, color 0.4s ease; }
 h1, h2, h3, h4, .font-heading { font-family: "Orbitron", sans-serif; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
 .gradient-text { background: linear-gradient(90deg, var(--primary-cyan), var(--primary-purple)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; color: transparent; display: inline-block; }
-.navbar { position: fixed; top: 0; width: 100%; height: 75px; background: var(--nav-bg); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-bottom: 1px solid var(--glass-border); z-index: 1000; display: flex; align-items: center; justify-content: space-between; padding: 0 5%; transition: background-color 0.4s ease, border-color 0.4s ease; }
+.navbar { position: fixed; top: 0; width: 100%; height: 75px; background: var(--nav-bg); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-bottom: 1px solid var(--glass-border); z-index: 1000; display: flex; align-items: center; justify-content: space-between; padding: 0 5%; transition: background-color 0.4s ease, border-color 0.4s ease, transform 0.3s ease; }
 .navbar.nav-hidden { transform: translateY(-100%); }
 .nav-logo img { height: 50px; width: auto; max-width: 250px; object-fit: contain; }
 .logo-light, :root[data-theme="light"] .logo-dark { display: none; }
@@ -50,7 +50,7 @@ h1, h2, h3, h4, .font-heading { font-family: "Orbitron", sans-serif; font-weight
 .icon-btn:hover { color: var(--primary-cyan); transform: scale(1.1); }
 .cart-badge { position: absolute; top: -8px; right: -10px; background: var(--primary-purple); color: #fff; font-size: 0.7rem; font-weight: bold; height: 18px; min-width: 18px; border-radius: 9px; display: flex; align-items: center; justify-content: center; padding: 0 4px; box-shadow: 0 0 8px var(--primary-purple); }
 
-.ambient-bg { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1; overflow: hidden; background: var(--bg-color); transition: background-color 0.4s ease; }
+.ambient-bg { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1; overflow: hidden; background: var(--bg-color); transition: background-color 0.4s ease; contain: strict; pointer-events: none; }
 .ambient-bg .orb { animation-duration: 8s !important; }
 .orb { position: absolute; border-radius: 50%; filter: blur(120px); opacity: var(--orb-opacity); will-change: transform; }
 .orb-1 { width: 40vw; height: 40vw; top: -10%; left: -10%; background: radial-gradient(circle, var(--primary-purple) 0%, transparent 70%); animation: drift-1 15s infinite linear alternate; }
@@ -74,13 +74,16 @@ h1, h2, h3, h4, .font-heading { font-family: "Orbitron", sans-serif; font-weight
 .hero-3d { position: absolute; right: 0; top: 0; bottom: 0; width: 50%; display: flex; align-items: center; justify-content: center; perspective: 1200px; }
 .vortex-pie { width: 100%; max-width: 600px; height: auto; transform: rotateX(25deg) rotateY(-15deg); transform-style: preserve-3d; animation: floatPie 6s ease-in-out infinite; filter: drop-shadow(0 25px 35px rgba(0,0,0,0.6)) drop-shadow(0 0 8px rgba(255,255,255,0.3)); }
 @keyframes floatPie { 0%, 100% { transform: rotateX(25deg) rotateY(-15deg) translateZ(0px); } 50% { transform: rotateX(25deg) rotateY(-15deg) translateZ(20px); } }
+
+/* Restored SVG Ring Rotations with explicit 0% -> 100% keyframes */
 .spin-cw-fast { transform-origin: 200px 200px; animation: spin 18s linear infinite; }
 .spin-ccw-med { transform-origin: 200px 200px; animation: spin-reverse 24s linear infinite; }
 .spin-cw-slow { transform-origin: 200px 200px; animation: spin 30s linear infinite; }
 .spin-ccw-slow { transform-origin: 200px 200px; animation: spin-reverse 45s linear infinite; }
 .center-pie-group:hover { animation-play-state: paused; }
-@keyframes spin { 100% { transform: rotate(360deg); } }
-@keyframes spin-reverse { 100% { transform: rotate(-360deg); } }
+@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+@keyframes spin-reverse { 0% { transform: rotate(0deg); } 100% { transform: rotate(-360deg); } }
+
 .pie-slice { cursor: pointer; transform-origin: 200px 200px; transform: translate(var(--gx), var(--gy)) scale(1); transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1), filter 0.3s ease; }
 .pie-slice:hover { transform: translate(var(--hx), var(--hy)) scale(1.1); filter: brightness(1.2) drop-shadow(0 0 10px currentColor); }
 .node-tip { position: fixed; left: 0; top: 0; z-index: 9999; pointer-events: none; opacity: 0; transform: translate(-50%, -50%); transition: opacity 0.2s ease; max-width: 240px; background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 12px; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); padding: 10px 16px; text-align: center; }
@@ -197,25 +200,25 @@ footer { background: var(--footer-bg); border-top: 1px solid var(--glass-border)
   footer { padding: 2rem 1.2rem; }
 }
 
-.electrons-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; overflow: hidden; z-index: 0; }
-.electron { position: absolute; width: 4px; height: 4px; border-radius: 50%; opacity: 0; }
+.electrons-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; overflow: hidden; z-index: 0; contain: strict; }
+.electron { position: absolute; width: 4px; height: 4px; border-radius: 50%; opacity: 0; will-change: transform, opacity; }
 
 .e-1 { top: 20%; left: -5%; background: #45aaf2; box-shadow: 0 0 10px 2px #45aaf2, 0 0 20px 2px #ffffff; animation: shootRight 4s linear infinite; }
 .e-2 { top: 70%; right: -5%; background: #ffd93d; box-shadow: 0 0 10px 2px #ffd93d, 0 0 20px 2px #ffffff; animation: shootLeft 3.5s linear infinite 1.5s; }
 .e-3 { bottom: -5%; left: 30%; background: #ff5a4d; box-shadow: 0 0 10px 2px #ff5a4d, 0 0 20px 2px #ffffff; animation: shootUp 4.5s linear infinite 0.5s; }
 
 @keyframes shootRight {
-  0% { transform: translate(0, 0); opacity: 0; }
+  0% { transform: translate3d(0, 0, 0); opacity: 0; }
   10%, 90% { opacity: 1; }
-  100% { transform: translate(110vw, 30vh); opacity: 0; }
+  100% { transform: translate3d(110vw, 30vh, 0); opacity: 0; }
 }
 @keyframes shootLeft {
-  0% { transform: translate(0, 0); opacity: 0; }
+  0% { transform: translate3d(0, 0, 0); opacity: 0; }
   10%, 90% { opacity: 1; }
-  100% { transform: translate(-110vw, -40vh); opacity: 0; }
+  100% { transform: translate3d(-110vw, -40vh, 0); opacity: 0; }
 }
 @keyframes shootUp {
-  0% { transform: translate(0, 0); opacity: 0; }
+  0% { transform: translate3d(0, 0, 0); opacity: 0; }
   10%, 90% { opacity: 1; }
-  100% { transform: translate(40vw, -110vh); opacity: 0; }
+  100% { transform: translate3d(40vw, -110vh, 0); opacity: 0; }
 }
