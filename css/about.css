@@ -1,4 +1,3 @@
-
 /* ===== Vortex 14.0 — About Page Enhancements ===== */
 
 .info-card {
@@ -41,7 +40,6 @@
 }
 
 /* ===== REMOVE IMAGE FILTERS ===== */
-
 body .team-card img,
 body .team-img-wrapper img {
     filter: none !important;
@@ -53,13 +51,10 @@ body .team-img-wrapper img {
 }
 
 /* ===== TEAM IMAGE STYLING ===== */
-
 .team-img-wrapper {
     position: relative;
     background: radial-gradient(circle at 30% 20%, color-mix(in srgb, var(--c) 25%, #0a1c22), #000 70%);
 }
-
-/* Horizontal Scanning Line Animation */
 
 .team-card:hover .team-img-wrapper::after {
     animation: scanOnce 2.5s ease-in-out forwards;
@@ -79,22 +74,10 @@ body .team-img-wrapper img {
 }
 
 @keyframes scanOnce {
-    0% {
-        transform: translateY(-4px);
-        opacity: 1;
-    }
-
-    75% {
-        opacity: 1;
-    }
-
-    100% {
-        transform: translateY(300px);
-        opacity: 0;
-    }
+    0% { transform: translateY(-4px); opacity: 1; }
+    75% { opacity: 1; }
+    100% { transform: translateY(300px); opacity: 0; }
 }
-
-/* Clean Text-Only Designation */
 
 .role {
     display: block;
@@ -110,63 +93,21 @@ body .team-img-wrapper img {
     border: none;
 }
 
-/* ===== CONVENOR CARD ===== */
-
 .convenor-grid {
     grid-template-columns: minmax(0, 340px);
     justify-content: center;
 }
 
-/* ===== GLOWING CURSOR ===== */
-
-#glowing-cursor {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    background: rgba(0, 243, 255, 0.4);
-    box-shadow: 0 0 15px rgba(0, 243, 255, 0.6), 0 0 30px rgba(0, 243, 255, 0.4);
-    pointer-events: none;
-    z-index: 99999;
-    transform: translate(-50%, -50%);
-    mix-blend-mode: screen;
-    transition: transform 0.15s ease-out, background 0.15s;
-}
-
 /* ===== OPAQUE OVERRIDES FOR CARDS AND FOOTER ===== */
+:root[data-theme="dark"] .team-card { background: #141419 !important; }
+:root[data-theme="dark"] footer { background: #0a0a0f !important; }
+:root[data-theme="dark"] .info-card { background: #141419 !important; }
 
-/* Dark theme */
+:root[data-theme="light"] .team-card { background: #ffffff !important; }
+:root[data-theme="light"] footer { background: #e6e6eb !important; }
+:root[data-theme="light"] .info-card { background: #ffffff !important; }
 
-:root[data-theme="dark"] .team-card {
-    background: #141419 !important;
-}
-
-:root[data-theme="dark"] footer {
-    background: #0a0a0f !important;
-}
-
-:root[data-theme="dark"] .info-card {
-    background: #141419 !important;
-}
-
-/* Light theme */
-
-:root[data-theme="light"] .team-card {
-    background: #ffffff !important;
-}
-
-:root[data-theme="light"] footer {
-    background: #e6e6eb !important;
-}
-
-:root[data-theme="light"] .info-card {
-    background: #ffffff !important;
-}
-
-/* ===== FIXED TEAM CARD LAYOUT ===== */
-
+/* ===== FIXED TEAM CARD LAYOUT & IMAGE FIX ===== */
 .team-grid {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -187,7 +128,9 @@ body .team-img-wrapper img {
 .team-img-wrapper {
     position: relative;
     width: 100%;
-    height: 250px;
+    /* Remove the fixed height and use a portrait aspect ratio instead */
+    height: auto;
+    aspect-ratio: 4 / 5; /* This naturally zooms the image out by making the box taller */
     flex-shrink: 0;
     overflow: hidden;
 }
@@ -197,7 +140,7 @@ body .team-img-wrapper img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    object-position: center;
+    object-position: top center; 
 }
 
 .team-info {
@@ -209,57 +152,23 @@ body .team-img-wrapper img {
     box-sizing: border-box;
 }
 
-.team-info h4 {
-    margin: 0 0 0.5rem;
-    line-height: 1.35;
-    overflow-wrap: anywhere;
-}
-
-.team-info .role {
-    display: block;
-    line-height: 1.5;
-    margin-bottom: 0.75rem;
-}
-
-.team-info p {
-    margin: 0;
-    line-height: 1.65;
-    overflow-wrap: break-word;
-    word-break: normal;
-}
+.team-info h4 { margin: 0 0 0.5rem; line-height: 1.35; overflow-wrap: anywhere; }
+.team-info .role { display: block; line-height: 1.5; margin-bottom: 0.75rem; }
+.team-info p { margin: 0; line-height: 1.65; overflow-wrap: break-word; word-break: normal; }
 
 /* ===== RESPONSIVE LAYOUT ===== */
-
 @media (max-width: 900px) {
-    .team-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-
-    .convenor-grid {
-        grid-template-columns: minmax(0, 340px);
-        justify-content: center;
-    }
+    .team-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .convenor-grid { grid-template-columns: minmax(0, 340px); justify-content: center; }
 }
 
 @media (max-width: 560px) {
-    .team-grid {
-        grid-template-columns: minmax(0, 1fr);
-        gap: 1.25rem;
-    }
-
-    .team-img-wrapper {
-        height: 280px;
-    }
-
-    .convenor-grid {
-        grid-template-columns: minmax(0, 1fr);
-        justify-content: center;
-    }
+    .team-grid { grid-template-columns: minmax(0, 1fr); gap: 1.25rem; }
+    .team-img-wrapper { height: 280px; }
+    .convenor-grid { grid-template-columns: minmax(0, 1fr); justify-content: center; }
 }
 
-
 /* ===== FIX ABOUT SECTION INFO CARDS ===== */
-
 .about-split {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -278,49 +187,13 @@ body .team-img-wrapper img {
     line-height: 1.65;
 }
 
-.about-split .info-card h3 {
-    position: relative;
-    margin: 0 0 0.75rem;
-    line-height: 1.35;
-    overflow-wrap: break-word;
-}
-
-.about-split .info-card p {
-    position: relative;
-    margin: 0 0 1rem;
-    line-height: 1.65;
-    overflow-wrap: break-word;
-}
-
-.about-split .info-card ul {
-    position: relative;
-    margin: 0.75rem 0 0;
-    padding-left: 1.25rem;
-}
-
-.about-split .info-card li {
-    margin-bottom: 0.5rem;
-    line-height: 1.6;
-}
-
-.about-split .info-card .address-block {
-    position: relative;
-    display: flex;
-    align-items: flex-start;
-    gap: 0.5rem;
-    margin-top: 1rem;
-    overflow-wrap: anywhere;
-}
-
-/* ===== RESPONSIVE INFO CARDS ===== */
+.about-split .info-card h3 { position: relative; margin: 0 0 0.75rem; line-height: 1.35; overflow-wrap: break-word; }
+.about-split .info-card p { position: relative; margin: 0 0 1rem; line-height: 1.65; overflow-wrap: break-word; }
+.about-split .info-card ul { position: relative; margin: 0.75rem 0 0; padding-left: 1.25rem; }
+.about-split .info-card li { margin-bottom: 0.5rem; line-height: 1.6; }
+.about-split .info-card .address-block { position: relative; display: flex; align-items: flex-start; gap: 0.5rem; margin-top: 1rem; overflow-wrap: anywhere; }
 
 @media (max-width: 768px) {
-    .about-split {
-        grid-template-columns: minmax(0, 1fr);
-        gap: 1.25rem;
-    }
-
-    .about-split .info-card {
-        padding: 1.25rem;
-    }
+    .about-split { grid-template-columns: minmax(0, 1fr); gap: 1.25rem; }
+    .about-split .info-card { padding: 1.25rem; }
 }
