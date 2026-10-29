@@ -60,35 +60,11 @@ window.addEventListener("resize", () => {
 });
 
 // =========================================
-// 3. GLOWING CURSOR
-// =========================================
-// NOTE: If this cursor looks different from your index page, open your `fx.js` file,
-// find the cursor tracking code (look for `mousemove`), copy it, and replace this section.
-const cursor = document.getElementById("glowing-cursor");
-if (cursor) {
-  document.addEventListener("mousemove", (e) => {
-    // Update cursor position directly
-    cursor.style.left = `${e.clientX}px`;
-    cursor.style.top = `${e.clientY}px`;
-  });
-
-  document.addEventListener("mousedown", () => {
-    cursor.style.transform = "translate(-50%, -50%) scale(0.6)";
-    cursor.style.background = "rgba(189, 0, 255, 0.6)"; // Flash purple on click
-  });
-  document.addEventListener("mouseup", () => {
-    cursor.style.transform = "translate(-50%, -50%) scale(1)";
-    cursor.style.background = "rgba(0, 243, 255, 0.4)"; // Revert to cyan
-  });
-}
-
-// =========================================
-// 4. BACKGROUND CHEMICAL REACTIONS
+// 3. BACKGROUND CHEMICAL REACTIONS
 // =========================================
 const ambientBg = document.querySelector(".ambient-bg");
 
 if (ambientBg) {
-  // Actual Chemical Reactions
   const formulas = [
     "H₂O ⇌ H⁺ + OH⁻", 
     "CH₄ + 2O₂ → CO₂ + 2H₂O", 
@@ -110,17 +86,15 @@ if (ambientBg) {
     el.style.position = "absolute";
     el.style.left = `${Math.random() * 95}vw`;
     
-    // High Visibility Colors & Text Sizing
     el.style.color = "rgba(0, 243, 255, 0.9)";
     el.style.textShadow = "0 0 12px rgba(0, 243, 255, 0.8)";
-    el.style.fontSize = `${Math.random() * 12 + 18}px`; // Size between 18px and 30px
+    el.style.fontSize = `${Math.random() * 12 + 18}px`; 
     el.style.fontFamily = "'Orbitron', sans-serif";
     el.style.pointerEvents = "none";
     el.style.zIndex = "0";
 
-    const duration = Math.random() * 8 + 12; // Takes 12 to 20 seconds to float up
+    const duration = Math.random() * 8 + 12; 
     
-    // If it's the first load, scatter them vertically across the screen immediately
     const startY = isInitialLoad ? `-${Math.random() * 100}vh` : `5vh`;
     
     el.style.bottom = "0";
@@ -129,28 +103,43 @@ if (ambientBg) {
 
     ambientBg.appendChild(el);
 
-    // Force browser reflow to guarantee the transition works
+    // Force browser reflow
     void el.offsetWidth;
 
     el.style.transition = `transform ${duration}s linear, opacity 1s ease-in-out`;
-    
-    // INTENSE OPACITY (Very visible)
     el.style.opacity = "0.7"; 
-    
-    el.style.transform = `translateY(-120vh)`; // Floats completely off screen
+    el.style.transform = `translateY(-120vh)`; 
 
-    // Clean up memory when it leaves the screen
     setTimeout(() => {
       el.style.opacity = "0";
       setTimeout(() => el.remove(), 1000);
-    }, duration * 1000 - 1000);
+    }, (duration * 1000) - 1000);
   };
 
-  // INSTANT LOAD: Force 12 reactions to appear the exact millisecond the page loads
   for (let i = 0; i < 12; i++) {
     createReaction(true);
   }
 
-  // CONTINUOUS SPAWN: Keeps generating them every 0.8 seconds
   setInterval(() => createReaction(false), 800);
+}
+
+// =========================================
+// 4. GLOWING RING CURSOR (GPU OPTIMIZED)
+// =========================================
+const cursor = document.getElementById("glowing-cursor");
+if (cursor) {
+  // Subtracting 25 centers the new 50px ring perfectly
+  document.addEventListener("mousemove", (e) => {
+    cursor.style.transform = `translate3d(${e.clientX - 25}px, ${e.clientY - 25}px, 0)`;
+  });
+  
+  document.addEventListener("mousedown", () => {
+    cursor.classList.add("clicking");
+    cursor.style.transform = cursor.style.transform + " scale(0.85)"; 
+  });
+  
+  document.addEventListener("mouseup", (e) => {
+    cursor.classList.remove("clicking");
+    cursor.style.transform = `translate3d(${e.clientX - 25}px, ${e.clientY - 25}px, 0) scale(1)`;
+  });
 }

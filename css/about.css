@@ -134,7 +134,7 @@ body .team-img-wrapper img {
     overflow: hidden;
 }
 
-/* 2. Specific override applies ONLY to the convenor grid after the base rules */
+/* 2. Specific override applies ONLY to the convenor grid */
 .convenor-grid .team-img-wrapper {
     height: auto;
     aspect-ratio: 4 / 5; 
@@ -173,7 +173,7 @@ body .team-img-wrapper img {
     /* Sets the mobile height for the core team */
     .team-img-wrapper { height: 280px; }
     
-    /* MUST include this so the convenor doesn't get squashed to 280px on phones */
+    /* Keeps the convenor proportional */
     .convenor-grid .team-img-wrapper { height: auto; }
     
     .convenor-grid { grid-template-columns: minmax(0, 1fr); justify-content: center; }
@@ -207,4 +207,62 @@ body .team-img-wrapper img {
 @media (max-width: 768px) {
     .about-split { grid-template-columns: minmax(0, 1fr); gap: 1.25rem; }
     .about-split .info-card { padding: 1.25rem; }
+}
+
+/* ===== INCREASED HITBOXES FOR EASY CLICKING ===== */
+.nav-links a, 
+.footer-col a, 
+.icon-btn, 
+.menu-btn,
+.social-links a {
+    position: relative;
+    z-index: 10;
+    padding: 8px;
+    margin: -8px;
+}
+
+/* ===== OPTIMIZED GLOWING CURSOR ===== */
+/* ===== HIDE DEFAULT CURSOR ENTIRELY ===== */
+* {
+    cursor: none !important;
+}
+
+/* ===== NEW RING & DOT CURSOR ===== */
+#glowing-cursor {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 36px; /* Size of the outer ring */
+    height: 36px;
+    border-radius: 50%;
+    border: 2px solid rgba(0, 243, 255, 0.8);
+    box-shadow: 0 0 15px rgba(0, 243, 255, 0.6), inset 0 0 8px rgba(0, 243, 255, 0.4);
+    pointer-events: none;
+    z-index: 99999;
+    will-change: transform;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.1s ease-out, border-color 0.15s, box-shadow 0.15s;
+}
+
+/* The solid glowing dot in the center */
+#glowing-cursor::after {
+    content: "";
+    width: 15px;
+    height: 15px;
+    background: rgba(0, 243, 255, 1);
+    border-radius: 50%;
+    box-shadow: 0 0 10px rgba(0, 243, 255, 0.9);
+    transition: background 0.15s, transform 0.15s;
+}
+
+/* Disable entirely on phones so native touch works normally */
+@media (pointer: coarse) {
+    * { cursor: auto !important; } 
+    #glowing-cursor { display: none !important; }
+}
+
+@media (pointer: coarse) {
+    #glowing-cursor { display: none !important; }
 }
