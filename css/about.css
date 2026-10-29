@@ -125,14 +125,19 @@ body .team-img-wrapper img {
     border-radius: 18px;
 }
 
+/* 1. Base wrapper applies to ALL images first */
 .team-img-wrapper {
     position: relative;
     width: 100%;
-    /* Remove the fixed height and use a portrait aspect ratio instead */
-    height: auto;
-    aspect-ratio: 4 / 5; /* This naturally zooms the image out by making the box taller */
+    height: 250px; 
     flex-shrink: 0;
     overflow: hidden;
+}
+
+/* 2. Specific override applies ONLY to the convenor grid after the base rules */
+.convenor-grid .team-img-wrapper {
+    height: auto;
+    aspect-ratio: 4 / 5; 
 }
 
 .team-img-wrapper img {
@@ -164,7 +169,13 @@ body .team-img-wrapper img {
 
 @media (max-width: 560px) {
     .team-grid { grid-template-columns: minmax(0, 1fr); gap: 1.25rem; }
+    
+    /* Sets the mobile height for the core team */
     .team-img-wrapper { height: 280px; }
+    
+    /* MUST include this so the convenor doesn't get squashed to 280px on phones */
+    .convenor-grid .team-img-wrapper { height: auto; }
+    
     .convenor-grid { grid-template-columns: minmax(0, 1fr); justify-content: center; }
 }
 
