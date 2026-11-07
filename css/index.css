@@ -134,8 +134,20 @@ h1, h2, h3, h4, .font-heading { font-family: "Orbitron", sans-serif; font-weight
 .btn-info { border-color: var(--primary-cyan); color: var(--primary-cyan); text-decoration: none; text-align: center; }
 .btn-info:hover { background: var(--primary-cyan); color: #000; box-shadow: 0 0 12px rgba(0,243,255,0.4); }
 
-/* ADDED MISSING CART SIDEBAR CSS */
-.cart-sidebar { position: fixed; top: 75px; right: -320px; width: 100%; max-width: 300px; height: calc(100vh - 75px); background: var(--glass-bg); backdrop-filter: blur(24px); border-left: 1px solid var(--glass-border); z-index: 999; padding: 1.2rem; display: flex; flex-direction: column; transition: right 0.4s cubic-bezier(0.25,1,0.5,1), top 0.35s cubic-bezier(0.25,1,0.5,1), height 0.35s cubic-bezier(0.25,1,0.5,1); box-shadow: -10px 0 30px rgba(0,0,0,0.3); }
+/* OPTIMIZED CART SIDEBAR & ANIMATIONS */
+.cart-sidebar { 
+  position: fixed; top: 75px; right: -320px; 
+  width: 85vw; /* Caps width on mobile to 85% */
+  max-width: 300px; 
+  height: calc(100vh - 75px); 
+  background: var(--glass-bg); 
+  backdrop-filter: blur(24px); 
+  border-left: 1px solid var(--glass-border); 
+  z-index: 999; padding: 1.2rem; 
+  display: flex; flex-direction: column; 
+  transition: right 0.5s cubic-bezier(0.25,1,0.5,1), top 0.35s cubic-bezier(0.25,1,0.5,1), height 0.35s cubic-bezier(0.25,1,0.5,1); 
+  box-shadow: -10px 0 30px rgba(0,0,0,0.3); 
+}
 body.nav-is-hidden .cart-sidebar { top: 0; height: 100vh; }
 .cart-sidebar.active { right: 0; }
 .cart-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.2rem; border-bottom: 1px solid var(--glass-border); padding-bottom: 0.8rem; }
@@ -202,18 +214,56 @@ footer { background: var(--footer-bg); border-top: 1px solid var(--glass-border)
 .e-2 { top: 70%; right: -5%; background: #ffd93d; box-shadow: 0 0 10px 2px #ffd93d, 0 0 20px 2px #ffffff; animation: shootLeft 3.5s linear infinite 1.5s; }
 .e-3 { bottom: -5%; left: 30%; background: #ff5a4d; box-shadow: 0 0 10px 2px #ff5a4d, 0 0 20px 2px #ffffff; animation: shootUp 4.5s linear infinite 0.5s; }
 
-@keyframes shootRight {
-  0% { transform: translate3d(0, 0, 0); opacity: 0; }
-  10%, 90% { opacity: 1; }
-  100% { transform: translate3d(110vw, 30vh, 0); opacity: 0; }
+@keyframes shootRight { 0% { transform: translate3d(0, 0, 0); opacity: 0; } 10%, 90% { opacity: 1; } 100% { transform: translate3d(110vw, 30vh, 0); opacity: 0; } }
+@keyframes shootLeft { 0% { transform: translate3d(0, 0, 0); opacity: 0; } 10%, 90% { opacity: 1; } 100% { transform: translate3d(-110vw, -40vh, 0); opacity: 0; } }
+@keyframes shootUp { 0% { transform: translate3d(0, 0, 0); opacity: 0; } 10%, 90% { opacity: 1; } 100% { transform: translate3d(40vw, -110vh, 0); opacity: 0; } }
+
+/* ===== SLOWER ANIMATION FOR CART FLYING EFFECT ===== */
+.flying-particle {
+    position: fixed;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--primary-cyan);
+    box-shadow: 0 0 15px var(--primary-cyan), 0 0 25px var(--primary-purple);
+    pointer-events: none;
+    z-index: 99999;
+    /* Transition slowed to 0.9s */
+    transition: transform 0.9s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.9s ease, background 0.3s, box-shadow 0.3s;
+    opacity: 1;
 }
-@keyframes shootLeft {
-  0% { transform: translate3d(0, 0, 0); opacity: 0; }
-  10%, 90% { opacity: 1; }
-  100% { transform: translate3d(-110vw, -40vh, 0); opacity: 0; }
+
+#emptyCartBtn:hover {
+    color: #ff6b81 !important;
 }
-@keyframes shootUp {
-  0% { transform: translate3d(0, 0, 0); opacity: 0; }
-  10%, 90% { opacity: 1; }
-  100% { transform: translate3d(40vw, -110vh, 0); opacity: 0; }
+
+/* ===== REGISTRATION MARQUEE ===== */
+.marquee-container {
+    position: absolute;
+    top: 75px; /* Sits right under the navbar */
+    left: 0;
+    width: 100vw;
+    background: rgba(189, 0, 255, 0.15);
+    border-bottom: 1px solid rgba(189, 0, 255, 0.3);
+    padding: 8px 0;
+    overflow: hidden;
+    z-index: 990;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+}
+
+.marquee-text {
+    display: inline-block;
+    white-space: nowrap;
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 700;
+    font-size: 0.85rem;
+    color: var(--primary-cyan);
+    letter-spacing: 1.5px;
+    animation: marqueeScroll 20s linear infinite;
+}
+
+@keyframes marqueeScroll {
+    0% { transform: translateX(100vw); }
+    100% { transform: translateX(-100%); }
 }

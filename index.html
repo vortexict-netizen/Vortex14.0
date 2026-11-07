@@ -5,50 +5,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Vortex 14.0 | Asia's Largest Chem-Fest</title>
     
-    <!-- Standard SEO Meta Tags -->
     <meta name="description" content="Welcome to Vortex 14.0, Asia's largest Chem-Fest at ICT Mumbai. Explore 15+ events merging chemical engineering, pharma, and business.">
     <meta name="keywords" content="Vortex 14.0, ICT Mumbai, Chem-Fest, Chemical Engineering, Pharma Fest, Upbiz, Advent, Tech Fest Mumbai">
     <meta name="author" content="ICT Mumbai">
     <meta name="robots" content="index, follow">
 
-    <!-- Open Graph (OG) Tags -->
-    <meta property="og:title" content="Vortex 14.0 | Asia's Largest Chem-Fest">
-    <meta property="og:description" content="Experience the intersection of intellect, innovation, and industry at ICT Mumbai's flagship event. Register now for the Ultimate Chem-Fest.">
-    <meta property="og:url" content="https://vortexict.in/">
-    <meta property="og:type" content="website">
-    <meta property="og:image" content="https://vortexict.in/images/social-preview.png">
-
-    <!-- Twitter / X Card Tags -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Vortex 14.0 | Asia's Largest Chem-Fest">
-    <meta name="twitter:description" content="Experience the intersection of intellect, innovation, and industry at ICT Mumbai's flagship event.">
-    <meta name="twitter:image" content="https://vortexict.in/images/social-preview.png">
-    
-    <!-- OPTIMIZATION: Early Preconnects for 3rd-Party Origins -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin />
     
-    <!-- OPTIMIZATION: Preload LCP Image & Critical CSS -->
     <link rel="preload" href="photos/vortex_D.png" as="image" fetchpriority="high" />
     <link rel="preload" href="./css/index.css" as="style" />
     <link rel="preload" href="./css/fx.css" as="style" />
     <link rel="stylesheet" href="./css/index.css" />
     <link rel="stylesheet" href="./css/fx.css" />
 
-    <!-- OPTIMIZATION: Flatten ES Module Dependency Tree -->
     <link rel="modulepreload" href="./scripts/index.js" />
     <link rel="modulepreload" href="./data/eventsData.js" />
 
-    <!-- OPTIMIZATION: Defer Google Fonts -->
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Orbitron:wght@400;500;700;900&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'" />
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Orbitron:wght@400;500;700;900&display=swap" /></noscript>
     
-    <!-- OPTIMIZATION: Defer FontAwesome -->
     <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'" />
     <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" /></noscript>
 
-    <!-- Favicons for Browsers and Google Search -->
     <link rel="icon" type="image/x-icon" href="photos/favicon.ico">
     <link rel="icon" type="image/png" sizes="48x48" href="photos/favicon-48x48.png">
     <link rel="apple-touch-icon" sizes="180x180" href="photos/apple-touch-icon.png">
@@ -86,7 +66,6 @@
         <button class="icon-btn" id="themeToggleBtn" aria-label="Toggle Theme">
           <i class="fa-solid fa-sun" id="themeIcon" aria-hidden="true"></i>
         </button>
-        <!-- ADDED CART BUTTON BACK -->
         <button class="icon-btn" id="cartToggleBtn" aria-label="Open Cart">
           <i class="fa-solid fa-cart-shopping"></i><span class="cart-badge" id="cartCount">0</span>
         </button>
@@ -95,6 +74,13 @@
         </button>
       </div>
     </nav>
+
+    <!-- REGISTRATION MARQUEE -->
+    <div class="marquee-container">
+      <div class="marquee-text">
+        🚨 REGISTRATIONS FOR VORTEX 14.0 WILL START FROM 18TH NOVEMBER! BUILD YOUR CART AND SAVE YOUR SPOTS! 🚨
+      </div>
+    </div>
 
     <div class="ambient-bg" aria-hidden="true">
       <div class="orb orb-1"></div>
@@ -106,11 +92,16 @@
       </div>
     </div>
 
-    <!-- ADDED CART SIDEBAR BACK -->
+    <!-- CART SIDEBAR -->
     <div class="cart-sidebar" id="cartSidebar">
       <div class="cart-header">
         <h3 class="font-heading" style="font-size: 1rem">Your Cart</h3>
-        <button class="close-cart" id="closeCartBtn"><i class="fa-solid fa-xmark"></i></button>
+        <div style="display: flex; align-items: center; gap: 15px;">
+          <button id="emptyCartBtn" style="background: none; border: none; color: #ff4757; cursor: pointer; font-size: 0.85rem; display: flex; align-items: center; gap: 5px; transition: color 0.2s;">
+            <i class="fa-solid fa-trash-can"></i> Clear
+          </button>
+          <button class="close-cart" id="closeCartBtn"><i class="fa-solid fa-xmark"></i></button>
+        </div>
       </div>
       <div class="cart-items" id="cartItemsList">
         <p style="color: var(--text-muted); text-align: center; margin-top: 2rem">Cart is empty.</p>
@@ -122,7 +113,12 @@
         </div>
         <div class="summary-row total"><span>Total</span><span id="cartTotal">₹0</span></div>
         <p class="discount-msg" id="discountMsg">Add more events to unlock series discounts!</p>
-        <button class="checkout-btn" onclick="window.location.href='checkout.html'">Proceed to Checkout</button>
+        
+        <!-- Hidden Checkout Button & Replacement Message -->
+        <button class="checkout-btn" style="display: none !important;" onclick="window.location.href='checkout.html'">Proceed to Checkout</button>
+        <div style="text-align: center; margin-top: 15px; padding: 12px; border-radius: 8px; background: rgba(189, 0, 255, 0.1); border: 1px dashed var(--primary-purple); font-family: 'Orbitron', sans-serif; font-size: 0.85rem; color: var(--primary-cyan); font-weight: 700;">
+          CHECKOUT OPENS NOV 18
+        </div>
       </div>
     </div>
 
@@ -182,7 +178,6 @@
       <section id="faq" class="tab-content text-section">
         <h2 class="font-heading" style="margin-bottom: 2rem">Frequently Asked <span class="gradient-text">Questions</span></h2>
         <div class="faq-grid">
-          
           <details class="faq-item">
             <summary class="faq-question">
               <h3>Who can participate in Vortex 14.0?</h3>
@@ -288,7 +283,6 @@
               Pharma Series: Explore the pharmaceutical world through Blueprint, Cosmecure, Gene Auction, Pharmaquest, and Moot Court.</p>
             </div>
           </details>
-
         </div>
       </section>
     </main>
@@ -331,7 +325,6 @@
     
     <script type="module" src="./scripts/index.js"></script>
 
-    <!-- Optimized Tab Switching & Back-Button History Sync -->
     <script>
       const tabs = document.querySelectorAll('.nav-tab');
       const sections = document.querySelectorAll('.tab-content');
