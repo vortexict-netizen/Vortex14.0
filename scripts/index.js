@@ -30,7 +30,6 @@ navTabs.forEach((tab) => {
   });
 });
 
-// CACHE SYSTEM: Restore the exact tab and scroll position on load
 const savedState = sessionStorage.getItem("vortex_page_state");
 const initialHash = window.location.hash.substring(1);
 
@@ -38,19 +37,15 @@ if (savedState) {
   const { tab, scrollY } = JSON.parse(savedState);
   switchTab(tab);
   
-  // A tiny timeout ensures the DOM has rendered the tab before scrolling
   setTimeout(() => {
     window.scrollTo(0, scrollY);
   }, 50);
 
-  // Clear it so it doesn't force this position on unrelated reloads
   sessionStorage.removeItem("vortex_page_state");
 } else if (initialHash) {
-  // Fallback to URL hash if there is no cache
   switchTab(initialHash);
 }
 
-// CACHE SYSTEM: Save the exact tab and scroll position right before leaving the page
 window.addEventListener("beforeunload", () => {
   const activeTab = document.querySelector(".nav-tab.active");
   if (activeTab) {
@@ -141,20 +136,39 @@ const renderCategory = (categoryId, containerId) => {
 
     const price = document.createElement("div");
     price.className = "event-price";
-    // Displays the individual price from eventsData.js
     price.textContent = `₹${item.price || 0}`;
 
     info.append(title, description, price);
 
+    // INFO BUTTON
     const infoButton = document.createElement("a");
     infoButton.className = "action-btn btn-info info-link";
     infoButton.textContent = "Info";
     infoButton.href = `./data/details/${item.id}.html`;
     infoButton.setAttribute("aria-label", `More information about ${item.name}`);
-    infoButton.style.position = "relative";
-    infoButton.style.zIndex = "10";
 
-    card.append(info, infoButton);
+    // NEW CART BUTTON
+    const cartButton = document.createElement("button");
+    cartButton.className = "action-btn btn-cart";
+    cartButton.textContent = "Add to Cart";
+    cartButton.style.marginLeft = "10px";
+    cartButton.style.color = "var(--primary-purple)";
+    cartButton.style.borderColor = "var(--primary-purple)";
+    cartButton.style.cursor = "pointer";
+
+    cartButton.addEventListener("click", () => {
+      window.handleAddToCart(item.id, item.name, item.category || item.cat);
+      const sidebar = document.getElementById("cartSidebar");
+      if (sidebar) sidebar.classList.add("active");
+    });
+
+    // SAFE CONTAINER FOR BOTH BUTTONS
+    const btnContainer = document.createElement("div");
+    btnContainer.style.position = "relative";
+    btnContainer.style.zIndex = "10";
+    btnContainer.append(infoButton, cartButton);
+
+    card.append(info, btnContainer);
     container.appendChild(card);
   });
 };
@@ -189,7 +203,6 @@ try {
   cart = [];
 }
 
-// Sync cart prices with eventsData just in case prices were changed in the code
 cart = cart.map((item) => {
   const eventRecord = eventsData.find((e) => e.id === item.id);
   return {
@@ -219,11 +232,7 @@ const getCartBilling = () => {
   const eligibleItems = cart.filter((item) => item.id !== "sridp");
   const ineligibleItems = cart.filter((item) => item.id === "sridp");
 
-  const counts = {
-    general: 0,
-    prodigy: 0,
-    pharma: 0,
-  };
+  const counts = { general: 0, prodigy: 0, pharma: 0 };
 
   eligibleItems.forEach((item) => {
     if (Object.hasOwn(counts, item.category)) {
@@ -253,24 +262,17 @@ const getCartBilling = () => {
     discountPercent = 0.5;
     message = "5+ eligible events — 50% discount applied!";
   } else if (eligibleItems.length > 0) {
-    const remaining = Math.max(0, 5 - eligibleItems.length); // Fixed missing minus sign syntax error here
+    const remaining = Math.max(0, 5 - eligibleItems.length); 
     message = `Add ${remaining} more eligible event(s) for 50% off.`;
   }
 
-  // Calculate totals based on actual item prices instead of a fixed flat rate
   const subtotal = cart.reduce((sum, item) => sum + (item.price || 0), 0);
   const eligibleSubtotal = eligibleItems.reduce((sum, item) => sum + (item.price || 0), 0);
   const excludedSubtotal = ineligibleItems.reduce((sum, item) => sum + (item.price || 0), 0);
   const discount = eligibleSubtotal * discountPercent;
   const total = eligibleSubtotal - discount + excludedSubtotal;
 
-  return {
-    subtotal,
-    discount,
-    total,
-    discountPercent,
-    message,
-  };
+  return { subtotal, discount, total, discountPercent, message };
 };
 
 // =========================================
@@ -355,7 +357,6 @@ const calculateCartTotals = () => {
     discountContainer?.classList.remove("celebrate-animation");
 
     if (discountContainer) {
-      // OPTIMIZATION: Removed forced reflow and replaced with requestAnimationFrame to prevent layout thrashing
       requestAnimationFrame(() => {
         requestAnimationFrame(() => {
           discountContainer.classList.add("celebrate-animation");
@@ -421,10 +422,7 @@ const updateCartUI = () => {
 
           const removeButton = document.createElement("button");
           removeButton.className = "remove-item";
-          removeButton.setAttribute(
-          "aria-label",
-          `Remove ${item.name} from cart`,
-          );
+          removeButton.setAttribute("aria-label", `Remove ${item.name} from cart`);
 
           const icon = document.createElement("i");
           icon.className = "fa-solid fa-trash";
@@ -447,7 +445,6 @@ const updateCartUI = () => {
 
 window.handleAddToCart = (id, name, category) => {
   if (cart.some((item) => item.id === id)) return;
-  // Automatically pull the correct price from eventsData.js so you don't have to edit every HTML details page
   const eventRecord = eventsData.find((e) => e.id === id);
   const itemPrice = eventRecord ? eventRecord.price : 0;
   
@@ -528,8 +525,8 @@ document.addEventListener("click", (event) => {
 
 window.addEventListener("resize", () => {
   if (window.innerWidth >= 768) {
-    animate();
-}
+    if (typeof animate === "function") animate();
+  }
 });
 
 const navbarEl = document.querySelector(".navbar");
@@ -562,12 +559,14 @@ const handleNavbarScroll = () => {
 };
 
 window.addEventListener('load', () => {
-    AOS.init({
-        duration: 800,
-        easing: 'ease-out-cubic',
-        once: true,
-        offset: 50
-    });
+    if (typeof AOS !== 'undefined') {
+      AOS.init({
+          duration: 800,
+          easing: 'ease-out-cubic',
+          once: true,
+          offset: 50
+      });
+    }
 });
 
 updateCartUI();
