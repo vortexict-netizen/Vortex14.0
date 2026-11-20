@@ -1,12 +1,13 @@
 import eventsData from "../data/eventsData.js";
 
 // =========================================
-// PASTE YOUR GOOGLE APPS SCRIPT WEB APP URL HERE
+// PASTE YOUR GOOGLE APPS SCRIPT WEB APP URL & RECAPTCHA SITE KEY HERE
 // =========================================
 const GOOGLE_SCRIPT_UPLOAD_URL = "https://script.google.com/macros/s/AKfycbzoEYD2AxVk9N17q1Z7jxfWtsR2617eimFZjcYl5r4LuVIybfcQqpE50554FnEhjvBR/exec";
+const RECAPTCHA_SITE_KEY = "6LcIgeAtAAAAAJuakH7S9z9eNDTFvsW7ilxBkxYf";
 
 // =========================================
-// 0. IN-PAGE GLASSMORPHIC MODAL HELPER
+// 0. IN-PAGE GLASSMORPHIC MODAL & PROGRESS HELPERS
 // =========================================
 function showVortexModal({ type = "warning", title, message, ticketHTML = "", btnText = "Continue", onConfirm }) {
     let overlay = document.getElementById("vortexModalOverlay");
@@ -41,6 +42,42 @@ function showVortexModal({ type = "warning", title, message, ticketHTML = "", bt
         overlay.classList.remove("active");
         if (onConfirm) setTimeout(onConfirm, 250);
     };
+}
+
+function updateProgressModal(percent, statusMsg) {
+    let overlay = document.getElementById("vortexModalOverlay");
+    if (!overlay) {
+        overlay = document.createElement("div");
+        overlay.id = "vortexModalOverlay";
+        overlay.className = "vortex-modal-overlay";
+        document.body.appendChild(overlay);
+    }
+
+    if (!document.getElementById("vortexProgressFill")) {
+        overlay.innerHTML = `
+            <div class="vortex-modal-card">
+                <div class="vortex-modal-icon warning">
+                    <i class="fa-solid fa-cloud-arrow-up fa-bounce"></i>
+                </div>
+                <h3 class="vortex-modal-title">Submitting Registration</h3>
+                <p class="vortex-modal-msg" id="vortexProgressText">${statusMsg}</p>
+                <div class="vortex-progress-track">
+                    <div class="vortex-progress-fill" id="vortexProgressFill"></div>
+                </div>
+                <div class="vortex-progress-percent" id="vortexProgressPercent">${percent}%</div>
+            </div>
+        `;
+        requestAnimationFrame(() => overlay.classList.add("active"));
+    }
+
+    requestAnimationFrame(() => {
+        const fill = document.getElementById("vortexProgressFill");
+        const text = document.getElementById("vortexProgressText");
+        const pct = document.getElementById("vortexProgressPercent");
+        if (fill) fill.style.width = `${percent}%`;
+        if (text) text.textContent = statusMsg;
+        if (pct) pct.textContent = `${percent}%`;
+    });
 }
 
 // =========================================
@@ -106,7 +143,7 @@ const getCartBilling = () => {
     if (completedSeries === 3) discountPercent = 0.70;
     else if (completedSeries === 2) discountPercent = 0.65;
     else if (completedSeries === 1) discountPercent = 0.60;
-    else if (eligibleItems.length >= 5) discountPercent = 0.50;
+    else if (eligibleItems.length >= 5) discountPercent = 0.30;
   
     const subtotal = cart.reduce((sum, item) => sum + item.price, 0);
     const eligibleSubtotal = eligibleItems.reduce((sum, item) => sum + item.price, 0);
@@ -285,6 +322,16 @@ if (checkoutForm) {
             return;
         }
 
+        if (typeof grecaptcha === "undefined") {
+            showVortexModal({
+                type: "warning",
+                title: "Security Check Unavailable",
+                message: "Google reCAPTCHA failed to load. Please disable adblockers or refresh the page.",
+                btnText: "Okay"
+            });
+            return;
+        }
+
         let finalCollege = collegeSelect.value;
         if (finalCollege === "Other") {
             finalCollege = otherCollegeInput.value.trim();
@@ -304,13 +351,16 @@ if (checkoutForm) {
 
         const proceedBtn = document.getElementById("proceedBtn");
         const originalText = proceedBtn.textContent;
-        proceedBtn.textContent = "Uploading Payment Proof...";
+        proceedBtn.textContent = "Submitting...";
         proceedBtn.disabled = true;
 
         try {
-            // 1. Convert file to Base64 & Upload to Google Drive folder
+            // 1. Prepare file
+            updateProgressModal(20, "Preparing your payment proof...");
             const base64Data = await fileToBase64(file);
 
+            // 2. Upload to Google Drive folder
+            updateProgressModal(45, "Uploading screenshot to secure Drive...");
             const driveRes = await fetch(GOOGLE_SCRIPT_UPLOAD_URL, {
                 method: "POST",
                 body: JSON.stringify({
@@ -325,9 +375,19 @@ if (checkoutForm) {
                 throw new Error(driveData.message || "Failed to upload payment proof to Drive");
             }
 
-            proceedBtn.textContent = "Saving Registration...";
+            // 3. Generate fresh reCAPTCHA v3 token
+            updateProgressModal(70, "Verifying security check...");
+            const captchaToken = await new Promise((resolve, reject) => {
+                grecaptcha.ready(() => {
+                    grecaptcha.execute(RECAPTCHA_SITE_KEY, { action: "register" })
+                        .then(resolve)
+                        .catch(reject);
+                });
+            });
 
-            // 2. Send registration + Drive proof link + filename to Vercel MongoDB
+            // 4. Send registration + Drive proof link + captchaToken to Vercel MongoDB
+            updateProgressModal(85, "Saving registration to database...");
+
             const participantData = {
                 name: rawName,
                 phone: phone,
@@ -341,10 +401,11 @@ if (checkoutForm) {
                 paymentStatus: "Pending Verification",
                 cart: cart,
                 registeredEvents: cart.map((item) => item.name),
-                billing: billing
+                billing: billing,
+                captchaToken: captchaToken
             };
 
-            const response = await fetch("https://vortex-backend-ten.vercel.app/api/register", {
+            const response = await fetch("https://vortex-backend-six.vercel.app/api/register", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(participantData)
@@ -353,28 +414,33 @@ if (checkoutForm) {
             const result = await response.json();
 
             if (result.success) {
+                // 5. Complete progress bar, then show VIP receipt modal
+                updateProgressModal(100, "Registration complete!");
                 localStorage.removeItem("vortex_cart");
-                showVortexModal({
-                    type: "success",
-                    title: "Registration Submitted!",
-                    message: "Your payment proof has been uploaded. Our team will verify your payment shortly.",
-                    ticketHTML: `
-                        <div class="vortex-ticket-stub">
-                            <div class="vortex-ticket-row"><span>Participant</span><strong>${rawName}</strong></div>
-                            <div class="vortex-ticket-row"><span>Events</span><strong>${cart.length} Registered</strong></div>
-                            <div class="vortex-ticket-row"><span>Amount Paid</span><strong style="color:var(--success-green)">${formatINR(billing.total)}</strong></div>
-                            <div class="vortex-ticket-row"><span>UTR / Txn ID</span><strong>${transactionId}</strong></div>
-                            <div class="vortex-ticket-row"><span>Saved File</span><strong>${customFileName}</strong></div>
-                        </div>
-                    `,
-                    btnText: "Return to Home",
-                    onConfirm: () => { window.location.href = "index.html"; }
-                });
+
+                setTimeout(() => {
+                    showVortexModal({
+                        type: "success",
+                        title: "Registration Submitted!",
+                        message: "Your payment proof has been uploaded. Our team will verify your payment shortly.",
+                        ticketHTML: `
+                            <div class="vortex-ticket-stub">
+                                <div class="vortex-ticket-row"><span>Participant</span><strong>${rawName}</strong></div>
+                                <div class="vortex-ticket-row"><span>Events</span><strong>${cart.length} Registered</strong></div>
+                                <div class="vortex-ticket-row"><span>Amount Paid</span><strong style="color:var(--success-green)">${formatINR(billing.total)}</strong></div>
+                                <div class="vortex-ticket-row"><span>UTR / Txn ID</span><strong>${transactionId}</strong></div>
+                                <div class="vortex-ticket-row"><span>Saved File</span><strong>${customFileName}</strong></div>
+                            </div>
+                        `,
+                        btnText: "Return to Home",
+                        onConfirm: () => { window.location.href = "index.html"; }
+                    });
+                }, 400);
             } else {
                 showVortexModal({
                     type: "error",
                     title: "Registration Error",
-                    message: "Something went wrong saving your registration. Please try again.",
+                    message: result.message || "Something went wrong saving your registration. Please try again.",
                     btnText: "Try Again"
                 });
                 proceedBtn.textContent = originalText;
