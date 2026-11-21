@@ -200,7 +200,7 @@
                 spinner.style.animationPlayState = "running";
 
                 // 2. Fetch the Order ID from Vercel Backend
-                const response = await fetch("https://vortex-backend-ten.vercel.app/api/create-order", {
+                const response = await fetch("https://vortex-backend-six.vercel.app/api/create-order", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ amount: checkoutData.billing.total })
@@ -250,7 +250,7 @@
 
                         try {
                             // Send payment details to backend to mark DB entry as "Paid"
-                            const verifyRes = await fetch("https://vortex-backend-ten.vercel.app/api/verify-payment", {
+                            const verifyRes = await fetch("https://vortex-backend-six.vercel.app/api/verify-payment", {
                                 method: "POST",
                                 headers: { "Content-Type": "application/json" },
                                 body: JSON.stringify({
