@@ -105,7 +105,7 @@
                 <form id="checkoutForm">
                     <div class="form-group">
                         <label for="fullName">Full Name</label>
-                        <input type="text" id="fullName" class="form-control" placeholder="John Doe" minlength="3" required>
+                        <input type="text" id="fullName" class="form-control" placeholder="John Doe" minlength="7" required>
                     </div>
 
                     <div class="form-group">
@@ -120,17 +120,7 @@
 
                     <div class="form-group">
                         <label for="collegeSelect">College Name</label>
-                        <select id="collegeSelect" class="form-control form-select" required>
-                            <option value="" disabled selected>Select your institute...</option>
-                            <option value="Institute of Chemical Technology (ICT), Mumbai">Institute of Chemical Technology (ICT), Mumbai</option>
-                            <option value="Veermata Jijabai Technological Institute (VJTI)">Veermata Jijabai Technological Institute (VJTI)</option>
-                            <option value="Other">Other...</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group" id="otherCollegeGroup" style="display: none;">
-                        <label for="otherCollege">Enter College Name</label>
-                        <input type="text" id="otherCollege" class="form-control" placeholder="Type your college name..." minlength="3">
+                        <input type="text" id="collegeSelect" name="collegeName" class="form-control" placeholder="Enter your college name..." minlength="7" required>
                     </div>
 
                     <div class="form-group">
