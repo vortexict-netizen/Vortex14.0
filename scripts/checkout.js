@@ -758,7 +758,11 @@ const onSlingshotRelease = (e) => {
 slingshotCard?.addEventListener("pointermove", onSlingshotMove);
 slingshotCard?.addEventListener("pointerup", onSlingshotRelease);
 slingshotCard?.addEventListener("pointercancel", onSlingshotRelease);
-window.addEventListener("resize", () => resizeHoopCanvas(false));
+let resizeTimer = null;
+window.addEventListener("resize", () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => resizeHoopCanvas(false), 150);
+});
 resizeHoopCanvas(true);
 
 const fileToBase64 = (file) => new Promise((resolve, reject) => {
