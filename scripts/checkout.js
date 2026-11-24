@@ -255,34 +255,333 @@ if (cart.length === 0) {
 }
 
 // =========================================
-// 5. FILE INPUT PREVIEW, HOOP ANIMATION & BASE64 HELPER
+// 5. PLAYABLE SLINGSHOT UPLOAD & PHYSICS ENGINE
 // =========================================
 const paymentProofInput = document.getElementById("paymentProof");
 const fileUploadName = document.getElementById("fileUploadName");
-const hoopDropzone = document.getElementById("hoopDropzone");
+const hoopStage = document.getElementById("hoopStage");
+const hoopCanvas = document.getElementById("hoopCanvas");
 const hoopUploadBadge = document.getElementById("hoopUploadBadge");
-const flyingFileDoc = document.getElementById("flyingFileDoc");
+const hoopChangeBtn = document.getElementById("hoopChangeBtn");
+const hoopAimHint = document.getElementById("hoopAimHint");
+const slingshotCard = document.getElementById("slingshotCard");
 
-["dragenter", "dragover"].forEach((evt) => {
-    hoopDropzone?.addEventListener(evt, () => {
-        hoopDropzone.classList.add("drag-over");
-    });
-});
+const ctx = hoopCanvas?.getContext("2d");
+const GRAVITY = 0.44;
+const LAUNCH_POWER = 0.265;
+const MAX_PULL = 72;
+const RIM_Y = 70; // 18px SVG top offset + 52px rim center inside viewBox
+const RIM_HALF_WIDTH = 35;
 
-["dragleave", "drop"].forEach((evt) => {
-    hoopDropzone?.addEventListener(evt, () => {
-        hoopDropzone.classList.remove("drag-over");
-    });
-});
+const MISS_MESSAGES = [
+    "Airball! Give it another shot.",
+    "Brick! The rim felt that one — try again.",
+    "So close! Pull a little higher and shoot again.",
+    "Rim said no. Shooters shoot — run it back!",
+    "Off the glass! Adjust your arc and try again."
+];
+let lastMissIndex = -1;
 
-paymentProofInput?.addEventListener("change", (e) => {
-    const file = e.target.files[0];
-    if (!file) {
-        fileUploadName.textContent = "";
-        if (hoopUploadBadge) {
-            hoopUploadBadge.textContent = "Uploaded 0";
-            hoopUploadBadge.classList.remove("scored");
+let selectedFile = null;
+let shotsScored = 0;
+let stageW = 320;
+let stageH = 280;
+let anchorX = 160;
+let anchorY = 212;
+
+let isDragging = false;
+let isFlying = false;
+let activePointerId = null;
+let dragOffsetX = 0;
+let dragOffsetY = 0;
+
+let ball = { x: 160, y: 212, vx: 0, vy: 0, rot: 0, vrot: 0, scoredThisShot: false };
+let particles = [];
+let rafId = null;
+let lastFrameTime = 0;
+
+const resizeHoopCanvas = () => {
+    if (!hoopStage || !hoopCanvas) return;
+    const rect = hoopStage.getBoundingClientRect();
+    stageW = rect.width || 320;
+    stageH = rect.height || 280;
+    const dpr = window.devicePixelRatio || 1;
+    hoopCanvas.width = Math.round(stageW * dpr);
+    hoopCanvas.height = Math.round(stageH * dpr);
+    if (ctx) ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+    anchorX = stageW / 2;
+    anchorY = stageH - 68;
+
+    if (!isDragging && !isFlying) {
+        resetBallToPad();
+    }
+};
+
+const renderCardTransform = (scale = 1) => {
+    if (!slingshotCard) return;
+    slingshotCard.style.transform = `translate3d(${ball.x}px, ${ball.y}px, 0) rotate(${ball.rot}deg) scale(${scale})`;
+};
+
+const resetBallToPad = () => {
+    isFlying = false;
+    isDragging = false;
+    ball.x = anchorX;
+    ball.y = anchorY;
+    ball.vx = 0;
+    ball.vy = 0;
+    ball.rot = 0;
+    ball.vrot = 0;
+    ball.scoredThisShot = false;
+    if (slingshotCard) {
+        slingshotCard.style.opacity = "1";
+        slingshotCard.style.zIndex = "5";
+        slingshotCard.classList.remove("grabbing");
+    }
+    hoopStage?.classList.remove("is-dragging", "is-flying");
+    renderCardTransform(1);
+};
+
+const spawnConfetti = (x, y) => {
+    const colors = ["#00f3ff", "#bd00ff", "#00ff88", "#ffd93d"];
+    for (let i = 0; i < 24; i++) {
+        const angle = (Math.PI * 2 * i) / 24 + (Math.random() - 0.5) * 0.4;
+        const speed = 2.2 + Math.random() * 4.5;
+        particles.push({
+            x,
+            y,
+            vx: Math.cos(angle) * speed,
+            vy: Math.sin(angle) * speed - 1.5,
+            size: 2.5 + Math.random() * 3,
+            color: colors[i % colors.length],
+            life: 1
+        });
+    }
+};
+
+const drawCanvasEffects = () => {
+    if (!ctx) return;
+    ctx.clearRect(0, 0, stageW, stageH);
+
+    // 1. Slingshot band & live trajectory preview while aiming
+    if (isDragging) {
+        const dx = ball.x - anchorX;
+        const dy = ball.y - anchorY;
+        const pullMag = Math.hypot(dx, dy);
+
+        ctx.save();
+        ctx.beginPath();
+        ctx.moveTo(anchorX, anchorY);
+        ctx.lineTo(ball.x, ball.y);
+        ctx.strokeStyle = "rgba(189, 0, 255, 0.65)";
+        ctx.lineWidth = 2.5;
+        ctx.setLineDash([4, 4]);
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.arc(anchorX, anchorY, 5, 0, Math.PI * 2);
+        ctx.fillStyle = "rgba(0, 243, 255, 0.7)";
+        ctx.fill();
+
+        if (pullMag > 10) {
+            let px = ball.x;
+            let py = ball.y;
+            let pvx = -dx * LAUNCH_POWER;
+            let pvy = -dy * LAUNCH_POWER;
+
+            for (let i = 0; i < 14; i++) {
+                const stepDt = 1.65;
+                pvy += GRAVITY * stepDt;
+                px += pvx * stepDt;
+                py += pvy * stepDt;
+
+                const alpha = Math.max(0.12, 1 - i / 14);
+                const radius = Math.max(1.8, 4.2 - i * 0.18);
+                ctx.beginPath();
+                ctx.arc(px, py, radius, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(0, 243, 255, ${alpha})`;
+                ctx.fill();
+            }
         }
+        ctx.restore();
+    }
+
+    // 2. Swish confetti particles
+    if (particles.length > 0) {
+        for (let i = particles.length - 1; i >= 0; i--) {
+            const p = particles[i];
+            p.vy += 0.14;
+            p.x += p.vx;
+            p.y += p.vy;
+            p.life -= 0.025;
+
+            if (p.life <= 0) {
+                particles.splice(i, 1);
+                continue;
+            }
+            ctx.save();
+            ctx.globalAlpha = p.life;
+            ctx.fillStyle = p.color;
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
+        }
+    }
+};
+
+const collideWithRimPost = (postX, postY) => {
+    const dx = ball.x - postX;
+    const dy = ball.y - postY;
+    const dist = Math.hypot(dx, dy);
+    const minDist = 17;
+    if (dist > 0 && dist < minDist) {
+        const nx = dx / dist;
+        const ny = dy / dist;
+        ball.x = postX + nx * minDist;
+        ball.y = postY + ny * minDist;
+
+        const dot = ball.vx * nx + ball.vy * ny;
+        if (dot < 0) {
+            ball.vx = (ball.vx - 2 * dot * nx) * 0.62;
+            ball.vy = (ball.vy - 2 * dot * ny) * 0.62;
+            ball.vrot = (Math.random() - 0.5) * 14;
+        }
+    }
+};
+
+const triggerSwish = () => {
+    shotsScored++;
+    if (hoopStage) {
+        hoopStage.classList.remove("swish");
+        void hoopStage.offsetWidth;
+        hoopStage.classList.add("swish");
+    }
+    if (hoopUploadBadge) {
+        hoopUploadBadge.textContent = shotsScored > 1 ? `Swish! x${shotsScored}` : "Swish! 1";
+        hoopUploadBadge.classList.remove("attached");
+        hoopUploadBadge.classList.add("scored");
+    }
+    if (fileUploadName && selectedFile) {
+        fileUploadName.textContent = `Swish! Ready to submit: ${selectedFile.name}`;
+    }
+    if (hoopAimHint) {
+        hoopAimHint.textContent = "Nice shot! Pull again for fun or hit Submit below.";
+    }
+    spawnConfetti(anchorX, RIM_Y + 14);
+};
+
+const stepAnimation = (timestamp) => {
+    if (!lastFrameTime) lastFrameTime = timestamp;
+    const dt = Math.min((timestamp - lastFrameTime) / 16.667, 2);
+    lastFrameTime = timestamp;
+
+    if (isFlying) {
+        const prevY = ball.y;
+
+        ball.vy += GRAVITY * dt;
+        ball.x += ball.vx * dt;
+        ball.y += ball.vy * dt;
+        ball.rot += ball.vrot * dt;
+
+        // Pass in front of hoop on the way up, behind front rim/net on the way down
+        if (slingshotCard) {
+            slingshotCard.style.zIndex = ball.vy < 0 ? "5" : "3";
+        }
+
+        // Bounce off side walls
+        if (ball.x < 22) {
+            ball.x = 22;
+            ball.vx = Math.abs(ball.vx) * 0.65;
+        } else if (ball.x > stageW - 22) {
+            ball.x = stageW - 22;
+            ball.vx = -Math.abs(ball.vx) * 0.65;
+        }
+
+        const rimLeft = anchorX - RIM_HALF_WIDTH;
+        const rimRight = anchorX + RIM_HALF_WIDTH;
+
+        // Rim edge collisions when falling or near rim
+        if (ball.vy > -2) {
+            collideWithRimPost(rimLeft, RIM_Y);
+            collideWithRimPost(rimRight, RIM_Y);
+        }
+
+        // Score check: passing downward through rim opening
+        if (
+            !ball.scoredThisShot &&
+            ball.vy > 0 &&
+            prevY <= RIM_Y + 4 &&
+            ball.y > RIM_Y + 4 &&
+            ball.x > rimLeft + 5 &&
+            ball.x < rimRight - 5
+        ) {
+            ball.scoredThisShot = true;
+            ball.vx *= 0.35;
+            ball.vy *= 0.65;
+            triggerSwish();
+        }
+
+        // Subtle shrink as it drops through the net
+        let scale = 1;
+        if (ball.scoredThisShot && ball.y > RIM_Y) {
+            scale = Math.max(0.55, 1 - (ball.y - RIM_Y) / 150);
+            if (slingshotCard) {
+                slingshotCard.style.opacity = String(Math.max(0, 1 - (ball.y - (RIM_Y + 28)) / 70));
+            }
+        }
+
+        renderCardTransform(scale);
+
+        // Reset card back to launch pad once shot finishes
+        const finishedSwish = ball.scoredThisShot && ball.y > RIM_Y + 95;
+        const missedBottom = !ball.scoredThisShot && ball.y > stageH + 45;
+        if (finishedSwish || missedBottom) {
+            isFlying = false;
+            if (missedBottom && hoopAimHint) {
+                let nextIndex;
+                do {
+                    nextIndex = Math.floor(Math.random() * MISS_MESSAGES.length);
+                } while (nextIndex === lastMissIndex && MISS_MESSAGES.length > 1);
+                lastMissIndex = nextIndex;
+                hoopAimHint.textContent = MISS_MESSAGES[nextIndex];
+            }
+            setTimeout(() => {
+                if (selectedFile && !isDragging && !isFlying) {
+                    resetBallToPad();
+                }
+            }, 320);
+        }
+    }
+
+    drawCanvasEffects();
+
+    if (isDragging || isFlying || particles.length > 0) {
+        rafId = requestAnimationFrame(stepAnimation);
+    } else {
+        rafId = null;
+        lastFrameTime = 0;
+    }
+};
+
+const ensureLoopRunning = () => {
+    if (!rafId) {
+        lastFrameTime = 0;
+        rafId = requestAnimationFrame(stepAnimation);
+    }
+};
+
+const handleFileSelected = (file) => {
+    if (!file) return;
+
+    const validTypes = ["image/png", "image/jpeg", "image/jpg", "image/webp", "application/pdf"];
+    if (file.type && !validTypes.includes(file.type)) {
+        showVortexModal({
+            type: "warning",
+            title: "Unsupported File Type",
+            message: "Please upload a PNG, JPG, WEBP image, or a PDF receipt.",
+            btnText: "Okay"
+        });
         return;
     }
 
@@ -293,31 +592,155 @@ paymentProofInput?.addEventListener("change", (e) => {
             message: "Please upload an image or PDF smaller than 3 MB.",
             btnText: "Okay"
         });
-        paymentProofInput.value = "";
-        fileUploadName.textContent = "";
-        if (hoopUploadBadge) {
-            hoopUploadBadge.textContent = "Uploaded 0";
-            hoopUploadBadge.classList.remove("scored");
-        }
+        if (paymentProofInput) paymentProofInput.value = "";
         return;
     }
 
-    const ext = file.name.split(".").pop().toUpperCase().slice(0, 4);
-    if (flyingFileDoc) flyingFileDoc.setAttribute("data-ext", ext);
+    selectedFile = file;
+    shotsScored = 0;
+    lastMissIndex = -1;
 
-    if (hoopDropzone) {
-        hoopDropzone.classList.remove("swish");
-        void hoopDropzone.offsetWidth;
-        hoopDropzone.classList.add("swish");
+    // Sync input.files in case file came from drag-and-drop
+    if (paymentProofInput && (!paymentProofInput.files || paymentProofInput.files[0] !== file)) {
+        try {
+            const dt = new DataTransfer();
+            dt.items.add(file);
+            paymentProofInput.files = dt.files;
+        } catch (err) {}
     }
 
+    const ext = (file.name.split(".").pop() || "FILE").toUpperCase().slice(0, 4);
+    if (slingshotCard) slingshotCard.setAttribute("data-ext", ext);
+
+    hoopStage?.classList.add("has-file");
+    if (hoopChangeBtn) hoopChangeBtn.style.display = "inline-block";
     if (hoopUploadBadge) {
-        hoopUploadBadge.textContent = "Uploaded 1";
-        hoopUploadBadge.classList.add("scored");
+        hoopUploadBadge.textContent = "Attached • Shoot!";
+        hoopUploadBadge.classList.remove("scored");
+        hoopUploadBadge.classList.add("attached");
+    }
+    if (hoopAimHint) {
+        hoopAimHint.textContent = "Pull the receipt card down & release to shoot!";
+    }
+    if (fileUploadName) {
+        fileUploadName.textContent = `Attached: ${file.name} — drag the card to take the shot!`;
     }
 
-    fileUploadName.textContent = `Swish! Selected: ${file.name}`;
+    resizeHoopCanvas();
+    resetBallToPad();
+};
+
+// Click stage when empty to browse files
+hoopStage?.addEventListener("click", (e) => {
+    if (selectedFile) return;
+    if (e.target === hoopChangeBtn) return;
+    paymentProofInput?.click();
 });
+
+hoopChangeBtn?.addEventListener("click", (e) => {
+    e.stopPropagation();
+    paymentProofInput?.click();
+});
+
+paymentProofInput?.addEventListener("change", (e) => {
+    const file = e.target.files?.[0];
+    if (file) handleFileSelected(file);
+});
+
+// OS File Drag & Drop onto the stage
+["dragenter", "dragover"].forEach((evt) => {
+    hoopStage?.addEventListener(evt, (e) => {
+        e.preventDefault();
+        hoopStage.classList.add("drag-over");
+    });
+});
+
+hoopStage?.addEventListener("dragleave", () => {
+    hoopStage.classList.remove("drag-over");
+});
+
+hoopStage?.addEventListener("drop", (e) => {
+    e.preventDefault();
+    hoopStage.classList.remove("drag-over");
+    const droppedFile = e.dataTransfer?.files?.[0];
+    if (droppedFile) handleFileSelected(droppedFile);
+});
+
+// Slingshot Pointer Controls (Mouse + Touch)
+slingshotCard?.addEventListener("pointerdown", (e) => {
+    if (!selectedFile || isFlying) return;
+    e.preventDefault();
+    e.stopPropagation();
+
+    resizeHoopCanvas();
+    isDragging = true;
+    activePointerId = e.pointerId;
+    slingshotCard.setPointerCapture?.(e.pointerId);
+    slingshotCard.classList.add("grabbing");
+    hoopStage?.classList.add("is-dragging");
+
+    const rect = hoopStage.getBoundingClientRect();
+    const pointerX = e.clientX - rect.left;
+    const pointerY = e.clientY - rect.top;
+    dragOffsetX = ball.x - pointerX;
+    dragOffsetY = ball.y - pointerY;
+
+    ensureLoopRunning();
+});
+
+const onSlingshotMove = (e) => {
+    if (!isDragging || e.pointerId !== activePointerId) return;
+    e.preventDefault();
+
+    const rect = hoopStage.getBoundingClientRect();
+    let dx = (e.clientX - rect.left + dragOffsetX) - anchorX;
+    let dy = (e.clientY - rect.top + dragOffsetY) - anchorY;
+
+    const dist = Math.hypot(dx, dy);
+    if (dist > MAX_PULL) {
+        dx = (dx / dist) * MAX_PULL;
+        dy = (dy / dist) * MAX_PULL;
+    }
+
+    dy = Math.max(-24, Math.min(64, dy));
+
+    ball.x = anchorX + dx;
+    ball.y = anchorY + dy;
+    ball.rot = -dx * 0.35;
+    renderCardTransform(1.04);
+};
+
+const onSlingshotRelease = (e) => {
+    if (!isDragging || e.pointerId !== activePointerId) return;
+    isDragging = false;
+    activePointerId = null;
+    slingshotCard?.classList.remove("grabbing");
+    hoopStage?.classList.remove("is-dragging");
+
+    const dx = ball.x - anchorX;
+    const dy = ball.y - anchorY;
+    const pullMag = Math.hypot(dx, dy);
+
+    if (pullMag < 12) {
+        resetBallToPad();
+        drawCanvasEffects();
+        return;
+    }
+
+    ball.vx = -dx * LAUNCH_POWER;
+    ball.vy = -dy * LAUNCH_POWER;
+    ball.vrot = -dx * 0.14;
+    ball.scoredThisShot = false;
+    isFlying = true;
+    hoopStage?.classList.add("is-flying");
+    ensureLoopRunning();
+};
+
+slingshotCard?.addEventListener("pointermove", onSlingshotMove);
+slingshotCard?.addEventListener("pointerup", onSlingshotRelease);
+slingshotCard?.addEventListener("pointercancel", onSlingshotRelease);
+window.addEventListener("resize", resizeHoopCanvas);
+resizeHoopCanvas();
 
 const fileToBase64 = (file) => new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -413,7 +836,7 @@ if (checkoutForm) {
     checkoutForm.addEventListener("submit", async (e) => {
         e.preventDefault(); 
         
-        const file = paymentProofInput?.files[0];
+        const file = selectedFile || paymentProofInput?.files?.[0];
         if (!file) {
             showVortexModal({
                 type: "warning",
