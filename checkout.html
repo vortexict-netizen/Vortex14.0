@@ -149,39 +149,55 @@
                         <input type="text" id="transactionId" class="form-control" placeholder="e.g., 432189654123" minlength="6" required>
                     </div>
 
-                    <!-- Payment Screenshot / PDF Upload -->
+                    <!-- Playable Slingshot Payment Screenshot / PDF Upload -->
                     <div class="form-group">
                         <div class="hoop-upload-header">
-                            <label for="paymentProof" style="margin: 0;">Upload Payment Screenshot or Receipt (Image / PDF, Max 3MB)</label>
-                            <span class="hoop-badge" id="hoopUploadBadge">Uploaded 0</span>
+                            <label for="paymentProof" style="margin: 0;">Upload Payment Proof (Image / PDF, Max 3MB)</label>
+                            <div class="hoop-header-actions">
+                                <button type="button" class="hoop-change-btn" id="hoopChangeBtn">Change File</button>
+                                <span class="hoop-badge" id="hoopUploadBadge">Uploaded 0</span>
+                            </div>
                         </div>
 
-                        <div class="hoop-dropzone" id="hoopDropzone">
-                            <i class="fa-solid fa-arrow-up-from-bracket hoop-upload-icon"></i>
-                            <div class="hoop-title">Drop files here</div>
-                            <div class="hoop-sub">or take the shot (PNG, JPG, PDF)</div>
+                        <div class="hoop-stage" id="hoopStage">
+                            <!-- Canvas for slingshot band, aim arc & swish particles -->
+                            <canvas class="hoop-canvas" id="hoopCanvas" aria-hidden="true"></canvas>
 
-                            <!-- Animated File Icon -->
-                            <div class="flying-file-doc" id="flyingFileDoc" data-ext="PDF"></div>
-
-                            <!-- Backboard, Rim & Net SVG -->
-                            <div class="hoop-svg-wrap" aria-hidden="true">
-                                <svg viewBox="0 0 130 95" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <!-- Backboard -->
-                                    <rect x="28" y="4" width="74" height="40" rx="5" stroke="var(--primary-cyan)" stroke-width="2" fill="rgba(0,243,255,0.06)"/>
-                                    <rect x="47" y="18" width="36" height="20" rx="2" stroke="var(--primary-purple)" stroke-width="1.5"/>
-                                    <!-- Rim -->
-                                    <ellipse cx="65" cy="48" rx="34" ry="4.5" stroke="#ff6b35" stroke-width="3.5" fill="none"/>
-                                    <!-- Net -->
-                                    <g class="hoop-net" stroke="var(--text-muted)" stroke-width="1.3">
-                                        <path d="M34 50 L44 90 M46 52 L53 90 M58 52 L61 90 M72 52 L69 90 M84 52 L77 90 M96 50 L86 90"/>
-                                        <path d="M36 58 L94 58 M39 70 L91 70 M42 82 L88 82" stroke-dasharray="4 3"/>
-                                        <path d="M34 50 L53 90 M46 52 L69 90 M58 52 L86 90 M96 50 L77 90 M84 52 L61 90 M72 52 L44 90" opacity="0.6"/>
-                                    </g>
+                            <!-- Back Layer: Backboard + Back Rim Arc -->
+                            <div class="hoop-svg-layer hoop-back-layer" aria-hidden="true">
+                                <svg viewBox="0 0 140 102" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <rect x="30" y="4" width="80" height="44" rx="5" stroke="var(--primary-cyan)" stroke-width="2" fill="rgba(0,243,255,0.06)"/>
+                                    <rect x="51" y="20" width="38" height="22" rx="2" stroke="var(--primary-purple)" stroke-width="1.5"/>
+                                    <path d="M35 52 A35 5 0 0 1 105 52" stroke="#cc4e20" stroke-width="3.5" fill="none"/>
                                 </svg>
                             </div>
 
-                            <input type="file" id="paymentProof" accept="image/png, image/jpeg, image/jpg, image/webp, application/pdf" required>
+                            <!-- Draggable File Card -->
+                            <div class="slingshot-card" id="slingshotCard" data-ext="PDF" role="button" aria-label="Drag back and release to shoot file into hoop"></div>
+
+                            <!-- Front Layer: Front Rim Arc + Net -->
+                            <div class="hoop-svg-layer hoop-front-layer" aria-hidden="true">
+                                <svg viewBox="0 0 140 102" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <g class="hoop-net" stroke="var(--text-muted)" stroke-width="1.35">
+                                        <path d="M37 54 L47 96 M49 56 L56 96 M62 57 L65 96 M78 57 L75 96 M91 56 L84 96 M103 54 L93 96"/>
+                                        <path d="M39 64 L101 64 M42 76 L98 76 M45 88 L95 88" stroke-dasharray="4 3"/>
+                                        <path d="M37 54 L56 96 M49 56 L75 96 M62 57 L93 96 M103 54 L84 96 M91 56 L65 96 M78 57 L47 96" opacity="0.6"/>
+                                    </g>
+                                    <path d="M35 52 A35 5 0 0 0 105 52" stroke="#ff6b35" stroke-width="4" stroke-linecap="round" fill="none"/>
+                                </svg>
+                            </div>
+
+                            <!-- Idle Prompt (Hidden once a file is picked) -->
+                            <div class="hoop-idle-prompt" id="hoopIdlePrompt">
+                                <i class="fa-solid fa-arrow-up-from-bracket hoop-upload-icon"></i>
+                                <div class="hoop-title">Click or drop payment proof here</div>
+                                <div class="hoop-sub">Select your file, then pull &amp; shoot into the hoop!</div>
+                            </div>
+
+                            <!-- Playable Hint -->
+                            <div class="hoop-aim-hint" id="hoopAimHint">Pull the receipt card down &amp; release to shoot!</div>
+
+                            <input type="file" id="paymentProof" class="hoop-hidden-input" accept="image/png, image/jpeg, image/jpg, image/webp, application/pdf">
                         </div>
 
                         <div id="fileUploadName" class="file-upload-name"></div>
