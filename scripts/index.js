@@ -105,6 +105,25 @@ emptyCartBtn?.addEventListener("click", (e) => {
   }
 });
 
+const checkoutBtn = document.getElementById("checkoutBtn");
+
+checkoutBtn?.addEventListener("click", () => {
+  if (cart.length === 0) {
+    const msg = document.getElementById("discountMsg");
+    if (msg) {
+      msg.textContent = "Add at least one event before checking out!";
+      msg.style.color = "#ff4757";
+      setTimeout(() => {
+        msg.style.color = "var(--primary-cyan)";
+      }, 2000);
+    }
+    return;
+  }
+
+  saveCart();
+  window.location.href = "./checkout.html";
+});
+
 // =========================================
 // 3.5 FLYING PARTICLE ANIMATION LOGIC
 // =========================================
@@ -300,8 +319,11 @@ const getCartBilling = () => {
   } else if (eligibleItems.length >= 5) {
     discountPercent = 0.50;
     message = "5+ eligible events — 50% discount applied!";
+  } else if (eligibleItems.length >= 3) {
+    discountPercent = 0.30;
+    message = `3+ eligible events — 30% discount applied! Add ${5 - eligibleItems.length} more for 50% off.`;
   } else if (eligibleItems.length > 0) {
-    message = `Add ${Math.max(0, 5 - eligibleItems.length)} more eligible event(s) for 50% off.`;
+    message = `Add ${Math.max(0, 3 - eligibleItems.length)} more eligible event(s) for 30% off.`;
   }
 
   const subtotal = cart.reduce((sum, item) => sum + parsePrice(item.price), 0);

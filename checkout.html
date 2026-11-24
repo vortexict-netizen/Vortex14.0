@@ -7,24 +7,44 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Orbitron:wght@400;500;700;900&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin />
 
-    <!-- Link your base CSS files -->
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Orbitron:wght@400;500;700;900&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Orbitron:wght@400;500;700;900&display=swap" /></noscript>
+
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+    <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" /></noscript>
+
+    <!-- Base CSS files (cache-busted so mobile loads the latest layout) -->
     <link rel="stylesheet" href="./css/index.css" />
-    <link rel="stylesheet" href="./css/checkout.css" />
-    
-    <!-- Link the index cursor and animations -->
+    <link rel="stylesheet" href="./css/checkout.css?v=3" />
     <link rel="stylesheet" href="./css/fx.css" />
-    
+
     <style>
-      /* Generous click hitboxes for all interactive elements */
-      .icon-btn, .submit-btn, select, label { position: relative; }
-      .icon-btn::after, .submit-btn::after {
-        content: ""; position: absolute; top: -12px; right: -12px; bottom: -12px; left: -12px;
+      /* Prevent horizontal overflow that forces mobile into desktop zoom */
+      html, body {
+        max-width: 100%;
+        overflow-x: clip;
+      }
+      *, *::before, *::after {
+        box-sizing: border-box;
+      }
+      .ambient-bg {
+        contain: strict;
+        pointer-events: none;
+        overflow: hidden;
       }
 
-      /* Payment QR & File Upload Styling */
+      /* Generous click hitboxes without causing horizontal overflow */
+      .icon-btn, .submit-btn, select, label { position: relative; }
+      .icon-btn::after {
+        content: ""; position: absolute; top: -12px; right: -12px; bottom: -12px; left: -12px;
+      }
+      .submit-btn::after {
+        content: ""; position: absolute; top: -10px; right: 0; bottom: -10px; left: 0;
+      }
+
+      /* Payment QR Styling */
       .payment-qr-box {
         background: var(--btn-wrapper-bg);
         border: 1px solid var(--glass-border);
@@ -43,38 +63,11 @@
         margin: 0.8rem auto;
         display: block;
       }
-      .file-upload-wrapper {
-        position: relative;
-        border: 1.5px dashed var(--primary-cyan);
-        border-radius: 12px;
-        padding: 1.4rem 1rem;
-        text-align: center;
-        background: rgba(0, 243, 255, 0.04);
-        cursor: pointer;
-        transition: border-color 0.3s, background 0.3s;
-      }
-      .file-upload-wrapper:hover {
-        border-color: var(--primary-purple);
-        background: rgba(189, 0, 255, 0.08);
-      }
-      .file-upload-wrapper input[type="file"] {
-        position: absolute;
-        inset: 0;
-        opacity: 0;
-        cursor: pointer;
-        width: 100%;
-        height: 100%;
-      }
-      .file-upload-name {
-        margin-top: 0.5rem;
-        font-size: 0.85rem;
-        color: var(--success-green);
-        font-weight: 500;
-        word-break: break-all;
-      }
     </style>
 
     <script src="./scripts/fx.js" defer></script>
+    <!-- Non-blocking reCAPTCHA load so it never freezes page render -->
+    <script src="https://www.google.com/recaptcha/api.js?render=6LcIgeAtAAAAAJuakH7S9z9eNDTFvsW7ilxBkxYf" async defer></script>
 </head>
 <body>
 
@@ -101,15 +94,14 @@
         </div>
     </div>
 
-    <!-- The fx.js file targets this specific div for the cursor -->
     <div id="glowing-cursor"></div>
 
     <main class="checkout-container">
         <div class="checkout-grid">
-            
+
             <div class="checkout-form-section">
                 <h2 class="font-heading" style="margin-bottom: 1.5rem;">Participant <span class="gradient-text">Details</span></h2>
-                
+
                 <form id="checkoutForm">
                     <div class="form-group">
                         <label for="fullName">Full Name</label>
@@ -141,7 +133,6 @@
                         <input type="text" id="otherCollege" class="form-control" placeholder="Type your college name..." minlength="3">
                     </div>
 
-                    <!-- Year of Study -->
                     <div class="form-group">
                         <label for="yearSelect">Year of Study</label>
                         <select id="yearSelect" class="form-control form-select" required>
@@ -155,41 +146,73 @@
                         </select>
                     </div>
 
-                    <!-- College ID / Roll Number -->
                     <div class="form-group">
                         <label for="collegeId">College ID / Roll Number</label>
                         <input type="text" id="collegeId" class="form-control" placeholder="e.g., 21CE1005" required>
                     </div>
 
-                    <!-- QR Code & Manual Payment Section -->
                     <div class="payment-qr-box">
                         <h4 class="font-heading" style="font-size: 0.95rem; color: var(--primary-cyan);">Scan & Pay Total Amount</h4>
                         <p style="font-size: 0.82rem; color: var(--text-muted); margin-top: 4px;">
                             Pay the exact <strong>Total Payable</strong> shown in your Order Summary via any UPI app.
                         </p>
-                        <!-- Replace photos/payment_qr.png with your actual QR code image path -->
-                        <img src="photos/payment_qr.png" alt="UPI Payment QR Code" onerror="this.style.display='none'" />
+                        <img src="photos/payment_qr.webp" alt="UPI Payment QR Code" onerror="this.style.display='none'" />
                     </div>
 
-                    <!-- UPI Transaction ID / UTR -->
                     <div class="form-group">
                         <label for="transactionId">UPI Transaction ID / 12-Digit UTR Number</label>
                         <input type="text" id="transactionId" class="form-control" placeholder="e.g., 432189654123" minlength="6" required>
                     </div>
 
-                    <!-- Payment Screenshot / PDF Upload -->
                     <div class="form-group">
-                        <label for="paymentProof">Upload Payment Screenshot or Receipt (Image / PDF, Max 5MB)</label>
-                        <div class="file-upload-wrapper">
-                            <i class="fa-solid fa-cloud-arrow-up" style="font-size: 1.8rem; color: var(--primary-cyan); margin-bottom: 0.4rem;"></i>
-                            <p style="font-size: 0.85rem; color: var(--text-muted);">Click or drag file here to upload (PNG, JPG, PDF)</p>
-                            <div id="fileUploadName" class="file-upload-name"></div>
-                            <input type="file" id="paymentProof" accept="image/png, image/jpeg, image/jpg, image/webp, application/pdf" required>
+                        <div class="hoop-upload-header">
+                            <label for="paymentProof" style="margin: 0;">Upload Payment Proof (Image / PDF, Max 3MB)</label>
+                            <div class="hoop-header-actions">
+                                <button type="button" class="hoop-change-btn" id="hoopChangeBtn">Change File</button>
+                                <span class="hoop-badge" id="hoopUploadBadge">Uploaded 0</span>
+                            </div>
                         </div>
+
+                        <div class="hoop-stage" id="hoopStage">
+                            <canvas class="hoop-canvas" id="hoopCanvas" aria-hidden="true"></canvas>
+
+                            <div class="hoop-svg-layer hoop-back-layer" aria-hidden="true">
+                                <svg viewBox="0 0 140 102" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <rect x="30" y="4" width="80" height="44" rx="5" stroke="var(--primary-cyan)" stroke-width="2" fill="rgba(0,243,255,0.06)"/>
+                                    <rect x="51" y="20" width="38" height="22" rx="2" stroke="var(--primary-purple)" stroke-width="1.5"/>
+                                    <path d="M35 52 A35 5 0 0 1 105 52" stroke="#cc4e20" stroke-width="3.5" fill="none"/>
+                                </svg>
+                            </div>
+
+                            <div class="slingshot-card" id="slingshotCard" data-ext="PDF" role="button" aria-label="Drag back and release to shoot file into hoop"></div>
+
+                            <div class="hoop-svg-layer hoop-front-layer" aria-hidden="true">
+                                <svg viewBox="0 0 140 102" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <g class="hoop-net" stroke="var(--text-muted)" stroke-width="1.35">
+                                        <path d="M37 54 L47 96 M49 56 L56 96 M62 57 L65 96 M78 57 L75 96 M91 56 L84 96 M103 54 L93 96"/>
+                                        <path d="M39 64 L101 64 M42 76 L98 76 M45 88 L95 88" stroke-dasharray="4 3"/>
+                                        <path d="M37 54 L56 96 M49 56 L75 96 M62 57 L93 96 M103 54 L84 96 M91 56 L65 96 M78 57 L47 96" opacity="0.6"/>
+                                    </g>
+                                    <path d="M35 52 A35 5 0 0 0 105 52" stroke="#ff6b35" stroke-width="4" stroke-linecap="round" fill="none"/>
+                                </svg>
+                            </div>
+
+                            <div class="hoop-idle-prompt" id="hoopIdlePrompt">
+                                <i class="fa-solid fa-arrow-up-from-bracket hoop-upload-icon"></i>
+                                <div class="hoop-title">Click or drop payment proof here</div>
+                                <div class="hoop-sub">Select your file, then pull &amp; shoot into the hoop!</div>
+                            </div>
+
+                            <div class="hoop-aim-hint" id="hoopAimHint">Pull the receipt card down &amp; release to shoot!</div>
+                        </div>
+
+                        <input type="file" id="paymentProof" class="hoop-hidden-input" accept="image/png, image/jpeg, image/jpg, image/webp, application/pdf">
+
+                        <div id="fileUploadName" class="file-upload-name"></div>
                     </div>
 
                     <div style="margin: 20px 0; display: flex; gap: 10px; align-items: flex-start;">
-                        <input type="checkbox" id="termsConsent" name="termsConsent" required style="margin-top: 4px;">
+                        <input type="checkbox" id="termsConsent" name="termsConsent" required style="margin-top: 4px; flex-shrink: 0;">
                         <label for="termsConsent" style="font-size: 0.9rem; color: #aaa; line-height: 1.4;">
                             I agree to the <a href="terms.html" target="_blank" style="color: var(--primary-cyan);">Terms & Conditions</a> and consent to Vortex 14.0 collecting my details for registration, event updates, and certificate generation.
                         </label>
@@ -197,12 +220,11 @@
 
                     <button type="submit" class="submit-btn" id="proceedBtn">Submit Registration</button>
                 </form>
-                
             </div>
 
             <div class="checkout-summary-section">
                 <h3 class="font-heading" style="font-size: 1.2rem; margin-bottom: 1.5rem; border-bottom: 1px solid var(--glass-border); padding-bottom: 10px;">Order Summary</h3>
-                
+
                 <div id="checkoutEventList" class="checkout-events"></div>
 
                 <div class="summary-totals">
@@ -224,6 +246,6 @@
         </div>
     </main>
 
-    <script type="module" src="./scripts/checkout.js"></script>
+    <script type="module" src="./scripts/checkout.js?v=3"></script>
 </body>
 </html>

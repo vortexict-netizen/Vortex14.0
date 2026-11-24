@@ -78,7 +78,7 @@
     <!-- REGISTRATION MARQUEE -->
     <div class="marquee-container">
       <div class="marquee-text">
-        🚨 REGISTRATIONS FOR VORTEX 14.0 WILL START FROM 18TH NOVEMBER! BUILD YOUR CART AND SAVE YOUR SPOTS! 🚨
+        🚨 REGISTRATIONS FOR VORTEX 14.0 WILL START SOON! BUILD YOUR CART AND SAVE YOUR SPOTS! 🚨
       </div>
     </div>
 
@@ -115,10 +115,8 @@
         <p class="discount-msg" id="discountMsg">Add more events to unlock series discounts!</p>
         
         <!-- Hidden Checkout Button & Replacement Message -->
-        <button class="checkout-btn" style="display: none !important;" onclick="window.location.href='checkout.html'">Proceed to Checkout</button>
-        <div style="text-align: center; margin-top: 15px; padding: 12px; border-radius: 8px; background: rgba(189, 0, 255, 0.1); border: 1px dashed var(--primary-purple); font-family: 'Orbitron', sans-serif; font-size: 0.85rem; color: var(--primary-cyan); font-weight: 700;">
-          CHECKOUT OPENS NOV 18
-        </div>
+        <button class="checkout-btn" id="checkoutBtn">Proceed to Checkout</button>
+        
       </div>
     </div>
 
@@ -160,6 +158,21 @@
 
       <section id="events" class="tab-content">
         <div style="padding-top: 2rem">
+          <!-- BUNDLE DISCOUNT BANNER -->
+          <div class="bundle-discount-banner">
+            <div class="bundle-banner-title">
+              <i class="fa-solid fa-tags" aria-hidden="true"></i> Bundle &amp; Save — Automatic Cart Discounts
+            </div>
+            <div class="bundle-tiers">
+              <span class="bundle-pill">Any 3 Events <strong>30% OFF</strong></span>
+              <span class="bundle-pill">Any 5 Mixed <strong>50% OFF</strong></span>
+              <span class="bundle-pill">1 Full Series <strong>60% OFF</strong></span>
+              <span class="bundle-pill">2 Full Series <strong>65% OFF</strong></span>
+              <span class="bundle-pill highlight">All 3 Series <strong>70% OFF</strong></span>
+            </div>
+            <p class="bundle-note">*Discounts apply automatically in your cart (excluding Sr. IDP &amp; Sr. IDP Multi-Problem).</p>
+          </div>
+
           <section class="series-section">
             <h2 class="series-title"><span style="color: var(--primary-cyan)">01.</span> General Series</h2>
             <div class="events-grid" id="grid-general"></div>
