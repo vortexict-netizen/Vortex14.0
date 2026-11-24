@@ -254,17 +254,37 @@ if (cart.length === 0) {
 }
 
 // =========================================
-// 5. FILE INPUT PREVIEW & BASE64 HELPER
+// 5. FILE INPUT PREVIEW, HOOP ANIMATION & BASE64 HELPER
 // =========================================
 const paymentProofInput = document.getElementById("paymentProof");
 const fileUploadName = document.getElementById("fileUploadName");
+const hoopDropzone = document.getElementById("hoopDropzone");
+const hoopUploadBadge = document.getElementById("hoopUploadBadge");
+const flyingFileDoc = document.getElementById("flyingFileDoc");
+
+["dragenter", "dragover"].forEach((evt) => {
+    hoopDropzone?.addEventListener(evt, () => {
+        hoopDropzone.classList.add("drag-over");
+    });
+});
+
+["dragleave", "drop"].forEach((evt) => {
+    hoopDropzone?.addEventListener(evt, () => {
+        hoopDropzone.classList.remove("drag-over");
+    });
+});
 
 paymentProofInput?.addEventListener("change", (e) => {
     const file = e.target.files[0];
     if (!file) {
         fileUploadName.textContent = "";
+        if (hoopUploadBadge) {
+            hoopUploadBadge.textContent = "Uploaded 0";
+            hoopUploadBadge.classList.remove("scored");
+        }
         return;
     }
+
     if (file.size > 3 * 1024 * 1024) {
         showVortexModal({
             type: "warning",
@@ -274,9 +294,28 @@ paymentProofInput?.addEventListener("change", (e) => {
         });
         paymentProofInput.value = "";
         fileUploadName.textContent = "";
+        if (hoopUploadBadge) {
+            hoopUploadBadge.textContent = "Uploaded 0";
+            hoopUploadBadge.classList.remove("scored");
+        }
         return;
     }
-    fileUploadName.textContent = `Selected: ${file.name}`;
+
+    const ext = file.name.split(".").pop().toUpperCase().slice(0, 4);
+    if (flyingFileDoc) flyingFileDoc.setAttribute("data-ext", ext);
+
+    if (hoopDropzone) {
+        hoopDropzone.classList.remove("swish");
+        void hoopDropzone.offsetWidth;
+        hoopDropzone.classList.add("swish");
+    }
+
+    if (hoopUploadBadge) {
+        hoopUploadBadge.textContent = "Uploaded 1";
+        hoopUploadBadge.classList.add("scored");
+    }
+
+    fileUploadName.textContent = `Swish! Selected: ${file.name}`;
 });
 
 const fileToBase64 = (file) => new Promise((resolve, reject) => {
