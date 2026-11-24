@@ -1,9 +1,10 @@
 import eventsData from "../data/eventsData.js";
 
 // =========================================
-// RECAPTCHA SITE KEY
+// RECAPTCHA SITE KEY & CACHE KEY
 // =========================================
 const RECAPTCHA_SITE_KEY = "6LcIgeAtAAAAAJuakH7S9z9eNDTFvsW7ilxBkxYf";
+const CHECKOUT_DRAFT_KEY = "vortex_checkout_draft";
 
 // =========================================
 // 0. IN-PAGE GLASSMORPHIC MODAL & PROGRESS HELPERS
@@ -326,26 +327,88 @@ const fileToBase64 = (file) => new Promise((resolve, reject) => {
 });
 
 // =========================================
-// 6. FORM LOGIC & SECURE BACKEND SUBMISSION
+// 6. FORM CACHE SYSTEM (AUTO-SAVE & RESTORE)
 // =========================================
 const collegeSelect = document.getElementById("collegeSelect");
 const otherCollegeGroup = document.getElementById("otherCollegeGroup");
 const otherCollegeInput = document.getElementById("otherCollege");
+const checkoutForm = document.getElementById("checkoutForm");
+
+const syncOtherCollegeVisibility = () => {
+    if (!collegeSelect || !otherCollegeGroup || !otherCollegeInput) return;
+    if (collegeSelect.value === "Other") {
+        otherCollegeGroup.style.display = "block";
+        otherCollegeInput.required = true;
+    } else {
+        otherCollegeGroup.style.display = "none";
+        otherCollegeInput.required = false;
+        otherCollegeInput.value = "";
+    }
+};
+
+const saveFormDraft = () => {
+    try {
+        const draft = {
+            fullName: document.getElementById("fullName")?.value || "",
+            phone: document.getElementById("phone")?.value || "",
+            email: document.getElementById("email")?.value || "",
+            collegeSelect: collegeSelect?.value || "",
+            otherCollege: otherCollegeInput?.value || "",
+            yearSelect: document.getElementById("yearSelect")?.value || "",
+            collegeId: document.getElementById("collegeId")?.value || "",
+            transactionId: document.getElementById("transactionId")?.value || "",
+            termsConsent: document.getElementById("termsConsent")?.checked || false
+        };
+        sessionStorage.setItem(CHECKOUT_DRAFT_KEY, JSON.stringify(draft));
+    } catch (e) {}
+};
+
+const restoreFormDraft = () => {
+    try {
+        const saved = sessionStorage.getItem(CHECKOUT_DRAFT_KEY);
+        if (!saved) return;
+        const draft = JSON.parse(saved);
+
+        const setVal = (id, val) => {
+            const el = document.getElementById(id);
+            if (el && typeof val === "string") el.value = val;
+        };
+
+        setVal("fullName", draft.fullName);
+        setVal("phone", draft.phone);
+        setVal("email", draft.email);
+        setVal("collegeSelect", draft.collegeSelect);
+        syncOtherCollegeVisibility();
+        if (draft.collegeSelect === "Other") {
+            setVal("otherCollege", draft.otherCollege);
+        }
+        setVal("yearSelect", draft.yearSelect);
+        setVal("collegeId", draft.collegeId);
+        setVal("transactionId", draft.transactionId);
+
+        const termsEl = document.getElementById("termsConsent");
+        if (termsEl && typeof draft.termsConsent === "boolean") {
+            termsEl.checked = draft.termsConsent;
+        }
+    } catch (e) {}
+};
 
 if (collegeSelect) {
-    collegeSelect.addEventListener("change", (e) => {
-        if (e.target.value === "Other") {
-            otherCollegeGroup.style.display = "block";
-            otherCollegeInput.required = true;
-        } else {
-            otherCollegeGroup.style.display = "none";
-            otherCollegeInput.required = false;
-            otherCollegeInput.value = "";
-        }
+    collegeSelect.addEventListener("change", () => {
+        syncOtherCollegeVisibility();
+        saveFormDraft();
     });
 }
 
-const checkoutForm = document.getElementById("checkoutForm");
+if (checkoutForm) {
+    checkoutForm.addEventListener("input", saveFormDraft);
+    checkoutForm.addEventListener("change", saveFormDraft);
+    restoreFormDraft();
+}
+
+// =========================================
+// 7. SECURE BACKEND SUBMISSION
+// =========================================
 if (checkoutForm) {
     checkoutForm.addEventListener("submit", async (e) => {
         e.preventDefault(); 
@@ -437,6 +500,7 @@ if (checkoutForm) {
             if (result.success) {
                 updateProgressModal(100, "Registration complete!");
                 localStorage.removeItem("vortex_cart");
+                sessionStorage.removeItem(CHECKOUT_DRAFT_KEY);
 
                 setTimeout(() => {
                     showVortexModal({
