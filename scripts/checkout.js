@@ -326,9 +326,16 @@ const resetBallToPad = () => {
 
 const resizeHoopCanvas = (force = false) => {
     if (!hoopStage || !hoopCanvas) return;
+
+    // Guarantee canvas never stretches its parent container even if CSS is slow to load
+    hoopCanvas.style.position = "absolute";
+    hoopCanvas.style.inset = "0";
+    hoopCanvas.style.width = "100%";
+    hoopCanvas.style.height = "100%";
+
     const rect = hoopStage.getBoundingClientRect();
-    const newW = Math.round(rect.width) || 320;
-    const newH = Math.round(rect.height) || 280;
+    const newW = Math.min(Math.max(Math.round(rect.width) || 320, 200), 900);
+    const newH = Math.min(Math.max(Math.round(rect.height) || 280, 200), 400);
 
     if (!force && newW === stageW && newH === stageH) return;
 
