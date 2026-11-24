@@ -196,9 +196,10 @@
 
                             <!-- Playable Hint -->
                             <div class="hoop-aim-hint" id="hoopAimHint">Pull the receipt card down &amp; release to shoot!</div>
-
-                            <input type="file" id="paymentProof" class="hoop-hidden-input" accept="image/png, image/jpeg, image/jpg, image/webp, application/pdf">
                         </div>
+
+                        <!-- Kept OUTSIDE #hoopStage to prevent click event bubbling loop -->
+                        <input type="file" id="paymentProof" class="hoop-hidden-input" accept="image/png, image/jpeg, image/jpg, image/webp, application/pdf">
 
                         <div id="fileUploadName" class="file-upload-name"></div>
                     </div>

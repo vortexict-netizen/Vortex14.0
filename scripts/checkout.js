@@ -284,8 +284,8 @@ let lastMissIndex = -1;
 
 let selectedFile = null;
 let shotsScored = 0;
-let stageW = 320;
-let stageH = 280;
+let stageW = 0;
+let stageH = 0;
 let anchorX = 160;
 let anchorY = 212;
 
@@ -299,24 +299,6 @@ let ball = { x: 160, y: 212, vx: 0, vy: 0, rot: 0, vrot: 0, scoredThisShot: fals
 let particles = [];
 let rafId = null;
 let lastFrameTime = 0;
-
-const resizeHoopCanvas = () => {
-    if (!hoopStage || !hoopCanvas) return;
-    const rect = hoopStage.getBoundingClientRect();
-    stageW = rect.width || 320;
-    stageH = rect.height || 280;
-    const dpr = window.devicePixelRatio || 1;
-    hoopCanvas.width = Math.round(stageW * dpr);
-    hoopCanvas.height = Math.round(stageH * dpr);
-    if (ctx) ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-
-    anchorX = stageW / 2;
-    anchorY = stageH - 68;
-
-    if (!isDragging && !isFlying) {
-        resetBallToPad();
-    }
-};
 
 const renderCardTransform = (scale = 1) => {
     if (!slingshotCard) return;
@@ -340,6 +322,29 @@ const resetBallToPad = () => {
     }
     hoopStage?.classList.remove("is-dragging", "is-flying");
     renderCardTransform(1);
+};
+
+const resizeHoopCanvas = (force = false) => {
+    if (!hoopStage || !hoopCanvas) return;
+    const rect = hoopStage.getBoundingClientRect();
+    const newW = Math.round(rect.width) || 320;
+    const newH = Math.round(rect.height) || 280;
+
+    if (!force && newW === stageW && newH === stageH) return;
+
+    stageW = newW;
+    stageH = newH;
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    hoopCanvas.width = Math.round(stageW * dpr);
+    hoopCanvas.height = Math.round(stageH * dpr);
+    if (ctx) ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+    anchorX = stageW / 2;
+    anchorY = stageH - 68;
+
+    if (!isDragging && !isFlying) {
+        resetBallToPad();
+    }
 };
 
 const spawnConfetti = (x, y) => {
@@ -473,7 +478,7 @@ const triggerSwish = () => {
 
 const stepAnimation = (timestamp) => {
     if (!lastFrameTime) lastFrameTime = timestamp;
-    const dt = Math.min((timestamp - lastFrameTime) / 16.667, 2);
+    const dt = Math.max(0.1, Math.min((timestamp - lastFrameTime) / 16.667, 2));
     lastFrameTime = timestamp;
 
     if (isFlying) {
@@ -626,14 +631,19 @@ const handleFileSelected = (file) => {
         fileUploadName.textContent = `Attached: ${file.name} — drag the card to take the shot!`;
     }
 
-    resizeHoopCanvas();
+    resizeHoopCanvas(true);
     resetBallToPad();
 };
+
+// Stop bubbling on the file input as an extra safeguard against recursion
+paymentProofInput?.addEventListener("click", (e) => {
+    e.stopPropagation();
+});
 
 // Click stage when empty to browse files
 hoopStage?.addEventListener("click", (e) => {
     if (selectedFile) return;
-    if (e.target === hoopChangeBtn) return;
+    if (e.target === hoopChangeBtn || e.target === paymentProofInput) return;
     paymentProofInput?.click();
 });
 
@@ -675,7 +685,9 @@ slingshotCard?.addEventListener("pointerdown", (e) => {
     resizeHoopCanvas();
     isDragging = true;
     activePointerId = e.pointerId;
-    slingshotCard.setPointerCapture?.(e.pointerId);
+    try {
+        slingshotCard.setPointerCapture?.(e.pointerId);
+    } catch (err) {}
     slingshotCard.classList.add("grabbing");
     hoopStage?.classList.add("is-dragging");
 
@@ -739,8 +751,8 @@ const onSlingshotRelease = (e) => {
 slingshotCard?.addEventListener("pointermove", onSlingshotMove);
 slingshotCard?.addEventListener("pointerup", onSlingshotRelease);
 slingshotCard?.addEventListener("pointercancel", onSlingshotRelease);
-window.addEventListener("resize", resizeHoopCanvas);
-resizeHoopCanvas();
+window.addEventListener("resize", () => resizeHoopCanvas(false));
+resizeHoopCanvas(true);
 
 const fileToBase64 = (file) => new Promise((resolve, reject) => {
     const reader = new FileReader();
