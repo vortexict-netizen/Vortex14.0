@@ -9,7 +9,55 @@ const CHECKOUT_DRAFT_KEY = "vortex_checkout_draft";
 // =========================================
 // 0. IN-PAGE GLASSMORPHIC MODAL, PROGRESS & SHAREABLE PASS HELPERS
 // =========================================
-function downloadVortexPass({ name, college, events, totalFormatted, txnId }) {
+function drawVortexLogo(c, cx, cy, scale = 1) {
+    const deg = (d) => (d * Math.PI) / 180;
+    const drawArc = (r, startDeg, endDeg, color, width) => {
+        c.beginPath();
+        c.arc(cx, cy, r * scale, deg(startDeg), deg(endDeg));
+        c.strokeStyle = color;
+        c.lineWidth = width * scale;
+        c.lineCap = "butt";
+        c.stroke();
+    };
+
+    c.save();
+    c.shadowColor = "rgba(0, 243, 255, 0.25)";
+    c.shadowBlur = 18 * scale;
+
+    // Outer ring (white + blue)
+    drawArc(76, 195, 268, "#ffffff", 7.5);
+    drawArc(76, 278, 352, "#ffffff", 7.5);
+    drawArc(76, 14, 62, "#ffffff", 7.5);
+    drawArc(76, 70, 86, "#ffffff", 7.5);
+    drawArc(76, 110, 178, "#45aaf2", 7.5);
+
+    // Middle ring (yellow + blue)
+    drawArc(63, 300, 352, "#45aaf2", 7.5);
+    drawArc(63, 215, 262, "#ffd93d", 7.5);
+    drawArc(63, 45, 195, "#ffd93d", 7.5);
+
+    // Inner ring (red)
+    drawArc(50, 160, 355, "#ff5a4d", 7.5);
+    drawArc(50, 15, 115, "#ff5a4d", 7.5);
+
+    // Center 3-slice pie
+    const drawSlice = (ox, oy, startDeg, endDeg, color) => {
+        c.beginPath();
+        c.moveTo(cx + ox * scale, cy + oy * scale);
+        c.arc(cx + ox * scale, cy + oy * scale, 24 * scale, deg(startDeg), deg(endDeg));
+        c.closePath();
+        c.fillStyle = color;
+        c.fill();
+    };
+
+    drawSlice(0, -2.5, 210, 330, "#ffd93d");
+    drawSlice(2.2, 1.3, 330, 90, "#ff5a4d");
+    drawSlice(-2.2, 1.3, 90, 210, "#45aaf2");
+
+    c.restore();
+}
+
+function downloadVortexPass({ name, college, events, totalFormatted }) {
     const canvas = document.createElement("canvas");
     canvas.width = 1080;
     canvas.height = 1920;
@@ -39,9 +87,9 @@ function downloadVortexPass({ name, college, events, totalFormatted, txnId }) {
 
     // 2. Glassmorphic Pass Frame
     const cardX = 80;
-    const cardY = 200;
+    const cardY = 140;
     const cardW = 920;
-    const cardH = 1520;
+    const cardH = 1640;
     const radius = 44;
 
     c.save();
@@ -57,72 +105,75 @@ function downloadVortexPass({ name, college, events, totalFormatted, txnId }) {
     c.stroke();
     c.restore();
 
-    // 3. Header Text
+    // 3. Vortex Logo at Top (Transparent BG)
+    drawVortexLogo(c, 540, 265, 1.08);
+
+    // 4. Header Text
     c.textAlign = "center";
     c.fillStyle = "#00f3ff";
-    c.font = "700 32px Orbitron, sans-serif";
-    c.fillText("OFFICIAL PARTICIPANT PASS", 540, 315);
+    c.font = "700 28px Orbitron, sans-serif";
+    c.fillText("OFFICIAL PARTICIPANT PASS", 540, 405);
 
     const titleGrad = c.createLinearGradient(280, 0, 800, 0);
     titleGrad.addColorStop(0, "#00f3ff");
     titleGrad.addColorStop(1, "#bd00ff");
     c.fillStyle = titleGrad;
-    c.font = "900 88px Orbitron, sans-serif";
-    c.fillText("VORTEX 14.0", 540, 425);
+    c.font = "900 84px Orbitron, sans-serif";
+    c.fillText("VORTEX 14.0", 540, 498);
 
     c.fillStyle = "rgba(255,255,255,0.72)";
-    c.font = "500 30px Inter, sans-serif";
-    c.fillText("ICT MUMBAI  •  EQUINEXUS  •  DEC 2026", 540, 485);
+    c.font = "500 28px Inter, sans-serif";
+    c.fillText("ICT MUMBAI  •  EQUINEXUS  •  DEC 2026", 540, 552);
 
     // Divider
     c.strokeStyle = "rgba(255,255,255,0.14)";
     c.lineWidth = 2;
     c.beginPath();
-    c.moveTo(150, 540);
-    c.lineTo(930, 540);
+    c.moveTo(150, 598);
+    c.lineTo(930, 598);
     c.stroke();
 
-    // 4. Participant Details
+    // 5. Participant Details
     c.textAlign = "left";
     c.fillStyle = "rgba(255,255,255,0.55)";
     c.font = "600 26px Inter, sans-serif";
-    c.fillText("PARTICIPANT", 150, 620);
+    c.fillText("PARTICIPANT", 150, 662);
 
     c.fillStyle = "#ffffff";
-    c.font = "700 50px Orbitron, sans-serif";
+    c.font = "700 48px Orbitron, sans-serif";
     const clippedName = name.length > 22 ? `${name.slice(0, 21)}…` : name;
-    c.fillText(clippedName.toUpperCase(), 150, 685);
+    c.fillText(clippedName.toUpperCase(), 150, 724);
 
     c.fillStyle = "rgba(255,255,255,0.75)";
     c.font = "400 30px Inter, sans-serif";
     const clippedCollege = college.length > 42 ? `${college.slice(0, 41)}…` : college;
-    c.fillText(clippedCollege, 150, 742);
+    c.fillText(clippedCollege, 150, 778);
 
-    // 5. Registered Events List
+    // 6. Registered Events List
     c.fillStyle = "#00f3ff";
     c.font = "700 28px Orbitron, sans-serif";
-    c.fillText(`REGISTERED EVENTS (${events.length})`, 150, 845);
+    c.fillText(`REGISTERED EVENTS (${events.length})`, 150, 868);
 
     const maxVisible = 8;
     const shownEvents = events.slice(0, maxVisible);
-    let yCursor = 910;
+    let yCursor = 930;
 
     shownEvents.forEach((evName) => {
         c.fillStyle = "rgba(255,255,255,0.06)";
         c.beginPath();
-        c.roundRect(150, yCursor - 42, 780, 58, 14);
+        c.roundRect(150, yCursor - 42, 780, 56, 14);
         c.fill();
 
         c.fillStyle = "#bd00ff";
         c.beginPath();
-        c.arc(185, yCursor - 13, 7, 0, Math.PI * 2);
+        c.arc(185, yCursor - 14, 7, 0, Math.PI * 2);
         c.fill();
 
         c.fillStyle = "#ffffff";
         c.font = "500 28px Inter, sans-serif";
         const label = evName.length > 36 ? `${evName.slice(0, 35)}…` : evName;
         c.fillText(label, 212, yCursor - 4);
-        yCursor += 74;
+        yCursor += 70;
     });
 
     if (events.length > maxVisible) {
@@ -131,28 +182,29 @@ function downloadVortexPass({ name, college, events, totalFormatted, txnId }) {
         c.fillText(`+ ${events.length - maxVisible} more event(s)`, 155, yCursor + 6);
     }
 
-    // 6. Bottom Ticket Footer
+    // 7. Bottom Ticket Footer (No UTR)
     c.setLineDash([12, 10]);
     c.strokeStyle = "rgba(255,255,255,0.2)";
     c.beginPath();
-    c.moveTo(150, 1545);
-    c.lineTo(930, 1545);
+    c.moveTo(150, 1570);
+    c.lineTo(930, 1570);
     c.stroke();
     c.setLineDash([]);
 
-    c.fillStyle = "rgba(255,255,255,0.6)";
-    c.font = "500 24px Inter, sans-serif";
-    c.fillText(`UTR: ${txnId}`, 150, 1605);
+    c.textAlign = "left";
+    c.fillStyle = "rgba(255,255,255,0.65)";
+    c.font = "600 26px Orbitron, sans-serif";
+    c.fillText("21 DEC 2026  •  ICT MUMBAI", 150, 1635);
 
     c.textAlign = "right";
     c.fillStyle = "#00ff88";
     c.font = "700 32px Orbitron, sans-serif";
-    c.fillText(`PAID ${totalFormatted}`, 930, 1605);
+    c.fillText(`PAID ${totalFormatted}`, 930, 1635);
 
     c.textAlign = "center";
     c.fillStyle = "rgba(255,255,255,0.65)";
     c.font = "600 26px Inter, sans-serif";
-    c.fillText("Share on your Story & tag @vortex_ict", 540, 1675);
+    c.fillText("Share on your Story & tag @vortex_ict", 540, 1715);
 
     const safeFile = name.replace(/[^a-zA-Z0-9]/g, "_") || "Participant";
     const link = document.createElement("a");
