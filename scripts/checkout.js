@@ -191,10 +191,16 @@ function downloadVortexPass({ name, college, events, totalFormatted }) {
     c.stroke();
     c.setLineDash([]);
 
+    const regDate = new Date().toLocaleDateString("en-IN", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric"
+    }).toUpperCase();
+
     c.textAlign = "left";
     c.fillStyle = "rgba(255,255,255,0.65)";
     c.font = "600 26px Orbitron, sans-serif";
-    c.fillText("21 DEC 2026  •  ICT MUMBAI", 150, 1635);
+    c.fillText(`REGISTERED: ${regDate}`, 150, 1635);
 
     c.fillStyle = "#00f3ff";
     c.textAlign = "center";
