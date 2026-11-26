@@ -48,9 +48,7 @@
     </style>
     
     <script src="./scripts/fx.js" defer></script>
-  // Clarity
-    <script src="/scripts/cookie-banner.js" defer></script>-consent.js" defer></script>
-<script src="/scripts/cookie-banner.js" defer></script>
+    <script src="/scripts/cookie-banner.js" defer></script>
   </head>
 
   <body>
@@ -111,7 +109,6 @@
         <p class="discount-msg" id="discountMsg">Add more events to unlock series discounts!</p>
         
         <p class="discount-msg" style="border: 1px solid #ffd93d; border-radius: 8px; background: rgba(255, 217, 61, 0.12); color: #ffd93d; font-weight: 700; padding: 8px 12px; text-align: center;">Registrations start soon!</p>
-        
       </div>
     </div>
 
@@ -120,6 +117,18 @@
         <div class="hero-text">
           <h1 class="font-heading">Welcome to VORTEX <span class="gradient-text">14.0</span></h1>
           <p>Asia's Largest Chem-Fest organized by the Institute of Chemical Technology (ICT), Mumbai. Where Chemical Engineering, Pharma, and Futuristic Technology converge into a single dimension of innovation.</p>
+
+          <!-- LIVE COUNTDOWN TO 21 DEC -->
+          <div class="hero-countdown" id="heroCountdown" aria-label="Countdown to Vortex 14.0">
+            <div class="countdown-label"><i class="fa-regular fa-clock" aria-hidden="true"></i> Launching 21 December</div>
+            <div class="countdown-grid" id="countdownGrid">
+              <div class="countdown-box"><span id="cdDays">00</span><small>Days</small></div>
+              <div class="countdown-box"><span id="cdHours">00</span><small>Hrs</small></div>
+              <div class="countdown-box"><span id="cdMins">00</span><small>Mins</small></div>
+              <div class="countdown-box"><span id="cdSecs">00</span><small>Secs</small></div>
+            </div>
+          </div>
+
           <a href="#events" class="action-btn btn-info" style="font-size: 1rem; padding: 12px 30px; display: inline-block; text-decoration: none;">Explore Events</a>
         </div>
         
@@ -153,7 +162,7 @@
 
       <section id="events" class="tab-content">
         <div style="padding-top: 2rem">
-          <!-- BUNDLE DISCOUNT BANNER -->
+          <!-- BUNDLE DISCOUNT BANNER + ONE-CLICK QUICK ADD -->
           <div class="bundle-discount-banner">
             <div class="bundle-banner-title">
               <i class="fa-solid fa-tags" aria-hidden="true"></i> Bundle &amp; Save — Automatic Cart Discounts
@@ -165,6 +174,22 @@
               <span class="bundle-pill">2 Full Series <strong>65% OFF</strong></span>
               <span class="bundle-pill highlight">All 3 Series <strong>70% OFF</strong></span>
             </div>
+
+            <div class="bundle-quick-actions">
+              <button type="button" class="bundle-add-btn" data-bundle="general">
+                <i class="fa-solid fa-bolt" aria-hidden="true"></i> + Full General (60% OFF)
+              </button>
+              <button type="button" class="bundle-add-btn" data-bundle="prodigy">
+                <i class="fa-solid fa-bolt" aria-hidden="true"></i> + Full Prodigy (60% OFF)
+              </button>
+              <button type="button" class="bundle-add-btn" data-bundle="pharma">
+                <i class="fa-solid fa-bolt" aria-hidden="true"></i> + Full Pharma (60% OFF)
+              </button>
+              <button type="button" class="bundle-add-btn bundle-add-all" data-bundle="all">
+                <i class="fa-solid fa-crown" aria-hidden="true"></i> + All 3 Series (70% OFF)
+              </button>
+            </div>
+
             <p class="bundle-note">*Discounts apply automatically in your cart (excluding Sr. IDP &amp; Sr. IDP Multi-Problem).</p>
           </div>
 
@@ -294,7 +319,7 @@
               <i class="fa-solid fa-chevron-down faq-arrow" aria-hidden="true"></i>
             </summary>
             <div class="faq-answer">
-              <p>Prodigy Series: Advanced events for chemical engineering enthusiasts including Sr. IDP, Chemflow, Papyrus, Codathon, and Jr. IDP.
+              <p>Prodigy Series: Advanced events for chemical engineering enthusiasts including Sr. IDP, Chemflow, Papyrus, Codathon, Jr. IDP, and DWSIM Process Design Challenge.
               
               General Series: Perfect for all chemistry lovers with events like Ignite, Advent, SDP, Ultimate Detectives, and UpBiz.
               
