@@ -196,11 +196,7 @@ function downloadVortexPass({ name, college, events, totalFormatted }) {
     c.font = "600 26px Orbitron, sans-serif";
     c.fillText("21 DEC 2026  •  ICT MUMBAI", 150, 1635);
 
-    c.textAlign = "right";
-    c.fillStyle = "#00ff88";
-    c.font = "700 32px Orbitron, sans-serif";
-    c.fillText(`PAID ${totalFormatted}`, 930, 1635);
-
+    c.fillStyle = "#00f3ff";
     c.textAlign = "center";
     c.fillStyle = "rgba(255,255,255,0.65)";
     c.font = "600 26px Inter, sans-serif";
@@ -1149,7 +1145,7 @@ if (checkoutForm) {
                                 <div class="vortex-ticket-row"><span>Saved File</span><strong>${customFileName}</strong></div>
                             </div>
                         `,
-                        secondaryBtnText: "Download Shareable Pass (IG Story)",
+                        secondaryBtnText: "Download Shareable Pass",
                         onSecondaryClick: (btn) => {
                             downloadVortexPass({
                                 name: rawName,
