@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DWSIM Process Design Challenge | Vortex 14.0</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Orbitron:wght@400;500;700;900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+    <link rel="stylesheet" href="../../css/index.css" />
+    <link rel="stylesheet" href="../../css/event-detail.css" />
+
+    <style>
+      html[data-theme="light"] * { text-shadow: none !important; }
+      html[data-theme="light"] .nav-logo img { filter: none !important; box-shadow: none !important; }
+    </style>
+
+    <!-- Clarity / Cookie Banner -->
+    <script src="/scripts/cookie-banner.js" defer></script>
+  </head>
+
+  <body>
+    <nav class="navbar">
+      <a href="../../index.html" class="nav-logo">
+        <img src="../../photos/vortex_L.png" alt="Vortex 14.0" class="logo-light" />
+        <img src="../../photos/vortex_D.png" alt="Vortex 14.0" class="logo-dark" />
+      </a>
+      <ul class="nav-links">
+        <li><a href="../../index.html">Home</a></li>
+        <li><a href="../../index.html#events" class="active">Events</a></li>
+        <li><a href="../../index.html#faq">FAQ</a></li>
+        <li><a href="../../about.html">About</a></li>
+      </ul>
+      <div class="nav-controls">
+        <button class="icon-btn" id="themeToggleBtn" aria-label="Toggle Theme"><i class="fa-solid fa-sun" id="themeIcon"></i></button>
+        <button class="menu-btn" id="menuToggleBtn" aria-label="Toggle Menu" aria-expanded="false">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </nav>
+
+    <div class="ambient-bg">
+      <div class="orb orb-1"></div>
+      <div class="orb orb-2"></div>
+      <div class="electrons-container">
+        <div class="electron e-1"></div>
+        <div class="electron e-2"></div>
+        <div class="electron e-3"></div>
+      </div>
+    </div>
+
+    <main class="main-container">
+      <div class="event-header">
+        <h4>PRODIGY SERIES</h4>
+        <h1 class="font-heading"><span class="gradient-text">DWSIM</span> Process Design Challenge</h1>
+        <!-- TODO: Replace with your final tagline -->
+        <p class="event-tagline">Solo &middot; Single Round &middot; Offline Process Simulation Challenge</p>
+
+        <br>
+        <div style="display: flex; justify-content: center; gap: 15px; flex-wrap: wrap;">
+          <a href="../../index.html#events" class="action-btn btn-info back-btn">
+            <i class="fa-solid fa-arrow-left"></i> Back to Events
+          </a>
+        </div>
+      </div>
+
+      <div class="info-grid" style="display: flex; justify-content: center;">
+        <div class="info-card" style="width: 100%; max-width: 500px;">
+          <h4><i class="fa-solid fa-flask-vial"></i> Event Info &amp; Fee</h4>
+          <ul>
+            <li><i class="fa-solid fa-angle-right"></i> <div><strong>Registration Fee:</strong> ₹110 (Workshop + Competition)</div></li>
+            <li><i class="fa-solid fa-angle-right"></i> <div><strong>Format:</strong> Solo &middot; Single Round &middot; Offline</div></li>
+            <!-- TODO: Update Prize Pool once finalized -->
+            <li><i class="fa-solid fa-angle-right"></i> <div><strong>Prize Pool:</strong> TBA</div></li>
+            <li><i class="fa-solid fa-location-dot"></i> <div style="font-size: 0.85rem;">Offline invigilated session at ICT Mumbai campus. Exact dates, duration, and venue details will be shared post-registration.</div></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="content-section">
+        <h2 class="font-heading">General &amp; Structure</h2>
+        <h3>1. General Rules</h3>
+        <ul>
+          <li><strong>Solo Competition:</strong> Each participant designs, simulates, and optimizes one chemical plant in DWSIM in a single round.</li>
+          <li><strong>Eligibility:</strong> Open to participants in chemical engineering or related fields (detailed eligibility criteria TBA).</li>
+          <li><strong>One Entry Per Person:</strong> Only one registration per participant is allowed. Organizers, judges, and anyone with advance access to the problem statements cannot compete.</li>
+          <li><strong>Registration &amp; Fee:</strong> ₹110 covering both the DWSIM workshop and the competition. Registration closing date TBA.</li>
+          <li><strong>Code of Conduct:</strong> Participants must behave professionally at all times. Misconduct leads to immediate removal.</li>
+        </ul>
+
+        <h3>2. Session Structure</h3>
+        <ul>
+          <li>One live, invigilated, offline session (duration and date TBA).</li>
+          <li>At the start of the round, each participant receives a problem pack containing the process description, kinetics, feed and product specifications, operating limits, price sheet, and track metric.</li>
+          <li>Organizers may announce one scenario update during the round (for example, a price change), which applies equally to everyone on the affected track.</li>
+        </ul>
+      </div>
+
+      <div class="content-section">
+        <h2 class="font-heading">Software &amp; Conduct</h2>
+        <ul>
+          <li><strong>No Internet:</strong> No internet access of any kind (Wi-Fi, Ethernet, or mobile hotspot) is permitted during the round.</li>
+          <li><strong>No AI Tools:</strong> Strictly no AI tools of any kind—including chatbots, AI features inside other software, and locally installed AI models.</li>
+          <li><strong>No Communication Devices:</strong> Phones, smartwatches, and other communication devices are not allowed.</li>
+          <li><strong>Clean Start:</strong> No pre-built flowsheets, templates, or external files may be brought into the round.</li>
+          <li><strong>No Collaboration:</strong> Zero collaboration or communication with other participants during the session.</li>
+          <li><strong>Permitted Resources:</strong> DWSIM along with its built-in databanks and offline help, the official problem pack, offline spreadsheet software (with AI features disabled), a calculator, and any permitted references (TBA).</li>
+          <li><strong>Inspections:</strong> Invigilators may check screens, running applications, and network status at any time.</li>
+        </ul>
+
+        <p style="color: #ff4757; font-weight: 600;">Important: Use of the internet, AI tools, communication devices, collaboration, plagiarism, misreported results, or breaking anonymity/eligibility rules will result in immediate disqualification. Judges may run similarity checks on submissions.</p>
+      </div>
+
+      <div class="content-section">
+        <h2 class="font-heading">Design Rules &amp; Economics</h2>
+        <h3>Design Rules</h3>
+        <ul>
+          <li>Choose and justify your thermodynamic model. Parameters must come from DWSIM's built-in databanks, the problem pack, or permitted references.</li>
+          <li>Reactors must use the given kinetics or equilibrium data. Conversion reactors are allowed only if explicitly permitted by the problem pack.</li>
+          <li>Separations must use rigorous models. Shortcut columns are not allowed in the final submission file.</li>
+          <li>Component Separators and ideal split blocks are strictly prohibited.</li>
+          <li>All heat duties must come from listed utilities or heat exchange, maintaining &Delta;T<sub>min</sub> &ge; 10 &deg;C.</li>
+          <li>All recycle streams must be closed and converged.</li>
+          <li>Product specifications along with operating, safety, and emission limits are hard limits.</li>
+          <li>All waste and purge streams must be identified and costed.</li>
+        </ul>
+
+        <h3>Economics</h3>
+        <ul>
+          <li>Use only the standard price sheet provided in the problem pack.</li>
+          <li><strong>Basis:</strong> Economic basis (NPV / EAOC — TBA), 10-year plant life, 10% discount rate, 8,000 hours/year, using Turton module costing (CEPCI value TBA).</li>
+          <li>Size all equipment directly from your DWSIM simulation results.</li>
+          <li>Judges recalculate the economics from their independent re-run of your file; the judges' figures will be used for scoring.</li>
+        </ul>
+      </div>
+
+      <div class="content-section">
+        <h2 class="font-heading">Submission, Judging &amp; Verification</h2>
+        <h3>Submission Requirements</h3>
+        <ul>
+          <li>Submit one final entry via the designated offline method before the round deadline (exact method, deadline, and late-submission penalty TBA). Only your last submission counts.</li>
+          <li>Your submission must include:
+            <ul>
+              <li>The converged DWSIM simulation file (<code>.dwxmz</code>)</li>
+              <li>A decision summary of at most 2 pages (PDF)</li>
+              <li>Your costing worksheet</li>
+            </ul>
+          </li>
+          <li><strong>Anonymous File Naming:</strong> Name all files as <code>TRACK_RegistrationID_Item</code>. Do not write your name anywhere inside any submitted file.</li>
+        </ul>
+
+        <h3>Judging &amp; Verification</h3>
+        <ul>
+          <li><strong>Pass/Fail Gate:</strong> The file must converge cleanly from its saved state, meet all product specifications, respect all hard limits, use no prohibited blocks, close the mass balance, and be complete. Failing any check removes the entry from ranking.</li>
+          <li><strong>Evaluation Criteria:</strong> Passing entries are judged on plant economics, the industry track metric, robustness to feed changes, model soundness, and engineering justification. The judging panel sets the final weights and methodology.</li>
+          <li><strong>Verification Re-Run:</strong> Judges re-run every file in the official DWSIM version. Reported results that differ significantly from the re-run may lead to review or disqualification.</li>
+          <li>Top entrants may be asked to present their design. Panel decisions are final, subject to formal appeal.</li>
+        </ul>
+      </div>
+
+      <div class="content-section">
+        <h2 class="font-heading">Queries, Appeals &amp; IP</h2>
+        <ul>
+          <li><strong>Queries:</strong> Raise questions with invigilators only. Clarifications that apply to everyone will be announced to all participants.</li>
+          <li><strong>Appeals:</strong> Must be submitted within 48 hours of provisional results, citing the specific rule concerned.</li>
+          <li><strong>Intellectual Property:</strong> Participants retain ownership of their work. Organizers may use anonymized entries for results and educational purposes.</li>
+          <li><strong>Publicity &amp; Amendments:</strong> Winners' names may be published (participants may opt out). Organizers reserve the right to amend rules before the round starts, with any later changes announced as clarifications.</li>
+        </ul>
+      </div>
+
+      <div class="content-section">
+        <h2 class="font-heading">Organising Team</h2>
+        <div class="organizer-grid">
+          <div>
+            <h3>Preet Panchal</h3>
+            <p>OEH-Prodigy<br><i class="fa-solid fa-phone"></i> +91 83560 89708</p>
+          </div>
+          <!-- TODO: Add DWSIM Event Heads here -->
+        </div>
+      </div>
+    </main>
+
+    <footer>
+      <div class="footer-grid">
+        <div class="footer-col brand">
+          <h3>Vortex Events</h3>
+          <p>ICT Mumbai's Premier Chemical Engineering Fest</p>
+          <p style="margin-top: 1rem; font-size: 0.8rem">Theme : EquiNexus</p>
+        </div>
+        <div class="footer-col">
+          <h3>Quick Links</h3>
+          <a href="../../index.html#events">Events</a>
+          <a href="../../index.html#faq">FAQ</a>
+          <a href="../../about.html">About Us</a>
+        </div>
+        <div class="footer-col">
+          <h3>Contact</h3>
+          <p><i class="fa-regular fa-envelope"></i> vortexsecretary.ta@ug.ictmumbai.edu.in</p>
+          <div class="contact-details">
+            <p style="font-weight: 600; color: var(--text-main); margin-bottom: 0.5rem;">Secretary Contact Details:</p>
+            <p><i class="fa-solid fa-phone"></i> Kshitij Joshi: 9763172716</p>
+            <p><i class="fa-solid fa-phone"></i> Rupak Humad: 9967952108</p>
+            <p><i class="fa-solid fa-location-dot"></i> ICT Mumbai, Matunga, Mumbai - 400019</p>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h3>Connect</h3>
+          <div class="social-links">
+            <a href="https://www.instagram.com/vortex_ict?cplk=MXExc2M3ZTZqZWhlOA=="><i class="fa-brands fa-instagram"></i></a>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <div id="glowing-cursor"></div>
+
+    <script src="../../scripts/event-detail.js" defer></script>
+  </body>
+</html>

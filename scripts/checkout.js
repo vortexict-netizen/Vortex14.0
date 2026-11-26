@@ -7,9 +7,170 @@ const RECAPTCHA_SITE_KEY = "6LcIgeAtAAAAAJuakH7S9z9eNDTFvsW7ilxBkxYf";
 const CHECKOUT_DRAFT_KEY = "vortex_checkout_draft";
 
 // =========================================
-// 0. IN-PAGE GLASSMORPHIC MODAL & PROGRESS HELPERS
+// 0. IN-PAGE GLASSMORPHIC MODAL, PROGRESS & SHAREABLE PASS HELPERS
 // =========================================
-function showVortexModal({ type = "warning", title, message, ticketHTML = "", btnText = "Continue", onConfirm }) {
+function downloadVortexPass({ name, college, events, totalFormatted, txnId }) {
+    const canvas = document.createElement("canvas");
+    canvas.width = 1080;
+    canvas.height = 1920;
+    const c = canvas.getContext("2d");
+    if (!c) return;
+
+    // 1. Dark Space Background
+    const bgGrad = c.createLinearGradient(0, 0, 1080, 1920);
+    bgGrad.addColorStop(0, "#05050a");
+    bgGrad.addColorStop(0.5, "#0d0a1a");
+    bgGrad.addColorStop(1, "#05070e");
+    c.fillStyle = bgGrad;
+    c.fillRect(0, 0, 1080, 1920);
+
+    // Ambient Cyan & Purple Glow Orbs
+    const drawOrb = (x, y, r, color) => {
+        const g = c.createRadialGradient(x, y, 0, x, y, r);
+        g.addColorStop(0, color);
+        g.addColorStop(1, "rgba(0,0,0,0)");
+        c.fillStyle = g;
+        c.beginPath();
+        c.arc(x, y, r, 0, Math.PI * 2);
+        c.fill();
+    };
+    drawOrb(200, 320, 480, "rgba(189, 0, 255, 0.28)");
+    drawOrb(900, 1520, 520, "rgba(0, 243, 255, 0.24)");
+
+    // 2. Glassmorphic Pass Frame
+    const cardX = 80;
+    const cardY = 200;
+    const cardW = 920;
+    const cardH = 1520;
+    const radius = 44;
+
+    c.save();
+    c.beginPath();
+    c.roundRect(cardX, cardY, cardW, cardH, radius);
+    c.fillStyle = "rgba(20, 20, 28, 0.88)";
+    c.fill();
+    const borderGrad = c.createLinearGradient(cardX, cardY, cardX + cardW, cardY + cardH);
+    borderGrad.addColorStop(0, "#00f3ff");
+    borderGrad.addColorStop(1, "#bd00ff");
+    c.lineWidth = 4;
+    c.strokeStyle = borderGrad;
+    c.stroke();
+    c.restore();
+
+    // 3. Header Text
+    c.textAlign = "center";
+    c.fillStyle = "#00f3ff";
+    c.font = "700 32px Orbitron, sans-serif";
+    c.fillText("OFFICIAL PARTICIPANT PASS", 540, 315);
+
+    const titleGrad = c.createLinearGradient(280, 0, 800, 0);
+    titleGrad.addColorStop(0, "#00f3ff");
+    titleGrad.addColorStop(1, "#bd00ff");
+    c.fillStyle = titleGrad;
+    c.font = "900 88px Orbitron, sans-serif";
+    c.fillText("VORTEX 14.0", 540, 425);
+
+    c.fillStyle = "rgba(255,255,255,0.72)";
+    c.font = "500 30px Inter, sans-serif";
+    c.fillText("ICT MUMBAI  •  EQUINEXUS  •  DEC 2026", 540, 485);
+
+    // Divider
+    c.strokeStyle = "rgba(255,255,255,0.14)";
+    c.lineWidth = 2;
+    c.beginPath();
+    c.moveTo(150, 540);
+    c.lineTo(930, 540);
+    c.stroke();
+
+    // 4. Participant Details
+    c.textAlign = "left";
+    c.fillStyle = "rgba(255,255,255,0.55)";
+    c.font = "600 26px Inter, sans-serif";
+    c.fillText("PARTICIPANT", 150, 620);
+
+    c.fillStyle = "#ffffff";
+    c.font = "700 50px Orbitron, sans-serif";
+    const clippedName = name.length > 22 ? `${name.slice(0, 21)}…` : name;
+    c.fillText(clippedName.toUpperCase(), 150, 685);
+
+    c.fillStyle = "rgba(255,255,255,0.75)";
+    c.font = "400 30px Inter, sans-serif";
+    const clippedCollege = college.length > 42 ? `${college.slice(0, 41)}…` : college;
+    c.fillText(clippedCollege, 150, 742);
+
+    // 5. Registered Events List
+    c.fillStyle = "#00f3ff";
+    c.font = "700 28px Orbitron, sans-serif";
+    c.fillText(`REGISTERED EVENTS (${events.length})`, 150, 845);
+
+    const maxVisible = 8;
+    const shownEvents = events.slice(0, maxVisible);
+    let yCursor = 910;
+
+    shownEvents.forEach((evName) => {
+        c.fillStyle = "rgba(255,255,255,0.06)";
+        c.beginPath();
+        c.roundRect(150, yCursor - 42, 780, 58, 14);
+        c.fill();
+
+        c.fillStyle = "#bd00ff";
+        c.beginPath();
+        c.arc(185, yCursor - 13, 7, 0, Math.PI * 2);
+        c.fill();
+
+        c.fillStyle = "#ffffff";
+        c.font = "500 28px Inter, sans-serif";
+        const label = evName.length > 36 ? `${evName.slice(0, 35)}…` : evName;
+        c.fillText(label, 212, yCursor - 4);
+        yCursor += 74;
+    });
+
+    if (events.length > maxVisible) {
+        c.fillStyle = "#ffd93d";
+        c.font = "600 26px Inter, sans-serif";
+        c.fillText(`+ ${events.length - maxVisible} more event(s)`, 155, yCursor + 6);
+    }
+
+    // 6. Bottom Ticket Footer
+    c.setLineDash([12, 10]);
+    c.strokeStyle = "rgba(255,255,255,0.2)";
+    c.beginPath();
+    c.moveTo(150, 1545);
+    c.lineTo(930, 1545);
+    c.stroke();
+    c.setLineDash([]);
+
+    c.fillStyle = "rgba(255,255,255,0.6)";
+    c.font = "500 24px Inter, sans-serif";
+    c.fillText(`UTR: ${txnId}`, 150, 1605);
+
+    c.textAlign = "right";
+    c.fillStyle = "#00ff88";
+    c.font = "700 32px Orbitron, sans-serif";
+    c.fillText(`PAID ${totalFormatted}`, 930, 1605);
+
+    c.textAlign = "center";
+    c.fillStyle = "rgba(255,255,255,0.65)";
+    c.font = "600 26px Inter, sans-serif";
+    c.fillText("Share on your Story & tag @vortex_ict", 540, 1675);
+
+    const safeFile = name.replace(/[^a-zA-Z0-9]/g, "_") || "Participant";
+    const link = document.createElement("a");
+    link.download = `Vortex14_Pass_${safeFile}.png`;
+    link.href = canvas.toDataURL("image/png");
+    link.click();
+}
+
+function showVortexModal({
+    type = "warning",
+    title,
+    message,
+    ticketHTML = "",
+    secondaryBtnText = "",
+    onSecondaryClick = null,
+    btnText = "Continue",
+    onConfirm
+}) {
     let overlay = document.getElementById("vortexModalOverlay");
     if (!overlay) {
         overlay = document.createElement("div");
@@ -24,6 +185,10 @@ function showVortexModal({ type = "warning", title, message, ticketHTML = "", bt
         warning: "fa-solid fa-triangle-exclamation"
     };
 
+    const secondaryBtnHTML = secondaryBtnText
+        ? `<button type="button" class="vortex-modal-secondary-btn" id="vortexModalSecondaryBtn"><i class="fa-solid fa-download"></i> ${secondaryBtnText}</button>`
+        : "";
+
     overlay.innerHTML = `
         <div class="vortex-modal-card">
             <div class="vortex-modal-icon ${type}">
@@ -32,11 +197,17 @@ function showVortexModal({ type = "warning", title, message, ticketHTML = "", bt
             <h3 class="vortex-modal-title">${title}</h3>
             <p class="vortex-modal-msg">${message}</p>
             ${ticketHTML}
+            ${secondaryBtnHTML}
             <button type="button" class="vortex-modal-btn" id="vortexModalBtn">${btnText}</button>
         </div>
     `;
 
     requestAnimationFrame(() => overlay.classList.add("active"));
+
+    if (secondaryBtnText && onSecondaryClick) {
+        const secBtn = document.getElementById("vortexModalSecondaryBtn");
+        if (secBtn) secBtn.onclick = () => onSecondaryClick(secBtn);
+    }
 
     document.getElementById("vortexModalBtn").onclick = () => {
         overlay.classList.remove("active");
@@ -123,35 +294,35 @@ cart = cart.map((item) => {
 });
 
 // =========================================
-// 3. DISCOUNT MATH 
+// 3. DISCOUNT MATH
 // =========================================
 const SR_IDP_IDS = ["sridp", "sridpmultistatements"];
 
 const getCartBilling = () => {
     const eligibleItems = cart.filter((item) => !SR_IDP_IDS.includes(item.id));
     const ineligibleItems = cart.filter((item) => SR_IDP_IDS.includes(item.id));
-  
+
     const counts = { general: 0, prodigy: 0, pharma: 0 };
     eligibleItems.forEach((item) => { if (Object.hasOwn(counts, item.category)) counts[item.category]++; });
-  
+
     let completedSeries = 0;
     if (counts.general === 5) completedSeries++;
-    if (counts.prodigy === 4) completedSeries++;
+    if (counts.prodigy === 5) completedSeries++;
     if (counts.pharma === 5) completedSeries++;
-  
+
     let discountPercent = 0;
     if (completedSeries === 3) discountPercent = 0.70;
     else if (completedSeries === 2) discountPercent = 0.65;
     else if (completedSeries === 1) discountPercent = 0.60;
     else if (eligibleItems.length >= 5) discountPercent = 0.50;
     else if (eligibleItems.length >= 3) discountPercent = 0.30;
-  
+
     const subtotal = cart.reduce((sum, item) => sum + item.price, 0);
     const eligibleSubtotal = eligibleItems.reduce((sum, item) => sum + item.price, 0);
     const excludedSubtotal = ineligibleItems.reduce((sum, item) => sum + item.price, 0);
     const discount = eligibleSubtotal * discountPercent;
     const total = eligibleSubtotal - discount + excludedSubtotal;
-  
+
     return { subtotal, discount, total, discountPercent };
 };
 
@@ -162,7 +333,7 @@ const renderOrder = () => {
     const list = document.getElementById("checkoutEventList");
     if (!list) return;
     list.replaceChildren();
-    
+
     cart.forEach((item) => {
         const row = document.createElement("div");
         row.className = "checkout-event-row";
@@ -270,7 +441,7 @@ const ctx = hoopCanvas?.getContext("2d");
 const GRAVITY = 0.44;
 const LAUNCH_POWER = 0.265;
 const MAX_PULL = 72;
-const RIM_Y = 70; // 18px SVG top offset + 52px rim center inside viewBox
+const RIM_Y = 70;
 const RIM_HALF_WIDTH = 35;
 
 const MISS_MESSAGES = [
@@ -327,7 +498,6 @@ const resetBallToPad = () => {
 const resizeHoopCanvas = (force = false) => {
     if (!hoopStage || !hoopCanvas) return;
 
-    // Guarantee canvas never stretches its parent container even if CSS is slow to load
     hoopCanvas.style.position = "absolute";
     hoopCanvas.style.inset = "0";
     hoopCanvas.style.width = "100%";
@@ -375,7 +545,6 @@ const drawCanvasEffects = () => {
     if (!ctx) return;
     ctx.clearRect(0, 0, stageW, stageH);
 
-    // 1. Slingshot band & live trajectory preview while aiming
     if (isDragging) {
         const dx = ball.x - anchorX;
         const dy = ball.y - anchorY;
@@ -418,7 +587,6 @@ const drawCanvasEffects = () => {
         ctx.restore();
     }
 
-    // 2. Swish confetti particles
     if (particles.length > 0) {
         for (let i = particles.length - 1; i >= 0; i--) {
             const p = particles[i];
@@ -496,12 +664,10 @@ const stepAnimation = (timestamp) => {
         ball.y += ball.vy * dt;
         ball.rot += ball.vrot * dt;
 
-        // Pass in front of hoop on the way up, behind front rim/net on the way down
         if (slingshotCard) {
             slingshotCard.style.zIndex = ball.vy < 0 ? "5" : "3";
         }
 
-        // Bounce off side walls
         if (ball.x < 22) {
             ball.x = 22;
             ball.vx = Math.abs(ball.vx) * 0.65;
@@ -513,13 +679,11 @@ const stepAnimation = (timestamp) => {
         const rimLeft = anchorX - RIM_HALF_WIDTH;
         const rimRight = anchorX + RIM_HALF_WIDTH;
 
-        // Rim edge collisions when falling or near rim
         if (ball.vy > -2) {
             collideWithRimPost(rimLeft, RIM_Y);
             collideWithRimPost(rimRight, RIM_Y);
         }
 
-        // Score check: passing downward through rim opening
         if (
             !ball.scoredThisShot &&
             ball.vy > 0 &&
@@ -534,7 +698,6 @@ const stepAnimation = (timestamp) => {
             triggerSwish();
         }
 
-        // Subtle shrink as it drops through the net
         let scale = 1;
         if (ball.scoredThisShot && ball.y > RIM_Y) {
             scale = Math.max(0.55, 1 - (ball.y - RIM_Y) / 150);
@@ -545,7 +708,6 @@ const stepAnimation = (timestamp) => {
 
         renderCardTransform(scale);
 
-        // Reset card back to launch pad once shot finishes
         const finishedSwish = ball.scoredThisShot && ball.y > RIM_Y + 95;
         const missedBottom = !ball.scoredThisShot && ball.y > stageH + 45;
         if (finishedSwish || missedBottom) {
@@ -612,7 +774,6 @@ const handleFileSelected = (file) => {
     shotsScored = 0;
     lastMissIndex = -1;
 
-    // Sync input.files in case file came from drag-and-drop
     if (paymentProofInput && (!paymentProofInput.files || paymentProofInput.files[0] !== file)) {
         try {
             const dt = new DataTransfer();
@@ -642,12 +803,10 @@ const handleFileSelected = (file) => {
     resetBallToPad();
 };
 
-// Stop bubbling on the file input as an extra safeguard against recursion
 paymentProofInput?.addEventListener("click", (e) => {
     e.stopPropagation();
 });
 
-// Click stage when empty to browse files
 hoopStage?.addEventListener("click", (e) => {
     if (selectedFile) return;
     if (e.target === hoopChangeBtn || e.target === paymentProofInput) return;
@@ -664,7 +823,6 @@ paymentProofInput?.addEventListener("change", (e) => {
     if (file) handleFileSelected(file);
 });
 
-// OS File Drag & Drop onto the stage
 ["dragenter", "dragover"].forEach((evt) => {
     hoopStage?.addEventListener(evt, (e) => {
         e.preventDefault();
@@ -683,7 +841,6 @@ hoopStage?.addEventListener("drop", (e) => {
     if (droppedFile) handleFileSelected(droppedFile);
 });
 
-// Slingshot Pointer Controls (Mouse + Touch)
 slingshotCard?.addEventListener("pointerdown", (e) => {
     if (!selectedFile || isFlying) return;
     e.preventDefault();
@@ -758,6 +915,7 @@ const onSlingshotRelease = (e) => {
 slingshotCard?.addEventListener("pointermove", onSlingshotMove);
 slingshotCard?.addEventListener("pointerup", onSlingshotRelease);
 slingshotCard?.addEventListener("pointercancel", onSlingshotRelease);
+
 let resizeTimer = null;
 window.addEventListener("resize", () => {
     clearTimeout(resizeTimer);
@@ -776,21 +934,7 @@ const fileToBase64 = (file) => new Promise((resolve, reject) => {
 // 6. FORM CACHE SYSTEM (AUTO-SAVE & RESTORE)
 // =========================================
 const collegeSelect = document.getElementById("collegeSelect");
-const otherCollegeGroup = document.getElementById("otherCollegeGroup");
-const otherCollegeInput = document.getElementById("otherCollege");
 const checkoutForm = document.getElementById("checkoutForm");
-
-const syncOtherCollegeVisibility = () => {
-    if (!collegeSelect || !otherCollegeGroup || !otherCollegeInput) return;
-    if (collegeSelect.value === "Other") {
-        otherCollegeGroup.style.display = "block";
-        otherCollegeInput.required = true;
-    } else {
-        otherCollegeGroup.style.display = "none";
-        otherCollegeInput.required = false;
-        otherCollegeInput.value = "";
-    }
-};
 
 const saveFormDraft = () => {
     try {
@@ -799,9 +943,9 @@ const saveFormDraft = () => {
             phone: document.getElementById("phone")?.value || "",
             email: document.getElementById("email")?.value || "",
             collegeSelect: collegeSelect?.value || "",
-            otherCollege: otherCollegeInput?.value || "",
             yearSelect: document.getElementById("yearSelect")?.value || "",
             collegeId: document.getElementById("collegeId")?.value || "",
+            referralCode: document.getElementById("referralCode")?.value || "",
             transactionId: document.getElementById("transactionId")?.value || "",
             termsConsent: document.getElementById("termsConsent")?.checked || false
         };
@@ -824,12 +968,9 @@ const restoreFormDraft = () => {
         setVal("phone", draft.phone);
         setVal("email", draft.email);
         setVal("collegeSelect", draft.collegeSelect);
-        syncOtherCollegeVisibility();
-        if (draft.collegeSelect === "Other") {
-            setVal("otherCollege", draft.otherCollege);
-        }
         setVal("yearSelect", draft.yearSelect);
         setVal("collegeId", draft.collegeId);
+        setVal("referralCode", draft.referralCode);
         setVal("transactionId", draft.transactionId);
 
         const termsEl = document.getElementById("termsConsent");
@@ -838,13 +979,6 @@ const restoreFormDraft = () => {
         }
     } catch (e) {}
 };
-
-if (collegeSelect) {
-    collegeSelect.addEventListener("change", () => {
-        syncOtherCollegeVisibility();
-        saveFormDraft();
-    });
-}
 
 if (checkoutForm) {
     checkoutForm.addEventListener("input", saveFormDraft);
@@ -857,8 +991,8 @@ if (checkoutForm) {
 // =========================================
 if (checkoutForm) {
     checkoutForm.addEventListener("submit", async (e) => {
-        e.preventDefault(); 
-        
+        e.preventDefault();
+
         const file = selectedFile || paymentProofInput?.files?.[0];
         if (!file) {
             showVortexModal({
@@ -880,16 +1014,14 @@ if (checkoutForm) {
             return;
         }
 
-        let finalCollege = collegeSelect.value;
-        if (finalCollege === "Other") {
-            finalCollege = otherCollegeInput.value.trim();
-        }
-
         const rawName = document.getElementById("fullName").value.trim();
         const phone = document.getElementById("phone").value.trim();
         const email = document.getElementById("email").value.trim();
+        const finalCollege = collegeSelect ? collegeSelect.value.trim() : "";
+        const referralCode = (document.getElementById("referralCode")?.value || "").trim().toUpperCase();
         const transactionId = document.getElementById("transactionId").value.trim();
         const billing = getCartBilling();
+        const eventNames = cart.map((item) => item.name);
 
         // Build clean, unique filename: FullName_Phone_UTR.ext
         const safeName = rawName.replace(/[^a-zA-Z0-9]/g, "_");
@@ -903,11 +1035,9 @@ if (checkoutForm) {
         proceedBtn.disabled = true;
 
         try {
-            // 1. Prepare file
             updateProgressModal(25, "Preparing your payment proof...");
             const base64Data = await fileToBase64(file);
 
-            // 2. Generate fresh reCAPTCHA v3 token
             updateProgressModal(55, "Verifying security check...");
             const captchaToken = await new Promise((resolve, reject) => {
                 grecaptcha.ready(() => {
@@ -917,7 +1047,6 @@ if (checkoutForm) {
                 });
             });
 
-            // 3. Send everything to Vercel backend (handles Drive upload + DB save)
             updateProgressModal(80, "Uploading proof & saving registration...");
 
             const participantData = {
@@ -927,6 +1056,7 @@ if (checkoutForm) {
                 college: finalCollege,
                 year: document.getElementById("yearSelect").value,
                 collegeId: document.getElementById("collegeId").value.trim(),
+                referralCode: referralCode,
                 transactionId: transactionId,
                 paymentProofName: customFileName,
                 paymentProofMimeType: file.type,
@@ -949,6 +1079,10 @@ if (checkoutForm) {
                 sessionStorage.removeItem(CHECKOUT_DRAFT_KEY);
 
                 setTimeout(() => {
+                    const referralRow = referralCode
+                        ? `<div class="vortex-ticket-row"><span>Referral Code</span><strong>${referralCode}</strong></div>`
+                        : "";
+
                     showVortexModal({
                         type: "success",
                         title: "Registration Submitted!",
@@ -959,9 +1093,21 @@ if (checkoutForm) {
                                 <div class="vortex-ticket-row"><span>Events</span><strong>${cart.length} Registered</strong></div>
                                 <div class="vortex-ticket-row"><span>Amount Paid</span><strong style="color:var(--success-green)">${formatINR(billing.total)}</strong></div>
                                 <div class="vortex-ticket-row"><span>UTR / Txn ID</span><strong>${transactionId}</strong></div>
+                                ${referralRow}
                                 <div class="vortex-ticket-row"><span>Saved File</span><strong>${customFileName}</strong></div>
                             </div>
                         `,
+                        secondaryBtnText: "Download Shareable Pass (IG Story)",
+                        onSecondaryClick: (btn) => {
+                            downloadVortexPass({
+                                name: rawName,
+                                college: finalCollege,
+                                events: eventNames,
+                                totalFormatted: formatINR(billing.total),
+                                txnId: transactionId
+                            });
+                            btn.innerHTML = '<i class="fa-solid fa-check"></i> Pass Downloaded!';
+                        },
                         btnText: "Return to Home",
                         onConfirm: () => { window.location.href = "index.html"; }
                     });

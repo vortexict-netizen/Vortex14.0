@@ -16,8 +16,8 @@
     <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" /></noscript>
 
     <!-- Base CSS files (cache-busted so mobile loads the latest layout) -->
-    <link rel="stylesheet" href="./css/index.css" />
-    <link rel="stylesheet" href="./css/checkout.css?v=3" />
+    <link rel="stylesheet" href="./css/index.css?v=4" />
+    <link rel="stylesheet" href="./css/checkout.css?v=4" />
     <link rel="stylesheet" href="./css/fx.css" />
 
     <style>
@@ -68,9 +68,8 @@
     <script src="./scripts/fx.js" defer></script>
     <!-- Non-blocking reCAPTCHA load so it never freezes page render -->
     <script src="https://www.google.com/recaptcha/api.js?render=6LcIgeAtAAAAAJuakH7S9z9eNDTFvsW7ilxBkxYf" async defer></script>
-
-    // Clarity
-    <script src="/scripts/cookie-banner.js" defer></script>-consent.js" defer></script>
+    <!-- Clarity / Cookie Banner -->
+    <script src="/scripts/cookie-banner.js" defer></script>
 </head>
 <body>
 
@@ -142,6 +141,12 @@
                     <div class="form-group">
                         <label for="collegeId">College ID / Roll Number</label>
                         <input type="text" id="collegeId" class="form-control" placeholder="e.g., 21CE1005" required>
+                    </div>
+
+                    <!-- Optional Campus Ambassador / Referral Code -->
+                    <div class="form-group">
+                        <label for="referralCode">Campus Ambassador / Referral Code <span style="opacity: 0.7;">(Optional)</span></label>
+                        <input type="text" id="referralCode" class="form-control" placeholder="e.g., VORTEX-CA07" maxlength="32" style="text-transform: uppercase;">
                     </div>
 
                     <div class="payment-qr-box">
@@ -239,6 +244,6 @@
         </div>
     </main>
 
-    <script type="module" src="./scripts/checkout.js?v=3"></script>
+    <script type="module" src="./scripts/checkout.js?v=4"></script>
 </body>
 </html>

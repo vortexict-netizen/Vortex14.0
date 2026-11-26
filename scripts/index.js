@@ -1,13 +1,53 @@
 import eventsData from "../data/eventsData.js";
 
 // =========================================
-// 0. MATH HELPER
+// 0. MATH HELPER & COUNTDOWN TIMER (21 DEC)
 // =========================================
 const parsePrice = (price) => {
   if (typeof price === "number") return price;
   if (!price) return 0;
   return Number(String(price).replace(/[^0-9.]/g, '')) || 0;
 };
+
+const initHeroCountdown = () => {
+  const daysEl = document.getElementById("cdDays");
+  const hoursEl = document.getElementById("cdHours");
+  const minsEl = document.getElementById("cdMins");
+  const secsEl = document.getElementById("cdSecs");
+  const gridEl = document.getElementById("countdownGrid");
+  if (!daysEl || !hoursEl || !minsEl || !secsEl) return;
+
+  const targetTime = new Date("2026-12-21T09:00:00+05:30").getTime();
+
+  const updateTimer = () => {
+    const diff = targetTime - Date.now();
+    if (diff <= 0) {
+      if (gridEl) {
+        gridEl.innerHTML = '<div class="countdown-live-banner">VORTEX 14.0 IS LIVE!</div>';
+      }
+      return false;
+    }
+
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+    const mins = Math.floor((diff / (1000 * 60)) % 60);
+    const secs = Math.floor((diff / 1000) % 60);
+
+    daysEl.textContent = String(days).padStart(2, "0");
+    hoursEl.textContent = String(hours).padStart(2, "0");
+    minsEl.textContent = String(mins).padStart(2, "0");
+    secsEl.textContent = String(secs).padStart(2, "0");
+    return true;
+  };
+
+  if (updateTimer()) {
+    const timerId = setInterval(() => {
+      if (!updateTimer()) clearInterval(timerId);
+    }, 1000);
+  }
+};
+
+initHeroCountdown();
 
 // =========================================
 // 1. SPA TAB NAVIGATION & CACHE SYSTEM
@@ -89,7 +129,8 @@ const emptyCartBtn = document.getElementById("emptyCartBtn");
 
 cartToggleBtn?.addEventListener("click", (e) => {
   e.stopPropagation();
-  cartSidebar?.classList.add("active");
+  const isOpen = cartSidebar?.classList.toggle("active");
+  if (isOpen) closeMenu();
 });
 
 closeCartBtn?.addEventListener("click", () => {
@@ -149,7 +190,7 @@ const spawnFlyingParticle = (startX, startY, endX, endY, isRemoving = false) => 
 };
 
 // =========================================
-// 4. EVENT RENDERING (WITH STRIKETHROUGH PRICE)
+// 4. EVENT RENDERING (WITH NEW TAG & STRIKETHROUGH PRICE)
 // =========================================
 const renderCategory = (categoryId, containerId) => {
   const items = eventsData.filter((event) => event.cat === categoryId || event.category === categoryId);
@@ -159,9 +200,17 @@ const renderCategory = (categoryId, containerId) => {
   container.replaceChildren();
 
   items.forEach((item) => {
+    const isNewEvent = Boolean(item.isNew || item.id === "dwsim");
     const card = document.createElement("div");
-    card.className = "event-card";
+    card.className = isNewEvent ? "event-card event-card-new" : "event-card";
     card.id = `card-${item.id}`;
+
+    if (isNewEvent) {
+      const newBadge = document.createElement("span");
+      newBadge.className = "new-event-tag";
+      newBadge.textContent = "NEW";
+      card.appendChild(newBadge);
+    }
 
     const info = document.createElement("div");
     info.className = "event-info";
@@ -288,7 +337,7 @@ try {
 }
 
 // =========================================
-// 6. DISCOUNT CALCULATION
+// 6. DISCOUNT CALCULATION & ONE-CLICK BUNDLES
 // =========================================
 const SR_IDP_IDS = ["sridp", "sridpmultistatements"];
 
@@ -301,7 +350,7 @@ const getCartBilling = () => {
 
   let completedSeries = 0;
   if (counts.general === 5) completedSeries++;
-  if (counts.prodigy === 4) completedSeries++;
+  if (counts.prodigy === 5) completedSeries++;
   if (counts.pharma === 5) completedSeries++;
 
   let discountPercent = 0;
@@ -334,6 +383,78 @@ const getCartBilling = () => {
 
   return { subtotal, discount, total, discountPercent, message };
 };
+
+const getEligibleEventsForBundle = (bundleKey) => {
+  return eventsData.filter((event) => {
+    if (SR_IDP_IDS.includes(event.id)) return false;
+    const cat = event.cat || event.category;
+    return bundleKey === "all" ? ["general", "prodigy", "pharma"].includes(cat) : cat === bundleKey;
+  });
+};
+
+const bundleButtons = document.querySelectorAll(".bundle-add-btn[data-bundle]");
+const BUNDLE_DEFAULT_LABELS = {
+  general: '<i class="fa-solid fa-bolt" aria-hidden="true"></i> + Full General (60% OFF)',
+  prodigy: '<i class="fa-solid fa-bolt" aria-hidden="true"></i> + Full Prodigy (60% OFF)',
+  pharma: '<i class="fa-solid fa-bolt" aria-hidden="true"></i> + Full Pharma (60% OFF)',
+  all: '<i class="fa-solid fa-crown" aria-hidden="true"></i> + All 3 Series (70% OFF)'
+};
+
+const syncBundleButtons = () => {
+  bundleButtons.forEach((btn) => {
+    const key = btn.getAttribute("data-bundle");
+    const targetEvents = getEligibleEventsForBundle(key);
+    const allInCart = targetEvents.length > 0 && targetEvents.every((ev) => cart.some((c) => c.id === ev.id));
+
+    if (allInCart) {
+      btn.classList.add("bundle-added");
+      const labelName = key === "all" ? "All 3 Series" : `${key.charAt(0).toUpperCase() + key.slice(1)} Series`;
+      btn.innerHTML = `<i class="fa-solid fa-check" aria-hidden="true"></i> ${labelName} Added`;
+    } else {
+      btn.classList.remove("bundle-added");
+      btn.innerHTML = BUNDLE_DEFAULT_LABELS[key] || btn.innerHTML;
+    }
+  });
+};
+
+bundleButtons.forEach((btn) => {
+  btn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    const key = btn.getAttribute("data-bundle");
+    const targetEvents = getEligibleEventsForBundle(key);
+
+    let addedAny = false;
+    targetEvents.forEach((ev) => {
+      if (!cart.some((c) => c.id === ev.id)) {
+        cart.push({
+          id: ev.id,
+          name: ev.name,
+          category: ev.cat || ev.category,
+          price: parsePrice(ev.price),
+          originalPrice: ev.originalPrice ? parsePrice(ev.originalPrice) : 0
+        });
+        addedAny = true;
+      }
+    });
+
+    if (addedAny) {
+      saveCart();
+      updateCartUI();
+      if (cartToggleBtn) {
+        const btnRect = btn.getBoundingClientRect();
+        const iconRect = cartToggleBtn.getBoundingClientRect();
+        spawnFlyingParticle(
+          btnRect.left + btnRect.width / 2,
+          btnRect.top + btnRect.height / 2,
+          iconRect.left + iconRect.width / 2,
+          iconRect.top + iconRect.height / 2
+        );
+      }
+    }
+
+    cartSidebar?.classList.add("active");
+  });
+});
 
 // =========================================
 // 7. CART SUMMARY
@@ -433,6 +554,7 @@ const updateCartUI = () => {
   }
 
   calculateCartTotals();
+  syncBundleButtons();
 
   const allCartButtons = document.querySelectorAll(".btn-cart[data-event-id]");
   allCartButtons.forEach(btn => {

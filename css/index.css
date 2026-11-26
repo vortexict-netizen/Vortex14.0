@@ -563,3 +563,214 @@ footer { background: var(--footer-bg); border-top: 1px solid var(--glass-border)
     font-size: 0.78rem;
     color: var(--text-muted);
 }
+/* ===== NEW / FEATURED EVENT CARD (DWSIM) ===== */
+.event-card.event-card-new {
+    background-color: var(--glass-bg);
+    background-image: linear-gradient(145deg, rgba(255, 193, 7, 0.16), rgba(255, 107, 53, 0.08) 55%, transparent);
+    border: 1.5px solid rgba(255, 193, 7, 0.6);
+    box-shadow: 0 10px 28px rgba(255, 165, 0, 0.12), inset 0 0 24px rgba(255, 193, 7, 0.05);
+}
+
+:root[data-theme="light"] .event-card.event-card-new {
+    background-color: #ffffff;
+    background-image: linear-gradient(145deg, rgba(255, 193, 7, 0.2), rgba(255, 107, 53, 0.08) 55%, transparent);
+    border-color: #e69500;
+}
+
+.event-card.event-card-new:hover {
+    border-color: #ffd93d;
+    box-shadow: 0 16px 36px rgba(255, 152, 0, 0.25), 0 0 22px rgba(255, 217, 61, 0.28);
+}
+
+.event-card.event-card-new .event-info h3 {
+    padding-right: 60px;
+}
+
+.event-card.event-card-new .event-price {
+    color: #ffd93d;
+}
+
+:root[data-theme="light"] .event-card.event-card-new .event-price {
+    color: #c86d00;
+}
+
+.new-event-tag {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    background: linear-gradient(135deg, #ffd93d, #ff6b35);
+    color: #09090d;
+    font-family: "Orbitron", sans-serif;
+    font-size: 0.65rem;
+    font-weight: 900;
+    letter-spacing: 1px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    box-shadow: 0 0 14px rgba(255, 180, 50, 0.55);
+    z-index: 12;
+    pointer-events: none;
+    animation: newTagPulse 2.2s ease-in-out infinite;
+}
+
+@keyframes newTagPulse {
+    0%, 100% { transform: scale(1); box-shadow: 0 0 12px rgba(255, 180, 50, 0.45); }
+    50% { transform: scale(1.06); box-shadow: 0 0 20px rgba(255, 180, 50, 0.8); }
+}
+
+/* ===== HERO COUNTDOWN TIMER ===== */
+.hero-countdown {
+    margin: 0 0 1.6rem;
+}
+
+.countdown-label {
+    font-family: "Orbitron", sans-serif;
+    font-size: 0.72rem;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--primary-cyan);
+    margin-bottom: 0.6rem;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.countdown-grid {
+    display: inline-flex;
+    gap: 0.65rem;
+    flex-wrap: wrap;
+}
+
+.countdown-box {
+    min-width: 66px;
+    padding: 0.55rem 0.7rem;
+    border-radius: 12px;
+    background: var(--glass-bg);
+    border: 1px solid rgba(0, 243, 255, 0.3);
+    text-align: center;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+}
+
+.countdown-box span {
+    display: block;
+    font-family: "Orbitron", sans-serif;
+    font-size: 1.35rem;
+    font-weight: 800;
+    line-height: 1.1;
+    color: var(--text-main);
+}
+
+.countdown-box small {
+    display: block;
+    margin-top: 3px;
+    font-size: 0.65rem;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+}
+
+.countdown-live-banner {
+    display: inline-block;
+    padding: 0.65rem 1.2rem;
+    border-radius: 10px;
+    background: rgba(0, 255, 136, 0.14);
+    border: 1px solid var(--success-green);
+    color: var(--success-green);
+    font-family: "Orbitron", sans-serif;
+    font-size: 0.9rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+@media (max-width: 800px) {
+    .hero-countdown {
+        order: 4;
+        margin: 0 auto 1.4rem;
+    }
+    .countdown-label {
+        justify-content: center;
+    }
+    .countdown-grid {
+        justify-content: center;
+    }
+    .hero-text .action-btn {
+        order: 5;
+    }
+}
+
+/* ===== ONE-CLICK BUNDLE QUICK-ADD BUTTONS ===== */
+.bundle-quick-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.6rem;
+    margin-top: 1rem;
+    padding-top: 0.9rem;
+    border-top: 1px dashed var(--glass-border);
+}
+
+.bundle-add-btn {
+    background: var(--btn-wrapper-bg);
+    border: 1px solid var(--primary-cyan);
+    color: var(--primary-cyan);
+    padding: 0.5rem 0.95rem;
+    border-radius: 999px;
+    font-family: "Inter", sans-serif;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.25s ease;
+}
+
+.bundle-add-btn:hover {
+    background: var(--primary-cyan);
+    color: #050507;
+    box-shadow: 0 0 14px rgba(0, 243, 255, 0.35);
+    transform: translateY(-2px);
+}
+
+.bundle-add-btn.bundle-add-all {
+    background: linear-gradient(90deg, var(--primary-cyan), var(--primary-purple));
+    border: none;
+    color: #ffffff;
+}
+
+.bundle-add-btn.bundle-add-all:hover {
+    color: #ffffff;
+    opacity: 0.92;
+    box-shadow: 0 0 18px rgba(189, 0, 255, 0.45);
+}
+
+.bundle-add-btn.bundle-added {
+    background: rgba(0, 255, 136, 0.14);
+    border: 1px solid var(--success-green);
+    color: var(--success-green);
+}
+
+/* ===== DOWNLOAD PASS BUTTON IN CONFIRMATION MODAL ===== */
+.vortex-modal-secondary-btn {
+    width: 100%;
+    padding: 11px;
+    margin-bottom: 0.65rem;
+    border: 1px solid var(--primary-cyan);
+    border-radius: 10px;
+    background: rgba(0, 243, 255, 0.1);
+    color: var(--primary-cyan);
+    font-family: "Orbitron", sans-serif;
+    font-weight: 700;
+    font-size: 0.85rem;
+    cursor: pointer !important;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: background 0.25s, color 0.25s, box-shadow 0.25s;
+}
+
+.vortex-modal-secondary-btn:hover {
+    background: var(--primary-cyan);
+    color: #050507;
+    box-shadow: 0 0 16px rgba(0, 243, 255, 0.4);
+}

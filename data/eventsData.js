@@ -72,6 +72,14 @@ const eventsData = [
     price: "90",
   },
   {
+    id: "dwsim",
+    name: "DWSIM Process Design Challenge",
+    cat: "prodigy",
+    desc: "Workshop + offline plant design and simulation challenge in DWSIM",
+    price: "110",
+    isNew: true,
+  },
+  {
     id: "sridp",
     name: "Sr. IDP",
     cat: "prodigy",
