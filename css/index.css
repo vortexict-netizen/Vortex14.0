@@ -774,3 +774,6 @@ footer { background: var(--footer-bg); border-top: 1px solid var(--glass-border)
     color: #050507;
     box-shadow: 0 0 16px rgba(0, 243, 255, 0.4);
 }
+.marquee-container:hover .marquee-text {
+    animation-play-state: paused;
+}
