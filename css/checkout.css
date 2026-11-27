@@ -431,3 +431,25 @@
     word-break: break-all;
     min-height: 1.2em;
 }
+/* Generous proximity hitbox for the Terms checkbox & consent text */
+#termsConsent {
+    cursor: pointer;
+    transform: scale(1.2);
+}
+
+label[for="termsConsent"] {
+    position: relative;
+    cursor: pointer;
+}
+
+label[for="termsConsent"]::after {
+    content: "";
+    position: absolute;
+    inset: -12px;
+    z-index: 1;
+}
+
+label[for="termsConsent"] a {
+    position: relative;
+    z-index: 2;
+}
