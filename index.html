@@ -15,12 +15,12 @@
     <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin />
     
     <link rel="preload" href="photos/vortex_D.png" as="image" fetchpriority="high" />
-    <link rel="preload" href="./css/index.css" as="style" />
+    <link rel="preload" href="./css/index.css?v=5" as="style" />
     <link rel="preload" href="./css/fx.css" as="style" />
-    <link rel="stylesheet" href="./css/index.css" />
+    <link rel="stylesheet" href="./css/index.css?v=5" />
     <link rel="stylesheet" href="./css/fx.css" />
 
-    <link rel="modulepreload" href="./scripts/index.js" />
+    <link rel="modulepreload" href="./scripts/index.js?v=5" />
     <link rel="modulepreload" href="./data/eventsData.js" />
 
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Orbitron:wght@400;500;700;900&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'" />
@@ -49,7 +49,6 @@
     
     <script src="./scripts/fx.js" defer></script>
     <script src="/scripts/cookie-banner.js" defer></script>
-    
   </head>
 
   <body>
@@ -76,6 +75,7 @@
         </button>
       </div>
     </nav>
+
     <!-- DWSIM ANNOUNCEMENT MARQUEE -->
     <div class="marquee-container">
       <div class="marquee-text">
@@ -84,6 +84,7 @@
         <a href="./data/details/dwsim.html" style="color: #ffd93d; text-decoration: underline; margin-left: 6px;">View Rulebook</a>
       </div>
     </div>
+
     <div class="ambient-bg" aria-hidden="true">
       <div class="orb orb-1"></div>
       <div class="orb orb-2"></div>
@@ -115,8 +116,8 @@
         </div>
         <div class="summary-row total"><span>Total</span><span id="cartTotal">₹0</span></div>
         <p class="discount-msg" id="discountMsg">Add more events to unlock series discounts!</p>
-        
-        <p class="discount-msg" style="border: 1px solid #ffd93d; border-radius: 8px; background: rgba(255, 217, 61, 0.12); color: #ffd93d; font-weight: 700; padding: 8px 12px; text-align: center;">Registrations start soon!</p>
+
+        <button type="button" class="checkout-btn" id="checkoutBtn">Proceed to Checkout</button>
       </div>
     </div>
 
@@ -375,7 +376,7 @@
 
     <div class="node-tip" id="nodeTip"><strong></strong><span></span></div>
     
-    <script type="module" src="./scripts/index.js"></script>
+    <script type="module" src="./scripts/index.js?v=5"></script>
 
     <script>
       const tabs = document.querySelectorAll('.nav-tab');
