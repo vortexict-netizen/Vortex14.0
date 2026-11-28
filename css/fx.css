@@ -6,6 +6,7 @@
   z-index: 0;
   pointer-events: none;
   overflow: hidden;
+  --formula-opacity: 0.38;
 }
 .formula-layer.off {
   display: none;
@@ -34,14 +35,24 @@
     transform: translate3d(0, 50px, 0);
   }
   20% {
-    opacity: 0.38;
+    opacity: var(--formula-opacity);
   }
   80% {
-    opacity: 0.38;
+    opacity: var(--formula-opacity);
   }
   100% {
     opacity: 0;
     transform: translate3d(var(--dx), -130px, 0);
+  }
+}
+
+/* Lighter, cleaner background formulas on mobile */
+@media (max-width: 768px) {
+  .formula-layer {
+    --formula-opacity: 0.16;
+  }
+  .formula-layer span:nth-child(n + 7) {
+    display: none;
   }
 }
 
@@ -105,6 +116,6 @@ html.fx-cursor textarea {
 @media (prefers-reduced-motion: reduce) {
   .formula-layer span {
     animation: none;
-    opacity: 0.2;
+    opacity: 0.16;
   }
 }

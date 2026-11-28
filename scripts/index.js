@@ -652,7 +652,7 @@ pieSlices.forEach((slice) => {
 });
 
 // =========================================
-// 10. MOBILE MENU & GLOBAL CLICK CLOSER
+// 10. MOBILE MENU, AUTO-CLOSE & NAVBAR SCROLL HIDE
 // =========================================
 const menuBtn = document.getElementById("menuToggleBtn");
 const navLinksEl = document.querySelector(".nav-links");
@@ -671,6 +671,20 @@ menuBtn?.addEventListener("click", (e) => {
   if (isOpen) cartSidebar?.classList.remove("active");
 });
 
+// Auto-close mobile menu as soon as any nav link or logo is tapped
+navLinksEl?.querySelectorAll("a").forEach((link) => {
+  link.addEventListener("click", () => {
+    closeMenu();
+    cartSidebar?.classList.remove("active");
+  });
+});
+
+document.querySelector(".nav-logo")?.addEventListener("click", () => {
+  closeMenu();
+});
+
+window.addEventListener("hashchange", closeMenu, { passive: true });
+
 document.addEventListener("click", (event) => {
   if (!event.target.closest(".navbar") && !event.target.closest(".cart-sidebar")) {
     closeMenu();
@@ -686,6 +700,7 @@ const navbarEl = document.querySelector(".navbar");
 let lastScrollY = window.scrollY;
 
 const handleNavbarScroll = () => {
+  if (!navbarEl) return;
   const currentY = Math.max(window.scrollY, 0);
   const delta = currentY - lastScrollY;
 
@@ -706,10 +721,4 @@ const handleNavbarScroll = () => {
   }
 };
 
-window.addEventListener('load', () => {
-    if (typeof AOS !== 'undefined') {
-      AOS.init({ duration: 800, easing: 'ease-out-cubic', once: true, offset: 50 });
-    }
-});
-
-updateCartUI();
+window.addEventListener("scroll", handleNavbarScroll, { passive: true });

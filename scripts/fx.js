@@ -1,6 +1,6 @@
 /* Floating formulas on every tab except #about, plus a glow cursor. No dependencies. */
 (() => {
-  const formulas = [
+  const desktopFormulas = [
     "CaCO\u2083 \u2192 CaO + CO\u2082",
     "C\u2086H\u2081\u2082O\u2086 \u2192 2C\u2082H\u2085OH + 2CO\u2082",
     "6CO\u2082 + 6H\u2082O \u2192 C\u2086H\u2081\u2082O\u2086 + 6O\u2082",
@@ -19,20 +19,50 @@
     "Q = mc\u0394T",
   ];
 
+  // Compact subset for narrow mobile screens so formulas don't overlap
+  const mobileFormulas = [
+    "PV = nRT",
+    "N\u2082 + 3H\u2082 \u21CC 2NH\u2083",
+    "\u0394G = \u0394H \u2013 T\u0394S",
+    "Re = \u03C1vD / \u03BC",
+    "E = mc\u00B2",
+    "Q = mc\u0394T",
+  ];
+
+  const isMobile = matchMedia("(max-width: 768px)").matches;
+  const activeFormulas = isMobile ? mobileFormulas : desktopFormulas;
+
   /* ---- Floating formulas ---- */
   const layer = document.createElement("div");
   layer.className = "formula-layer";
   layer.setAttribute("aria-hidden", "true");
-  formulas.forEach((text, i) => {
+
+  activeFormulas.forEach((text, i) => {
     const s = document.createElement("span");
     s.textContent = text;
-    const dur = 4 + ((i * 7) % 11) * 1.4;
-    s.style.cssText =
-      `--x:${((i * 37) % 86) + 3}%;--y:${((i * 53) % 80) + 8}%;` +
-      `--s:${(0.85 + ((i * 3) % 5) * 0.12).toFixed(2)}rem;` +
-      `--d:${dur}s;--delay:-${((i * 5) % 14) + 1}s;--dx:${(i % 2 ? 1 : -1) * (20 + (i % 4) * 14)}px`;
+
+    if (isMobile) {
+      // Even vertical bands + alternating left/right sides
+      const xPos = i % 2 === 0 ? 6 + (i % 3) * 8 : 50 + (i % 2) * 10;
+      const yPos = 12 + i * 14;
+      const size = (0.68 + (i % 3) * 0.07).toFixed(2);
+      const dur = 10 + (i % 4) * 2.5;
+      const dx = (i % 2 ? 1 : -1) * 14;
+
+      s.style.cssText =
+        `--x:${xPos}%;--y:${yPos}%;--s:${size}rem;` +
+        `--d:${dur}s;--delay:-${i * 2.3 + 1}s;--dx:${dx}px`;
+    } else {
+      const dur = 4 + ((i * 7) % 11) * 1.4;
+      s.style.cssText =
+        `--x:${((i * 37) % 86) + 3}%;--y:${((i * 53) % 80) + 8}%;` +
+        `--s:${(0.85 + ((i * 3) % 5) * 0.12).toFixed(2)}rem;` +
+        `--d:${dur}s;--delay:-${((i * 5) % 14) + 1}s;--dx:${(i % 2 ? 1 : -1) * (20 + (i % 4) * 14)}px`;
+    }
+
     layer.appendChild(s);
   });
+
   document.body.appendChild(layer);
 
   // Hide on the About tab (the #about section gets .active when shown)
